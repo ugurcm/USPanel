@@ -39,21 +39,9 @@ COPY ./docker/apache/demo.apache.conf /usr/local/apache2/conf/demo.apache.conf
 RUN echo "Include /usr/local/apache2/conf/demo.apache.conf" \
     >> /usr/local/apache2/conf/httpd.conf
 
-ENV INSTALL_PATH /home/corehound/Documents/Work/Ozel/CodeIgniterTest
-WORKDIR $INSTALL_PATH
-
-COPY ./src /var/www/html
 
 
-#COPY --chown=www:www . /var/www
-
-#RUN chown -R $USER:www-data storage
-#RUN chown -R $USER:www-data bootstrap/cache
-
-# Change current user to www
-#USER www
-#RUN chown www-data:www-data /var/www/html/
+#ENV INSTALL_PATH /home/corehound/Documents/Work/Ozel/CodeIgniterTest
+#WORKDIR $INSTALL_PATH
+#COPY ./src /var/www/html
 #RUN chown -R www-data:www-data /var/www/html/writable
-RUN chown -R www-data:www-data /var/www/html/writable
-#RUN chmod -R 777 /var/www/html/writable
-#RUN chown -R $USER:www /var/www/html/writable
