@@ -43,5 +43,5 @@ RUN echo "Include /usr/local/apache2/conf/demo.apache.conf" \
 
 #ENV INSTALL_PATH /home/corehound/Documents/Work/Ozel/CodeIgniterTest
 #WORKDIR $INSTALL_PATH
-#COPY ./src /var/www/html
+COPY ./src /var/www/html
 #RUN chown -R www-data:www-data /var/www/html/writable
