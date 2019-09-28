@@ -2,9 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home extends CI_Controller {
-	public function index()
-	{
-		echo "Anasayfa";
-		phpinfo();
+	public function index(){
+		//echo "Anasayfa";
+		//phpinfo();
+		echo "anasayfa burasıdır";
+		
 	}
 }
