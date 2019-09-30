@@ -11,24 +11,28 @@ const App = props => {
   let initUserData = {userName: "ugur cemil"};
   if(localStorage.getItem('userData')){
     initUserData = JSON.parse(localStorage.getItem('userData'));
-  } 
-  const [userTokenId, setUserTokenId] = useState(localStorage.getItem('userTokenId') || 0);
+  }
+  const [userToken, setUserToken] = useState(localStorage.getItem('userToken') || 0);
   const [userData, setUserData] = useState(initUserData);
   const startingValues = {
-    base_url: 'http://localhost:8080/',
-    api_url: 'http://localhost:8100/KpApi/',
-    userTokenId: userTokenId,
+    base_url: process.env.base_url,
+    api_url: process.env.api_url,
+    userToken: userToken,
     userData: userData,
-    setUserTokenId: setUserTokenId,
+    setUserToken: setUserToken,
     setUserData: setUserData,
   }
+  
+  //console.log("okok");
+  //console.log(process.env.base_url)
+  //console.log(userToken);
   return(
     <AppContext.Provider value={ startingValues } >
       <BrowserRouter>
         <React.Fragment>
-          <Switch>         
-            <Route path="/" exact render={()=> 
-              (userTokenId == 0 ? (<Redirect to="/login" />):(<Home />))
+          <Switch>
+            <Route path="/" exact render={()=>
+              (userToken == 0 ? (<Redirect to="/login" />):(<Home />))
             } />
             <Route path="/login" component={Login} />
             <Route path="/home" component={Home} />

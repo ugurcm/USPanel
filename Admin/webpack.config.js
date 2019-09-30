@@ -71,6 +71,12 @@ module.exports = {
       jQuery: 'jquery',
       $: 'jquery',
       jquery: 'jquery'
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development', 
+      DEBUG: false,
+      base_url: 'http://localhost:8080/',
+      api_url: 'http://192.168.99.103:8081/',
     })
   ],
   devServer: {

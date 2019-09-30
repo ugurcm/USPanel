@@ -6,7 +6,9 @@ import Swal from 'sweetalert2';
 
 const Login = props => {
   const appContext = useContext(AppContext);
-  
+  //console.log(appContext);
+
+
   const [values, setValues] = useState({userName:"", password:""});
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
@@ -14,7 +16,7 @@ const Login = props => {
   const formSubmit = e => {
     e.preventDefault();
     console.log("form gönderildi");
-    //console.log(appContext.api_url)    
+    //console.log(appContext.api_url)
     $.ajax({
       type:'POST',
       url: appContext.api_url + 'formLogin',
@@ -46,11 +48,11 @@ const Login = props => {
           appContext.setUserData(gelen.userData);
           localStorage.setItem('userTokenId', gelen.userTokenId);
           localStorage.setItem('userData', JSON.stringify(gelen.userData));
-          
+
           setTimeout(() => {
             props.history.push('/');
           }, 1500);
-          
+
 
         }
       } catch (error) {
@@ -64,12 +66,13 @@ const Login = props => {
     })
   }
 
-  return (      
+  return (
     <div className="login-cont">
+      <div className="logo">
+        <img src={appContext.base_url + '/public/assets/img/logo.png'} alt="" />
+      </div>
       <div className="form">
-        <div className="logo">
-          <img src={appContext.base_url + '/public/assets/img/logo.png'} alt="" />
-        </div>
+
         <div className="head">
           <h4>Hoşgeldiniz.</h4>
           <h6>Devam etmek için şifrenizi giriniz.</h6>
@@ -78,28 +81,28 @@ const Login = props => {
           <form action="" onSubmit={e => formSubmit(e)}>
             <div className="irow">
               <div className="ival">
-                <input type="text" name="userName" 
-                placeholder="Kullanıcı Adı" 
-                className="form-control" 
+                <input type="text" name="userName"
+                placeholder="Kullanıcı Adı"
+                className=""
                 value={values.userName}
                 onChange={e=> onChange(e)}/>
               </div>
             </div>
             <div className="irow">
               <div className="ival">
-                <input type="password" name="password" 
+                <input type="password" name="password"
                   placeholder="Şifre"
-                  className="form-control"
+                  className=""
                   value={values.password}
                   onChange={e=> onChange(e)}
                 />
               </div>
             </div>
             <div className="irow">
-              <button type="submit" className="submit-ok">Giriş Yap</button>              
+              <button type="submit" className="submit-ok">Giriş Yap</button>
             </div>
           </form>
-        </div>      
+        </div>
       </div>
     </div>
   )

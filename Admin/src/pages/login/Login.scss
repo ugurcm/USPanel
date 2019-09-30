@@ -1,16 +1,24 @@
+*{
+  outline: 0;
+}
 .login-cont{
-  background-color: #222840;
-  height:100%;
+  background-color: #f0f0f0;
+  height: 100%;
   display: flex;
-  align-items:center;
-  //justify-content: center;
-  padding-left: 50px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .logo{
+    margin-bottom: 15px;
+  }
   .form{
-    //width: 580px;
-    //background-image: linear-gradient(45deg, #303f9f, #7b1fa2);
     background-color: #fff;
-    padding:3rem;
-    box-shadow: 0px 0px 0px 7px rgba(0, 0, 0, 0.40);
+    padding: 25px 25px;
+    /* box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.16); */
+    border-radius: 4px;
+    border: 1px solid #e2e4e7;
+    width: 440px;
+    box-shadow: 0 6px 9px -5px rgba(0, 0, 0, 0.32);
     .logo{
       margin-bottom: 7px;
       img{
@@ -22,7 +30,8 @@
       h4,h6{
         margin:0;
         padding:0;
-        color: #b1b1b5;
+        color: #494949;
+        font-weight: 400;
       }
       h4{
         font-weight: 600;
@@ -37,7 +46,19 @@
         .ival{
           position: relative;
           input[type="text"],input[type="password"]{
-            font-weight: 500;
+            border-radius: 4px;
+            border: 1px solid #d6d6d6;
+            border: 0;
+            font-size: 17px;
+            letter-spacing: -.022em;
+            padding: 3px 15px;
+            width: 100%;
+            background-color: #e2e1df;
+          }
+          input[type="text"]:focus, input[type="password"]:focus{
+            //border-color: #037ef3;
+            outline: 0;
+            box-shadow: 0 0 0 3px rgba(131,192,253,.5);
           }
           .error{
             position: absolute;
@@ -60,17 +81,22 @@
         }
         .submit-ok{
           display: block;
-          width: 100%;
           background-color: #037ef3;
           color: #fff;
           text-align: center;
-          padding: 5px 10px;
-          font-size: 15px;
-          border-radius: 0px;
-          border: 2px solid rgba(0, 0, 0, 0.07);
-          border-bottom: 3px solid rgba(0, 0, 0, 0.22);
+          padding: 4px 15px;
+          font-size: 17px;
+          border: 1px solid rgba(0, 0, 0, 0.07);
+          /* border-bottom: 3px solid rgba(0, 0, 0, 0.22); */
+          border: 0;
+          border: 1px solid #07c;
           cursor: pointer;
-          transition:all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+          border-radius: 4px;
+          float: right;
+          width: 100%;
+          letter-spacing: -.022em;
+          //background: -webkit-linear-gradient(top, rgba(101,175,232,1) 0%,rgba(49,113,193,1) 100%);
           &:hover{
             background-color: #0081fc;
           }
