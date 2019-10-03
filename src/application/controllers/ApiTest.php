@@ -7,13 +7,13 @@ use Restserver\Libraries\REST_Controller;
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 
-class Api extends REST_Controller {
+class ApiTest extends REST_Controller {
 	public function __construct(){
-		parent::__construct(); 
+		parent::__construct();
 		$this->load->helper(['jwt', 'authorization']);
 	}
 	public function hello_get(){
-			
+
 		$tokenData = array();
 		$tokenData['userId'] = 25;
 		$tokenData['email'] = 'ugur@uydusoft.com';
@@ -38,7 +38,7 @@ class Api extends REST_Controller {
 			$password = $this->post('password');
 			// Check if valid user
 			if ($username === $dummy_user['username'] && $password === $dummy_user['password']) {
-					
+
 				// Create a token from the user data and send it as reponse
 				$token = AUTHORIZATION::generateToken(['username' => $dummy_user['username']]);
 				// Prepare the response

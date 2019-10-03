@@ -23,9 +23,6 @@ const App = props => {
     setUserData: setUserData,
   }
   
-  //console.log("okok");
-  //console.log(process.env.base_url)
-  //console.log(userToken);
   return(
     <AppContext.Provider value={ startingValues } >
       <BrowserRouter>

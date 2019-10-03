@@ -18,7 +18,7 @@ class ApiUser extends CI_Controller {
 		//echo $token;
 		$data['status'] = 'SUCCESS';
 		$data['token'] = $token;
-
+		
 		echo json_encode($data);
 	}
 	
