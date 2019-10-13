@@ -20,6 +20,8 @@ RUN apt-get update -y && \
     apt-get install -y libmcrypt-dev && \
     pecl install mcrypt-1.0.1 && \
     docker-php-ext-enable mcrypt
+    
+RUN docker-php-ext-install mysqli
 
 RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl xml
 RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/

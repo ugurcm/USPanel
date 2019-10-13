@@ -14,6 +14,7 @@ const App = props => {
   }
   const [userToken, setUserToken] = useState(localStorage.getItem('userToken') || 0);
   const [userData, setUserData] = useState(initUserData);
+  const [globalData, setGlobalData] = useState({});
   const startingValues = {
     base_url: process.env.base_url,
     api_url: process.env.api_url,
@@ -21,6 +22,8 @@ const App = props => {
     userData: userData,
     setUserToken: setUserToken,
     setUserData: setUserData,
+    globalData: globalData,
+    setGlobalData: setGlobalData,
   }
   
   return(

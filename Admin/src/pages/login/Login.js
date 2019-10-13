@@ -7,8 +7,6 @@ import Swal from 'sweetalert2';
 const Login = props => {
   const appContext = useContext(AppContext);
   //console.log(appContext);
-
-
   const [values, setValues] = useState({userName:"", password:""});
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
@@ -19,9 +17,13 @@ const Login = props => {
     //console.log(appContext.api_url)
     $.ajax({
       type:'POST',
-      url: appContext.api_url + 'formLogin',
+      url: appContext.api_url + 'ApiUser/formLogin',
       data: {formData: values},
       //dataType: 'json'
+      error: function(res){
+        console.log(res);
+        
+      }
     }).done(function(res){
       console.log(res);
       try {
@@ -38,15 +40,15 @@ const Login = props => {
           Swal.fire({
             type: 'success',
             title: 'Giriş Başarılı',
-            text: 'Yönlendiriliyorsunuz',
+            text: 'Yönlendiriliyorsunuz...',
             showConfirmButton: false,
             allowOutsideClick: false,
             timer:1500
           })
 
-          appContext.setUserTokenId(gelen.userTokenId);
+          appContext.setUserToken(gelen.userToken);
           appContext.setUserData(gelen.userData);
-          localStorage.setItem('userTokenId', gelen.userTokenId);
+          localStorage.setItem('userToken', gelen.userToken);
           localStorage.setItem('userData', JSON.stringify(gelen.userData));
 
           setTimeout(() => {
@@ -68,11 +70,11 @@ const Login = props => {
 
   return (
     <div className="login-cont">
-      <div className="logo">
-        <img src={appContext.base_url + '/public/assets/img/logo.png'} alt="" />
-      </div>
+      
       <div className="form">
-
+        <div className="logo">
+          <img src={appContext.base_url + '/public/assets/img/logo.png'} alt="" />
+        </div>
         <div className="head">
           <h4>Hoşgeldiniz.</h4>
           <h6>Devam etmek için şifrenizi giriniz.</h6>

@@ -1,6 +1,11 @@
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700,800,900&subset=latin-ext');
-
+*{
+  outline: 0!important;
+}
+button{
+  cursor: pointer;
+}
 .ul{
   list-style: none;
   margin:0;
@@ -29,7 +34,7 @@ body{
 }
 img{max-width: 100%;}
 a{text-decoration: none;}
-a:hover{text-decoration: none;color:inherit;}
+a:hover{text-decoration: none!important;color:inherit;}
 
 .pre-loader{
   position:fixed;
@@ -81,8 +86,16 @@ a:hover{text-decoration: none;color:inherit;}
 }
 
   
-
-
+.swal2-title{
+  margin-bottom: 0;
+}
+.swal2-icon{
+  margin-bottom: 7px;
+  margin-top: 7px;
+}
+.swal2-popup{
+  padding: 6px 10px;
+}
 
 .form-control{
   border-radius: 0px;
@@ -254,6 +267,16 @@ label{
         box-shadow: 0 2px 4px 0 rgba(43, 43, 43, 0.11);
         display: flex;
         align-items: center;
+        .left-side{
+          flex-grow: 1;
+        }
+        .right-side{
+          button{
+            background-color: transparent;
+            border:0;
+            color: #fff;
+          }
+        }
       }
       .app-cont{
         padding-top: 65px;

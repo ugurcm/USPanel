@@ -1,7 +1,12 @@
 *{
   outline: 0;
 }
+.app{
+  
+}
 .login-cont{
+  background: url(../../../public/assets/img/login-bg.jpg) no-repeat center;
+  background-size: cover;
   background-color: #f0f0f0;
   height: 100%;
   display: flex;
@@ -10,6 +15,7 @@
   flex-direction: column;
   .logo{
     margin-bottom: 15px;
+    text-align: center;
   }
   .form{
     background-color: #fff;
@@ -19,6 +25,9 @@
     border: 1px solid #e2e4e7;
     width: 440px;
     box-shadow: 0 6px 9px -5px rgba(0, 0, 0, 0.32);
+    @media (max-width:991px) {
+      width: 80%;
+    }
     .logo{
       margin-bottom: 7px;
       img{
@@ -54,6 +63,7 @@
             padding: 3px 15px;
             width: 100%;
             background-color: #e2e1df;
+            transition: all 0.3s ease-out;
           }
           input[type="text"]:focus, input[type="password"]:focus{
             //border-color: #037ef3;
