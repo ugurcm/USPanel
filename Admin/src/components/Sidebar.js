@@ -17,7 +17,7 @@ const Sidebar = props => {
         
       </div>
       <div className="btn-add-panel">
-        <a href="">Panel Ekle</a>
+        <Link to="/panelForm">Panel Ekle</Link>
       </div>
     </div>
   )

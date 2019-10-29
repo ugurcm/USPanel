@@ -1,24 +1,13 @@
 import React, {useState, useContext, useEffect} from 'react';
 import Sidebar from '../../components/Sidebar';
-
+import TopBar from '../../components/TopBar';
 
 import AppContext from '../../context/AppContext';
 import Swal from 'sweetalert2';
 const Home = props => {
+
   const appContext = useContext(AppContext);
-  const btnLogout = () =>{
-    Swal.fire({
-      type: 'success',
-      title: 'Sistemden Çıkış Yapılmıştır.',
-      text: 'Yönlendiriliyorsunuz...',
-      showConfirmButton: false,
-      allowOutsideClick: false,
-      timer:1500
-    })
-    setTimeout(() => {
-      appContext.setUserToken("");
-    }, 1500);
-  }
+
   useEffect(() => {
     // Update the document title using the browser API
     //document.title = `You clicked ${count} times`;
@@ -29,12 +18,11 @@ const Home = props => {
       url: appContext.api_url + 'ApiUser/loadDashboard',
       data:{token: appContext.userToken},
       success: function(res){
-        console.log(res);    
+        //console.log(res);    
         if(res){
           let gelen = JSON.parse(res);
-          console.log(gelen);
-          
-          /*if(gelen.sonuc == 'error'){
+          //console.log(gelen);
+          if(gelen.userData.sonuc == 'error'){
             Swal.fire({
               type: 'error',
               title: 'Hata Oluştu. ',
@@ -46,7 +34,7 @@ const Home = props => {
             setTimeout(() => {
               appContext.setUserToken("");
             }, 1500);
-          }*/
+          }
         }    
       }
     })
@@ -57,14 +45,13 @@ const Home = props => {
     <div className="main">
       <Sidebar />
       <div className="content">
-        <div className="head-bar">
-          <div className="left-side">
-            1231231231
-          </div>
-          <div className="right-side">
-            <button onClick={btnLogout}>Çıkış Yap</button>
-          </div>
-        </div>
+       
+        <TopBar />
+       
+        <div className="central">
+          orta alan <br />
+          <i className="fas fa-cog"></i>
+        </div>  
       </div>
       
     </div>
