@@ -40,6 +40,7 @@ class UserModel extends CI_Model {
   public function userCheck($gelen){
     $data = array();
     $data['sonuc'] = 'error';
+    $data['description'] = 'Güvenlik Tokeni Hatalı.';
 		if(!$gelen){
 			//$hata = 1;
 			$data['sonuc'] = 'error';
@@ -63,9 +64,8 @@ class UserModel extends CI_Model {
 					$data['sonuc'] = 'success';
 					$data['veriler'] = array('verilerdeneme' => "deneme veri 1");
 				}
-				
-				
 			}
+
 		}else{
 			$data['sonuc'] = 'error';
 			$data['description'] = 'Token Bulunamadı.';

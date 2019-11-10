@@ -1,8 +1,14 @@
 import React, {useState, useContext, useEffect} from 'react';
+import { useHistory } from "react-router-dom";
+
 import AppContext from '../context/AppContext';
+import Swal from 'sweetalert2';
 
 const TopBar = (props) => {
   const appContext = useContext(AppContext);
+  let history = useHistory();
+
+  
   const btnLogout = () =>{
     Swal.fire({
       type: 'success',
@@ -14,6 +20,8 @@ const TopBar = (props) => {
     })
     setTimeout(() => {
       appContext.setUserToken("");
+      localStorage.setItem('userToken', "");
+      history.push("/login");
     }, 1500);
   }
 

@@ -25,7 +25,7 @@ const Login = props => {
         
       }
     }).done(function(res){
-      console.log(res);
+      //console.log(res);
       try {
         let gelen = JSON.parse(res);
         //console.log(gelen);
@@ -67,7 +67,8 @@ const Login = props => {
       }
     })
   }
-
+  //console.log("login sayfası");
+  
   return (
     <div className="login-cont">
       

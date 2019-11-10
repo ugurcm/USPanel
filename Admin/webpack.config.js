@@ -3,9 +3,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
+const Dotenv = require('dotenv-webpack');
+
 var env = (process.env.NODE_ENV || 'development').trim();
 
 module.exports = {
+  
   entry: './src/index.js',
   output: {
     path: path.join(__dirname, '/dist'),
@@ -64,6 +67,9 @@ module.exports = {
     ]
   },
   plugins:[
+    new Dotenv({
+      path: './.env', 
+    }),
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
@@ -72,12 +78,13 @@ module.exports = {
       $: 'jquery',
       jquery: 'jquery'
     }),
-    new webpack.EnvironmentPlugin({
+    /*new webpack.EnvironmentPlugin({
       NODE_ENV: 'development', 
       DEBUG: false,
       base_url: 'http://localhost:8080/',
-      api_url: 'http://localhost:8081/',
-    })
+      api_url: 'http://192.168.99.103:8081/',
+    })*/
+    
   ],
   devServer: {
     historyApiFallback: true,

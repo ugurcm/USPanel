@@ -13,11 +13,11 @@ const Sidebar = props => {
       </div>
       <div className="sb-list">
         
-
+        
         
       </div>
       <div className="btn-add-panel">
-        <Link to="/panelForm">Panel Ekle</Link>
+        <Link to="/Panel">Panel Ekle</Link>
       </div>
     </div>
   )

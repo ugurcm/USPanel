@@ -61,7 +61,7 @@ class ApiUser extends CI_Controller {
 		echo json_encode($data);
 	}
 	public function loadDashboard(){
-
+		
 		$gelen = $this->input->post();
 
 		$data = array();

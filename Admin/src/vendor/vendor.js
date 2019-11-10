@@ -7,7 +7,7 @@ import $ from 'jquery'
 import '../../public/assets/plugins/bootstrap/js/bootstrap.js'
 import Swal from 'sweetalert2'
 
-console.log("vendor yuklendi")
+//console.log("vendor yuklendi")
 
 
 
