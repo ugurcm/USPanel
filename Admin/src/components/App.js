@@ -4,7 +4,9 @@ import {BrowserRouter, Route, Switch, Link, Redirect} from 'react-router-dom';
 
 import Home from '../pages/home/Home';
 import Panel from '../pages/panel/Panel';
+import PanelForm from '../pages/panel/PanelForm';
 import Login from '../pages/login/Login';
+import DashboardRoute from '../layouts/DashboardRoute';
 import AppContext from '../context/AppContext'
 
 //console.log(process.env.BASE_URL)
@@ -36,10 +38,15 @@ const App = props => {
             <Route path="/" exact render={()=>
               (userToken == 0 ? (<Redirect to="/login" />):(<Redirect to="/home" />))
             } />
-            <Route path="/login" component={Login} />
-            <Route path="/home" component={Home} />
-            <Route path="/panel" component={Panel} />
+            <Route path="/login" component={Login} />            
           </Switch>
+          <DashboardRoute>          
+            <Switch>
+              <Route path="/home" component={Home} />
+              <Route path="/panel" component={Panel} />
+              <Route path="/panelForm" component={PanelForm} />
+            </Switch>
+          </DashboardRoute>
         </React.Fragment>
       </BrowserRouter>
     </AppContext.Provider>
@@ -47,3 +54,15 @@ const App = props => {
 }
 
 export default App;
+
+/*<Route path="/home" component={Home} />
+<Route path="/panel" component={Panel} /><DashboardRoute path="/home" component={Home} />*/
+
+
+
+
+
+
+
+
+

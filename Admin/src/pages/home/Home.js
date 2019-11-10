@@ -74,20 +74,11 @@ const Home = props => {
     }
   },[]);
 
-
+  console.log("anasayfa yüklendi");
+  
   return(
-    <div className="main">
-      <Sidebar />
-      <div className="content">
-       
-        <TopBar />
-       
-        <div className="central">
-          orta alan <br />
-          <i className="fa fa-cog"></i>
-        </div>  
-      </div>
-      
+    <div className="page-home">
+      anasayfa
     </div>
   )
 }
