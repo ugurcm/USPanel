@@ -20,13 +20,15 @@ button{
 }
 
 html{
-  //height: 100%;
+  body{
+    font-weight: 500;
+  }
 }
 body{
   margin: 0;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.5;
   color: #f3f3f3;
   text-align: left;
@@ -256,6 +258,8 @@ label{
     .content{
       position: relative;
       flex-grow: 1;
+      display: flex;
+      flex-direction: column;
       .head-bar{
         display: flex;
         top: 0;
@@ -279,6 +283,9 @@ label{
           }
         }
       }
+      .central{
+        flex-basis: 100%;
+      }
       .app-cont{
         padding-top: 65px;
         .app-main{
@@ -289,7 +296,97 @@ label{
   }
 }
 
-
+.page-content{
+  padding: 15px;
+  .page-title{
+    background-color: #e5e5e5;
+    display: flex;
+    align-items: center;
+    padding: 3px 12px;
+    color: #252525;
+    margin-bottom: 10px;
+    .icon{}
+    .desc{
+      padding-left: 10px;
+    }
+  }
+  .page-filter{}
+  .page-list{
+    .list-control{
+      display: flex;
+      align-items: center;
+      background-color: #e5e5e5;
+      padding:8px 15px;
+      .control-left{
+        display: flex;        
+        //padding: 10px 15px;
+        flex-basis: 100%;
+        a{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1px 15px;
+          font-size: 15px;
+          cursor: pointer;
+          transition: all 0.2s ease-out;
+          border-radius: 4px;
+          margin-right: 10px;
+          min-width: 98px;
+          box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.4);
+          &.addBtn{
+            background-color: #037ef3;
+            color: #fff;
+            //border: 2px solid rgba(0, 0, 0, 0.36);
+            background-image: linear-gradient(#45a5ff, #037ef3);
+            box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.4);
+          }
+          &.refreshBtn{
+            background-color: #fff;
+            color: #2b2b2b;
+            //border: 2px solid #2b2b2b;
+            box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.8);
+          }
+        }
+      }
+      .control-right{
+        //padding: 10px 15px;
+        .tbl-controls{
+          display: flex;
+          font-size: 13px;
+          .icol{
+            display: flex;
+            padding-left: 2px;
+            padding-right: 2px;
+            span{
+              white-space: nowrap;              
+            }
+            select{
+              margin-left: 2px;
+              box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.8);
+              border: 0;
+              padding: 2px 0px 2px 9px;
+              border-radius: 4px;
+            }
+            a{
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 1px 15px;
+              font-size: 15px;
+              cursor: pointer;
+              transition: all 0.2s ease-out;
+              border-radius: 4px;
+              box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.4);
+              background-color: #fff;
+              color: #2b2b2b;
+              box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.8);
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 
 

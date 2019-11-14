@@ -11,7 +11,6 @@ services:
     volumes:
       - ./src:/var/www/html
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
-      
   mysql:
     image: mysql:5.7
     ports:

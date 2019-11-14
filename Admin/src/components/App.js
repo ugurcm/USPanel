@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Switch, Link, Redirect} from 'react-router-dom';
 
 
 import Home from '../pages/home/Home';
+import UserList from '../pages/user/UserList';
 import Panel from '../pages/panel/Panel';
 import PanelForm from '../pages/panel/PanelForm';
 import Login from '../pages/login/Login';
@@ -40,13 +41,17 @@ const App = props => {
             } />
             <Route path="/login" component={Login} />            
           </Switch>
-          <DashboardRoute>          
-            <Switch>
-              <Route path="/home" component={Home} />
-              <Route path="/panel" component={Panel} />
-              <Route path="/panelForm" component={PanelForm} />
-            </Switch>
-          </DashboardRoute>
+          {userToken?
+            <DashboardRoute>          
+              <Switch>
+                <Route path="/home" component={Home} />
+                <Route path="/panel" component={Panel} />
+                <Route path="/panelForm" component={PanelForm} />
+                <Route path="/userList" component={UserList} />
+              </Switch>
+            </DashboardRoute>:null
+          }
+          
         </React.Fragment>
       </BrowserRouter>
     </AppContext.Provider>
