@@ -54,6 +54,37 @@ export default function UserList (props) {
             </div>
           </div>
         </div>
+        <div className="list-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Kullanıcı Adı</th>
+                <th>Adı</th>
+                <th>Soyadı</th>
+                <th>E-Mail</th>
+                <th>Son Giriş</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>ugur</td>
+                <td>yılmaz</td>
+                <td>ugur@uydusoft.com</td>
+                <td>25.02.2019 14:15</td>
+                <td>
+                  <div className="islemBtns">
+                    <a href=""><i className="fas fa-edit"></i></a>
+                    <a href=""><i className="fas fa-minus-square"></i></a>
+                  </div>
+                </td>
+              </tr>1
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
