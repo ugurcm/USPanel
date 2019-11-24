@@ -15,8 +15,8 @@ export default function UserList (props) {
       <div className="page-list">
         <div className="list-control">
           <div className="control-left">
-            <a href="" class="refreshBtn">Yenile</a>
-            <a href="" class="addBtn">Ekle</a>
+            <a href="" className="refreshBtn">Yenile</a>
+            <a href="" className="addBtn">Ekle</a>
           </div>
           <div className="control-right">
             <div className="tbl-controls">
@@ -81,7 +81,63 @@ export default function UserList (props) {
                     <a href=""><i className="fas fa-minus-square"></i></a>
                   </div>
                 </td>
-              </tr>1
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>ugur</td>
+                <td>yılmaz</td>
+                <td>ugur@uydusoft.com</td>
+                <td>25.02.2019 14:15</td>
+                <td>
+                  <div className="islemBtns">
+                    <a href=""><i className="fas fa-edit"></i></a>
+                    <a href=""><i className="fas fa-minus-square"></i></a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>ugur</td>
+                <td>yılmaz</td>
+                <td>ugur@uydusoft.com</td>
+                <td>25.02.2019 14:15</td>
+                <td>
+                  <div className="islemBtns">
+                    <a href=""><i className="fas fa-edit"></i></a>
+                    <a href=""><i className="fas fa-minus-square"></i></a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>ugur</td>
+                <td>yılmaz</td>
+                <td>ugur@uydusoft.com</td>
+                <td>25.02.2019 14:15</td>
+                <td>
+                  <div className="islemBtns">
+                    <a href=""><i className="fas fa-edit"></i></a>
+                    <a href=""><i className="fas fa-minus-square"></i></a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>ugur</td>
+                <td>yılmaz</td>
+                <td>ugur@uydusoft.com</td>
+                <td>25.02.2019 14:15</td>
+                <td>
+                  <div className="islemBtns">
+                    <a href=""><i className="fas fa-edit"></i></a>
+                    <a href=""><i className="fas fa-minus-square"></i></a>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
