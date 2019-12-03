@@ -3,14 +3,14 @@ Navicat MySQL Data Transfer
 
 Source Server         : USPanelMysql
 Source Server Version : 50727
-Source Host           : 192.168.99.103:3306
+Source Host           : 192.168.99.100:3306
 Source Database       : testapp
 
 Target Server Type    : MYSQL
 Target Server Version : 50727
 File Encoding         : 65001
 
-Date: 2019-10-24 19:41:56
+Date: 2019-12-04 02:12:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -50,7 +50,7 @@ CREATE TABLE `cms_users` (
 -- ----------------------------
 -- Records of cms_users
 -- ----------------------------
-INSERT INTO `cms_users` VALUES ('1', 'ugur', 'abc', 'ugur@ozc.com.tr', '1');
+INSERT INTO `cms_users` VALUES ('1', 'ugur', '123', 'ugur@ozc.com.tr', '1');
 
 -- ----------------------------
 -- Table structure for content
@@ -103,7 +103,7 @@ CREATE TABLE `panel_table` (
   `hasTable` int(11) DEFAULT '0',
   `hasRowSlug` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel_table
@@ -113,6 +113,7 @@ INSERT INTO `panel_table` VALUES ('2', '1', 'Sayfalar', 'sayfalar', '1', '0');
 INSERT INTO `panel_table` VALUES ('3', '1', 'Sliderlar', 'slider', '1', '0');
 INSERT INTO `panel_table` VALUES ('4', '3', 'Siparişler', 'siparisler', '1', '0');
 INSERT INTO `panel_table` VALUES ('5', '0', 'İletişim', null, '0', '0');
+INSERT INTO `panel_table` VALUES ('6', '0', 'Şubeler', 'subeler', '0', '0');
 
 -- ----------------------------
 -- Table structure for panel_table_column
@@ -129,14 +130,21 @@ CREATE TABLE `panel_table_column` (
   `type_default_value` varchar(255) DEFAULT NULL,
   `required` int(11) DEFAULT '0',
   `count` int(11) DEFAULT '0',
+  `show_in_crud` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel_table_column
 -- ----------------------------
-INSERT INTO `panel_table_column` VALUES ('1', '2', 'Başlık', 'baslik', '1', '1', '50', null, '0', '0');
-INSERT INTO `panel_table_column` VALUES ('2', '2', 'Icerik', 'icerik', '7', '1', '1000', null, '0', '0');
+INSERT INTO `panel_table_column` VALUES ('1', '2', 'Başlık', 'baslik', '1', '1', '50', null, '0', '0', '0');
+INSERT INTO `panel_table_column` VALUES ('2', '2', 'Icerik', 'icerik', '7', '1', '1000', null, '0', '0', '0');
+INSERT INTO `panel_table_column` VALUES ('3', '6', 'Başlık', 'baslik', '1', '1', '255', null, '0', '2', '1');
+INSERT INTO `panel_table_column` VALUES ('4', '6', 'Telefon', 'telefon', '1', '1', '255', null, '0', '3', '1');
+INSERT INTO `panel_table_column` VALUES ('5', '6', 'E-Mail', 'email', '1', '1', '255', null, '0', '4', '1');
+INSERT INTO `panel_table_column` VALUES ('6', '6', 'Adres', 'adres', '1', '1', '255', null, '0', '5', '1');
+INSERT INTO `panel_table_column` VALUES ('7', '6', 'Id', 'id', '1', '2', '11', null, '0', '1', '1');
+INSERT INTO `panel_table_column` VALUES ('8', '6', 'Count', 'count', '1', '2', '11', null, '0', '6', '0');
 
 -- ----------------------------
 -- Table structure for panel_table_column_input
@@ -151,7 +159,7 @@ CREATE TABLE `panel_table_column_input` (
 -- ----------------------------
 -- Records of panel_table_column_input
 -- ----------------------------
-INSERT INTO `panel_table_column_input` VALUES ('1', 'Text');
+INSERT INTO `panel_table_column_input` VALUES ('1', 'TextBox');
 INSERT INTO `panel_table_column_input` VALUES ('2', 'Select');
 INSERT INTO `panel_table_column_input` VALUES ('3', 'Picture');
 INSERT INTO `panel_table_column_input` VALUES ('4', 'Option');
@@ -204,3 +212,43 @@ CREATE TABLE `sayfalar` (
 -- Records of sayfalar
 -- ----------------------------
 INSERT INTO `sayfalar` VALUES ('1', null, null, null, null, null);
+
+-- ----------------------------
+-- Table structure for subeler
+-- ----------------------------
+DROP TABLE IF EXISTS `subeler`;
+CREATE TABLE `subeler` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `baslik` varchar(255) DEFAULT NULL,
+  `telefon` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `adres` varchar(255) DEFAULT NULL,
+  `count` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of subeler
+-- ----------------------------
+INSERT INTO `subeler` VALUES ('1', 'US Tokat Şubesi', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', '1');
+INSERT INTO `subeler` VALUES ('2', 'asdf LOL', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('3', 'fasdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('4', 'asdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('5', 'sd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('6', 'dafd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('7', 'rfs', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('8', 'fsdfasd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('9', 'vxcvcasdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('10', 'bx', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('11', 'vbxcv', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('12', 'cvzxc', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('13', 'hdfg', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('14', 'dfghdfg', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('15', 'hdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('16', 'hd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('17', 'gh', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('18', 'fghdfrtyer', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('19', 'tyer', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('20', 'yeryj', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('21', 'hgj', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
+INSERT INTO `subeler` VALUES ('22', 'jdfgd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
