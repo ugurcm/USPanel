@@ -19,7 +19,7 @@ const Sidebar = props => {
 
       <div className="btn-add-panel">
         <Link to="/Panel">Panel Ekle</Link>
-        <Link to="/userList">Yöneticiler</Link>
+        <Link to="/crudList">Yöneticiler</Link>
       </div>
     </div>
   )

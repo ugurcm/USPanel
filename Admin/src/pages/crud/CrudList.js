@@ -4,13 +4,12 @@ import Swal from 'sweetalert2';
 
 import doAjax from '../../libraries/doAjax';
 import TableRows from './TableRows';
+import TableControls from './TableControls'
 
 
-
-export default function UserList (props) {
+export default function CrudList (props) {
   const appContext = useContext(AppContext);
 
- 
   const [pageData, setPageData] = useState({
     panelTable: "Şubeler",
     table: "subeler",
@@ -47,12 +46,10 @@ export default function UserList (props) {
     })
   }
   const yenile = () => {
-    //refreshTable();
-    //pageDataGoster();
+    refreshTable();
   }
   useEffect(()=>{
     refreshTable();
-    //console.log(pageData);
   },[pageData.sayfaNo, pageData.kacar]);
 
   const crudGoNextPage = () => {
@@ -89,17 +86,7 @@ export default function UserList (props) {
     )
   }
   
-  const CrudSayfaNoSelectInput = (props) => {
-    let items = [];
-    for (let i = 1; i <= pageData.crudData.crudList.sayfaSayisi; i++) {
-      items.push(<option key={i} value={i} >{i}</option>)
-    }
-    return (
-      <select onChange={crudSayfaNoChange} value={pageData.sayfaNo}>
-        {items}          
-      </select>
-    )
-  }
+  
   
   return (
     <div className="page-content">
@@ -118,36 +105,12 @@ export default function UserList (props) {
             <a href="#" className="addBtn">Ekle </a>
           </div>
           <div className="control-right">
-            <div className="tbl-controls">
-              <div className="icol">
-                <span>Kayıt Sayısı</span>
-                <select onChange={kacarChange} value={pageData.kacar}>
-                  <option value="2">2</option>
-                  <option value="4">4</option>
-                  <option value="8">8</option>
-                  <option value="10">10</option>
-                </select>
-              </div>
-              <div className="icol">
-                <a href="#" onClick={crudGoFirstPage}><i className="fa fa-step-backward"></i></a>
-              </div>
-              <div className="icol">
-                <a href="#" onClick={crudGoPrevPage}><i className="fa fa-angle-left"></i></a>
-              </div>
-              <div className="icol">
-                <span>Sayfa</span>
-                <CrudSayfaNoSelectInput />
-              </div>
-              <div className="icol">
-                <span>({pageData.crudData.crudList.nereden} - {pageData.kacar} / {pageData.crudData.crudList.toplam})</span>
-              </div>
-              <div className="icol">
-                <a href="#" onClick={crudGoNextPage}><i className="fa fa-angle-right"></i></a>
-              </div>
-              <div className="icol">
-                <a href="#" onClick={crudGoLastPage}><i className="fa fa-step-forward"></i></a>
-              </div>
-            </div>
+            <TableControls pageData={pageData} 
+              kacarChange={kacarChange} 
+              crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
+              crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
+              crudSayfaNoChange={crudSayfaNoChange}
+              />
           </div>
         </div>
         <div className="list-table">
@@ -164,43 +127,16 @@ export default function UserList (props) {
 
         <div className="list-control bottom">
           <div className="control-left">
-            <a href="" className="refreshBtn">Yenile</a>
-            <a href="" className="addBtn">Ekle</a>
+            <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
+            <a href="#" className="addBtn">Ekle </a>
           </div>
           <div className="control-right">
-            <div className="tbl-controls">
-              <div className="icol">
-                <span>Kayıt Sayısı</span>
-                <select>
-                  <option value="30">30</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="150">150</option>
-                </select>
-              </div>
-              <div className="icol">
-                <a href=""><i className="fa fa-step-backward"></i></a>
-              </div>
-              <div className="icol">
-                <a href=""><i className="fa fa-angle-left"></i></a>
-              </div>
-              <div className="icol">
-                <span>Sayfa</span>
-                <select>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-              </div>
-              <div className="icol">
-                <span>(0 - 30 / 1)</span>
-              </div>
-              <div className="icol">
-                <a href=""><i className="fa fa-angle-right"></i></a>
-              </div>
-              <div className="icol">
-                <a href=""><i className="fa fa-step-forward"></i></a>
-              </div>
-            </div>
+            <TableControls pageData={pageData} 
+              kacarChange={kacarChange} 
+              crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
+              crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
+              crudSayfaNoChange={crudSayfaNoChange}
+              />
           </div>
         </div>
 
