@@ -29,7 +29,7 @@ const Home = props => {
               //console.log(gelen);
               
               Swal.fire({
-                type: 'error',
+                icon: 'error',
                 title: 'Hata Oluştu. ',
                 text: gelen.userData.description + ' Yönlendiriliyorsunuz...',
                 showConfirmButton: false,
@@ -46,7 +46,7 @@ const Home = props => {
         },
         error: function(res){
           Swal.fire({
-            type: 'error',
+            icon: 'error',
             title: 'Hata Oluştu. ',
             text: 'Api Sunucusu Çalışmıyor. Data alınamadı.',
             showConfirmButton: false,
@@ -57,7 +57,7 @@ const Home = props => {
       })
     }else{
       Swal.fire({
-        type: 'error',
+        icon: 'error',
         title: 'Hata Oluştu. ',
         text: 'Token Bulunamadı Yönlendiriliyorsunuz...',
         showConfirmButton: false,

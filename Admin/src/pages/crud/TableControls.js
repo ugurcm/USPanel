@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 
 
 export default function TableControls(props){
-
+  const kayitSayilari = [15, 30, 50, 75, 100];
   const CrudSayfaNoSelectInput = (props) => {
     let items = [];
     for (let i = 1; i <= props.pageData.crudData.crudList.sayfaSayisi; i++) {
@@ -19,12 +19,10 @@ export default function TableControls(props){
       <div className="icol">
         <span>Kayıt Sayısı</span>
         <select onChange={props.kacarChange} value={props.pageData.kacar}>
-          <option value="2">2</option>
-          <option value="4">4</option>
-          <option value="8">8</option>
-          <option value="10">10</option>
+          {kayitSayilari.map((value, key)=><option key={key} value={value}>{value}</option>)}
         </select>
       </div>
+      
       <div className="icol">
         <a href="#" onClick={props.crudGoFirstPage}><i className="fa fa-step-backward"></i></a>
       </div>

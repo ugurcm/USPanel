@@ -17,7 +17,7 @@ const DashboardRoute = props => {
   useEffect(()=>{
     console.log("dashboard route yüklendi");
     
-  })
+  },[])
 
   return(
     <div className="main">

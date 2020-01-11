@@ -31,14 +31,14 @@ const Login = props => {
         //console.log(gelen);
         if(gelen.code == 1){  // sifre hatali
           Swal.fire({
-            type: 'error',
+            icon: 'error',
             title: 'Hata',
             text: gelen.sonuc,
           })
         }
         if(gelen.code == 2){  //basarili
           Swal.fire({
-            type: 'success',
+            icon: 'success',
             title: 'Giriş Başarılı',
             text: 'Yönlendiriliyorsunuz...',
             showConfirmButton: false,
@@ -60,7 +60,7 @@ const Login = props => {
       } catch (error) {
         console.log(error);
         Swal.fire({
-          type: 'error',
+          icon: 'error',
           title: 'Hata',
           text: error,
         })
@@ -74,7 +74,7 @@ const Login = props => {
       
       <div className="form">
         <div className="logo">
-          <img src={appContext.base_url + '/public/assets/img/logo.png'} alt="" />
+          <img src={appContext.base_url + '/src/assets/img/logo.png'} alt="" />
         </div>
         <div className="head">
           <h4>Hoşgeldiniz.</h4>

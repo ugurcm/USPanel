@@ -69,7 +69,8 @@ module.exports = {
       path: './.env', 
     }),
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './src/assets/html/index.html',
+      favicon: "./src/assets/img/favicon.ico"
     }),
     new webpack.ProvidePlugin({   
       jQuery: 'jquery',

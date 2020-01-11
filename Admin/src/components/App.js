@@ -6,11 +6,14 @@ import Home from '../pages/home/Home';
 import CrudList from '../pages/crud/CrudList';
 import Panel from '../pages/panel/Panel';
 import PanelForm from '../pages/panel/PanelForm';
+import PanelComponent from '../pages/panel/PanelComponent';
+import PanelComponentForm from '../pages/panel/PanelComponentForm';
 import Login from '../pages/login/Login';
 import DashboardRoute from '../layouts/DashboardRoute';
 import AppContext from '../context/AppContext'
-
+import CrudForm from '../pages/crud/CrudForm';
 //console.log(process.env.BASE_URL)
+import Modal from '../components/form/Modal'
 
 const App = props => {
 
@@ -21,6 +24,10 @@ const App = props => {
   const [userToken, setUserToken] = useState(localStorage.getItem('userToken') || 0);
   const [userData, setUserData] = useState(initUserData);
   const [globalData, setGlobalData] = useState({});
+  const [modalData, setModalData] = useState({
+    show: false,
+    innerComp: 'ModalFileCont'
+  });
   const globalVars = {
     base_url: process.env.BASE_URL,
     api_url: process.env.API_URL,
@@ -30,7 +37,12 @@ const App = props => {
     setUserData: setUserData,
     globalData: globalData,
     setGlobalData: setGlobalData,
+    modalData: modalData,
+    setModalData: setModalData,
   }
+  useEffect(()=>{
+    
+  },[])
   return(
     <AppContext.Provider value={ globalVars } >
       <BrowserRouter>
@@ -46,14 +58,20 @@ const App = props => {
               <Switch>
                 <Route path="/home" component={Home} />
                 <Route path="/panel" component={Panel} />
+                <Route path="/panel(/:id)" component={Panel} />
                 <Route path="/panelForm" component={PanelForm} />
+                <Route path="/panelComponent" component={PanelComponent} />
+                <Route path="/panelComponentForm" component={PanelComponentForm} />
                 <Route path="/crudList" component={CrudList} />
+                <Route path="/crudForm" component={CrudForm} />
               </Switch>
             </DashboardRoute>:null
           }
           
         </React.Fragment>
       </BrowserRouter>
+      {modalData.show?<Modal modalData={modalData}></Modal>:null}
+      
     </AppContext.Provider>
   )
 }

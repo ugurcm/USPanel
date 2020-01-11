@@ -11,9 +11,11 @@ export default function doAjax (ajaxUrl, ajaxType, gonderData) {
       url: ajaxUrl
     })
     .done((res)=>{})
-    .fail((res) => {
+    .fail((jqXHR, textStatus, errorThrown) => {
       console.log('error');
-      console.log(res);
+      console.log(jqXHR);
+      //console.log(textStatus);
+      //console.log(errorThrown);
     });
     return response;
   };

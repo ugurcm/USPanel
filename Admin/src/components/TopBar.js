@@ -11,7 +11,7 @@ const TopBar = (props) => {
   
   const btnLogout = () =>{
     Swal.fire({
-      type: 'success',
+      icon: 'success',
       title: 'Sistemden Çıkış Yapılmıştır.',
       text: 'Yönlendiriliyorsunuz...',
       showConfirmButton: false,

@@ -8,7 +8,7 @@ const Sidebar = props => {
   return(
     <div className="sidebar">
       <div className="logo-cont">
-        <Link to="/"><img src={appContext.base_url + 'public/assets/img/logo-w.png'} 
+        <Link to="/"><img src={'/src/assets/img/logo-w.png'} 
           alt="UğurSoft Yönetim Paneli" /></Link>
       </div>
       <div className="sb-list">
@@ -19,7 +19,7 @@ const Sidebar = props => {
 
       <div className="btn-add-panel">
         <Link to="/Panel">Panel Ekle</Link>
-        <Link to="/crudList">Yöneticiler</Link>
+        <Link to="/crudList">Liste ve Form</Link>
       </div>
     </div>
   )
