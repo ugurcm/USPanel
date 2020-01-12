@@ -13,6 +13,7 @@ import PanelTableRows from './PanelTableRows'
 export default function Panel (props) {
   const appContext = useContext(AppContext);
   const [pageId, setPageId] = useState('');
+  const [formLink, setFormLink] = useState('PanelForm');
   const [pageReady, setPageReady] = useState(0);
   const [pageData, setPageData] = useState({
     panelTable: "Admin Panel Modülleri",
@@ -50,10 +51,12 @@ export default function Panel (props) {
       })
     }
   }
-  const yenile = () => {
+  const yenile = (e) => {
+    e.preventDefault();
     refreshTable();
   }
-  const yukari = () => {
+  const yukari = (e) => {
+    e.preventDefault();
     const data = doAjax(
       appContext.api_url + 'ApiPanel/findPageParent',
       'GET',{pageId: pageId, table: pageData.table }
@@ -63,7 +66,15 @@ export default function Panel (props) {
       const gelen = JSON.parse(res);
       //console.log(gelen);
       if(gelen.secilenPage){
-        props.history.push('Panel?id=' + gelen.secilenPage.parent);
+        let yonlendirilecekUrl = 'Panel';
+        let panelFormLinki = 'PanelForm';
+        if(gelen.secilenPage.parent > 0){
+          yonlendirilecekUrl += '?id=' + gelen.secilenPage.parent;
+          panelFormLinki += 'PanelForm?parent=' + gelen.secilenPage.parent;
+        }
+        //setPageId(gelen.secilenPage.parent);
+        setFormLink(panelFormLinki);
+        props.history.push(yonlendirilecekUrl);
       }
       
       //setPageData({ ...pageData, crudData: gelen.crudData});
@@ -71,21 +82,14 @@ export default function Panel (props) {
   }
   useEffect(()=>{
     const parsed = queryString.parse(location.search);
-    //console.log(parsed);
-    //console.log("panel yüklendi");
-    
     if(!parsed.id){
       setPageReady(1);
       setPageId(0);
-      //console.log("id yok");
-      
-      
     }
     if(parsed.id){
-      //console.log("id var");
-      //console.log(parsed.id);
       setPageReady(1);
       setPageId(parsed.id);
+      setFormLink('PanelForm?parent=' + parsed.id);
     }
   })
   useEffect(()=>{
@@ -166,8 +170,9 @@ export default function Panel (props) {
         <div className="list-control">
           <div className="control-left">
             <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
-            <Link to={'PanelForm'} className="addBtn">Ekle</Link>
-            <a href="#" onClick={yukari} className="refreshBtn">Yenile</a>
+            <Link to={formLink} className="addBtn">Ekle</Link>
+            {(pageId>0?<a href="#" onClick={yukari} className="refreshBtn">Yukarı Git</a>:null)}
+            
           </div>
           <div className="control-right">
             <TableControls pageData={pageData} 
@@ -192,7 +197,7 @@ export default function Panel (props) {
         <div className="list-control bottom">
           <div className="control-left">
             <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
-            <Link to={'PanelForm'} className="addBtn">Ekle</Link>
+            <Link to={formLink} className="addBtn">Ekle</Link>
           </div>
           <div className="control-right">
             <TableControls pageData={pageData} 

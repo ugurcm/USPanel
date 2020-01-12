@@ -28,6 +28,8 @@ const App = props => {
     show: false,
     innerComp: 'ModalFileCont'
   });
+  const [sidebarData, setSidebarData] = useState([]);
+
   const globalVars = {
     base_url: process.env.BASE_URL,
     api_url: process.env.API_URL,
@@ -39,10 +41,13 @@ const App = props => {
     setGlobalData: setGlobalData,
     modalData: modalData,
     setModalData: setModalData,
+    sidebarData: sidebarData,
+    setSidebarData: setSidebarData,
   }
   useEffect(()=>{
+    //console.log("app render");
     
-  },[])
+  })
   return(
     <AppContext.Provider value={ globalVars } >
       <BrowserRouter>

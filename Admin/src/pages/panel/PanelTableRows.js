@@ -23,11 +23,14 @@ export default function PanelTableRows (props) {
               <div className="desc">Alt Paneller</div>  
             </Link>
           </div>
-          <div className="item" >
+          {
+            (item.hasTable==1?<div className="item" >
             <Link to={'PanelComponent?id=' + item.id} className="btn-edit" data-tooltip="Bileşenler">
               <div className="desc">Bileşenler</div>  
             </Link>
-          </div>
+          </div>:null)
+          }
+          
           <div className="item" >
             <Link to={'PanelForm?id=' + item.id} className="btn-edit" data-tooltip="Düzenle">
               <div className="icon">

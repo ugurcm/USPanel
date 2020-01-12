@@ -29,6 +29,7 @@ export default function CrudForm (props) {
   const [formType, setFormType] = useState('add');
   const [values, setValues] = useState({
     title: '',
+    parent: 0,
     parent_path: ["0"],
     hasTable : 0
   });
@@ -86,7 +87,7 @@ export default function CrudForm (props) {
       {formData: values, formType: formType, formId: formId}
     );
     data.then((res)=>{
-      console.log(res);
+      //console.log(res);
       
       const gelen = JSON.parse(res);
       if(gelen.sonuc == 'err'){
@@ -109,7 +110,12 @@ export default function CrudForm (props) {
           timer:1500
         })
         setTimeout(()=>{ 
-          props.history.push('Panel');
+          let yonlendirilecekUrl = 'Panel';
+          if(values.parent > 0){
+            yonlendirilecekUrl += '?id=' + values.parent;
+          }
+          props.history.push(yonlendirilecekUrl);          
+          //props.history.push('Panel');
         }, 1500)
         
       }else{
@@ -126,13 +132,13 @@ export default function CrudForm (props) {
     props.history.goBack();
   }
   const onChangeParent = (e, index) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const value = e.target.value;
     let newArr = values.parent_path;
     newArr.length = index + 1;
     if(value){
       newArr.push(value);
     }
-    setValues({...values, parent_path: newArr});
+    setValues({...values, parent_path: newArr, parent: value});
   }
 
   return (
@@ -146,7 +152,7 @@ export default function CrudForm (props) {
       
       <div className="form-cont">
         <form action="" method="POST" onSubmit={e=>formSubmit(e)} autoComplete="off">
-
+          <input type="hidden" name={'parent'} value={values.parent} />
           <div className="frow">
             <div className="flabel">
               Başlık

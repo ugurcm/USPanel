@@ -38,7 +38,8 @@ class UserModel extends CI_Model {
 		return $data;
   }
   public function userCheck($gelen){
-    $data = array();
+		$data = array();
+		
     $data['sonuc'] = 'error';
     $data['description'] = 'Güvenlik Tokeni Hatalı.';
 		if(!$gelen){
@@ -51,6 +52,7 @@ class UserModel extends CI_Model {
 			
 			$tokenData = $this->UserModel->tokenCoz($gelen['token']);
 			//print_r($tokenData);
+			
 			if($tokenData['status'] == 'success'){
 				$suan = date('Y-m-d H:i:s');
 				//$getDate = $tokenData['tokenData']->tokenCreatedDate;
@@ -58,9 +60,22 @@ class UserModel extends CI_Model {
 				//echo $this->oturumIzinVerilenDakika;
 				if(strtotime('-'.$this->oturumIzinVerilenDakika) > $tokenData['tokenData']->tokenCreatedDate){
 					//echo "süre doldu";
-					$data['sonuc'] = 'error';
-					$data['description'] = 'Token Süresi Doldu';
+					//$data['sonuc'] = 'error';
+					//$data['description'] = 'Token Süresi Doldu Yenilendi';
+					//$tokenData['tokenData']['tokenCreatedDate'] = strtotime("now");
+					$tokenData['tokenData']->tokenCreatedDate = strtotime("now");
+
+					$data['tokenData'] = $tokenData;
+
+					$data['sonuc'] = 'token_created';
+					$data['description'] = 'Token Süresi Doldu Yenilendi';
+					
+					
+					$token = AUTHORIZATION::generateToken($tokenData['tokenData']);
+					$data['newUserToken'] = $token;
+					
 				}else{
+					$data['description'] = 'Sorun Yok Devam';
 					$data['sonuc'] = 'success';
 					$data['veriler'] = array('verilerdeneme' => "deneme veri 1");
 				}
@@ -71,5 +86,10 @@ class UserModel extends CI_Model {
 			$data['description'] = 'Token Bulunamadı.';
     }
     return $data;
-  }
+	}
+	
+
+
+
+
 }
