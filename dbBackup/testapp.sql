@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50727
 File Encoding         : 65001
 
-Date: 2019-12-07 09:54:29
+Date: 2020-01-13 09:56:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -92,28 +92,43 @@ CREATE TABLE `content_type` (
 INSERT INTO `content_type` VALUES ('1', 'Kategoriler');
 
 -- ----------------------------
+-- Table structure for iletisim-mesajlari
+-- ----------------------------
+DROP TABLE IF EXISTS `iletisim-mesajlari`;
+CREATE TABLE `iletisim-mesajlari` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of iletisim-mesajlari
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for panel_table
 -- ----------------------------
 DROP TABLE IF EXISTS `panel_table`;
 CREATE TABLE `panel_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent` int(11) DEFAULT NULL,
+  `parent` int(11) DEFAULT '0',
+  `parent_path` varchar(1000) DEFAULT '',
   `title` varchar(255) DEFAULT NULL,
   `slug` varchar(255) DEFAULT NULL,
   `hasTable` int(11) DEFAULT '0',
   `hasRowSlug` int(11) DEFAULT '0',
+  `count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel_table
 -- ----------------------------
-INSERT INTO `panel_table` VALUES ('1', '0', 'İçerik Yönetimi', 'icerik-yonetimi', '0', '0');
-INSERT INTO `panel_table` VALUES ('2', '1', 'Sayfalar', 'sayfalar', '1', '0');
-INSERT INTO `panel_table` VALUES ('3', '1', 'Sliderlar', 'slider', '1', '0');
-INSERT INTO `panel_table` VALUES ('4', '3', 'Siparişler', 'siparisler', '1', '0');
-INSERT INTO `panel_table` VALUES ('5', '0', 'İletişim', null, '0', '0');
-INSERT INTO `panel_table` VALUES ('6', '0', 'Şubeler', 'subeler', '0', '0');
+INSERT INTO `panel_table` VALUES ('2', '0', '[\"0\"]', 'İçerik Yönetimi', 'icerik-yonetimi', '0', '0', null);
+INSERT INTO `panel_table` VALUES ('6', '2', '[\"0\",\"2\"]', 'Sayfalar', 'sayfalar', '1', '0', null);
+INSERT INTO `panel_table` VALUES ('7', '0', '[\"0\"]', 'Mesajlar', 'mesajlar', '0', '0', null);
+INSERT INTO `panel_table` VALUES ('8', '0', '[\"0\"]', 'Ürün Yönetimi', 'urun-yonetimi', '0', '0', null);
+INSERT INTO `panel_table` VALUES ('9', '8', '[\"0\",\"8\"]', 'Ürünler', 'urunler', '1', '0', null);
+INSERT INTO `panel_table` VALUES ('10', '7', '[\"0\",\"7\"]', 'İletişim Mesajları', 'iletisim-mesajlari', '1', '0', null);
 
 -- ----------------------------
 -- Table structure for panel_table_column
@@ -124,27 +139,29 @@ CREATE TABLE `panel_table_column` (
   `panel_table_id` int(11) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `slug` varchar(255) DEFAULT NULL,
-  `panel_table_column_input_id` int(11) DEFAULT NULL,
-  `panel_table_column_type_id` int(255) DEFAULT NULL,
-  `type_length` varchar(50) DEFAULT NULL,
-  `type_default_value` varchar(255) DEFAULT NULL,
+  `panel_table_column_input_id` int(11) DEFAULT '0',
+  `panel_table_column_type_id` int(255) DEFAULT '0',
+  `type_length` varchar(50) DEFAULT '',
+  `type_default_value` varchar(255) DEFAULT '',
   `required` int(11) DEFAULT '0',
   `count` int(11) DEFAULT '0',
   `show_in_crud` int(11) DEFAULT '0',
+  `edit_form` int(11) DEFAULT '1',
+  `json_data_model` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel_table_column
 -- ----------------------------
-INSERT INTO `panel_table_column` VALUES ('1', '2', 'Başlık', 'baslik', '1', '1', '50', null, '0', '0', '0');
-INSERT INTO `panel_table_column` VALUES ('2', '2', 'Icerik', 'icerik', '7', '1', '1000', null, '0', '0', '0');
-INSERT INTO `panel_table_column` VALUES ('3', '6', 'Başlık', 'baslik', '1', '1', '255', null, '0', '2', '1');
-INSERT INTO `panel_table_column` VALUES ('4', '6', 'Telefon', 'telefon', '1', '1', '255', null, '0', '3', '1');
-INSERT INTO `panel_table_column` VALUES ('5', '6', 'E-Mail', 'email', '1', '1', '255', null, '0', '4', '1');
-INSERT INTO `panel_table_column` VALUES ('6', '6', 'Adres', 'adres', '1', '1', '255', null, '0', '5', '1');
-INSERT INTO `panel_table_column` VALUES ('7', '6', 'Id', 'id', '1', '2', '11', null, '0', '1', '1');
-INSERT INTO `panel_table_column` VALUES ('8', '6', 'Count', 'count', '1', '2', '11', null, '0', '6', '0');
+INSERT INTO `panel_table_column` VALUES ('5', '13', 'd1', null, '0', '0', '', '', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('6', '13', 'd2', null, '0', '0', '', '', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('7', '13', 'a2', null, '0', '0', '', '', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('10', '14', 'baslik', 'baslik', '1', '1', '255', '', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('11', '14', 'icerik', 'icerik', '7', '3', '', '', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('12', '14', 'durum', 'durum', '5', '2', '11', '0', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('13', '14', 'Siralama', 'siralama', '1', '2', '11', '0', '0', '0', '0', '1', null);
+INSERT INTO `panel_table_column` VALUES ('14', '6', 'Başlık', 'baslik', '1', '1', '255', '', '0', '0', '0', '1', null);
 
 -- ----------------------------
 -- Table structure for panel_table_column_input
@@ -154,12 +171,12 @@ CREATE TABLE `panel_table_column_input` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel_table_column_input
 -- ----------------------------
-INSERT INTO `panel_table_column_input` VALUES ('1', 'TextBox');
+INSERT INTO `panel_table_column_input` VALUES ('1', 'Text');
 INSERT INTO `panel_table_column_input` VALUES ('2', 'Select');
 INSERT INTO `panel_table_column_input` VALUES ('3', 'Picture');
 INSERT INTO `panel_table_column_input` VALUES ('4', 'Option');
@@ -173,6 +190,8 @@ INSERT INTO `panel_table_column_input` VALUES ('11', 'Resim Galerili JSON');
 INSERT INTO `panel_table_column_input` VALUES ('12', 'Dosya Tekli');
 INSERT INTO `panel_table_column_input` VALUES ('13', 'Dosya Listeli JSON');
 INSERT INTO `panel_table_column_input` VALUES ('14', 'JSON Liste Oluşturma Modülü');
+INSERT INTO `panel_table_column_input` VALUES ('15', 'MultiSelect CheckboxGroup JSON');
+INSERT INTO `panel_table_column_input` VALUES ('16', 'MultiSelect CheckboxGroup Coklu İlişki Table');
 
 -- ----------------------------
 -- Table structure for panel_table_column_type
@@ -182,73 +201,42 @@ CREATE TABLE `panel_table_column_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `default_value` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel_table_column_type
 -- ----------------------------
-INSERT INTO `panel_table_column_type` VALUES ('1', 'Varchar', '255');
-INSERT INTO `panel_table_column_type` VALUES ('2', 'Int', '11');
-INSERT INTO `panel_table_column_type` VALUES ('3', 'Text', '0');
-INSERT INTO `panel_table_column_type` VALUES ('4', 'Date', '0');
-INSERT INTO `panel_table_column_type` VALUES ('5', 'Datetime', '0');
+INSERT INTO `panel_table_column_type` VALUES ('1', 'Varchar', '255', 'varchar');
+INSERT INTO `panel_table_column_type` VALUES ('2', 'Int', '11', 'int');
+INSERT INTO `panel_table_column_type` VALUES ('3', 'Text', '0', 'text');
+INSERT INTO `panel_table_column_type` VALUES ('4', 'Date', '0', 'date');
+INSERT INTO `panel_table_column_type` VALUES ('5', 'Datetime', '0', 'datetime');
 
 -- ----------------------------
 -- Table structure for sayfalar
 -- ----------------------------
 DROP TABLE IF EXISTS `sayfalar`;
 CREATE TABLE `sayfalar` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content_id` int(11) DEFAULT NULL,
-  `language_id` int(11) DEFAULT NULL,
-  `baslik` varchar(255) DEFAULT NULL,
-  `count` int(11) DEFAULT NULL,
-  `icerik` varchar(1000) DEFAULT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `baslik` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sayfalar
 -- ----------------------------
-INSERT INTO `sayfalar` VALUES ('1', null, null, null, null, null);
 
 -- ----------------------------
--- Table structure for subeler
+-- Table structure for urunler
 -- ----------------------------
-DROP TABLE IF EXISTS `subeler`;
-CREATE TABLE `subeler` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `baslik` varchar(255) DEFAULT NULL,
-  `telefon` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `adres` varchar(255) DEFAULT NULL,
-  `count` int(11) DEFAULT NULL,
+DROP TABLE IF EXISTS `urunler`;
+CREATE TABLE `urunler` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of subeler
+-- Records of urunler
 -- ----------------------------
-INSERT INTO `subeler` VALUES ('1', 'US Tokat Şubesi', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', '1');
-INSERT INTO `subeler` VALUES ('2', 'asdf LOL', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('3', 'fasdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('4', 'asdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('5', 'sd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('6', 'dafd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('7', 'rfs', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('8', 'fsdfasd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('9', 'vxcvcasdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('10', 'bx', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('11', 'vbxcv', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('12', 'cvzxc', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('13', 'hdfg', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('14', 'dfghdfg', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('15', 'hdf', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('16', 'hd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('17', 'gh', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('18', 'fghdfrtyer', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('19', 'tyer', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('20', 'yeryj', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('21', 'hgj', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
-INSERT INTO `subeler` VALUES ('22', 'jdfgd', '02125415454', 'tokat@uydusoft.com', 'Tokat Devegörmez', null);
