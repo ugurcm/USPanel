@@ -43,29 +43,41 @@ export default function CrudForm (props) {
       const data = doAjax(
         appContext.api_url + 'ApiPanel/getFormData',
         'GET',
-        {id: parsed.id}
+        {id: parsed.id, parent: parsed.parent}
       );
       data.then((res)=>{
-        //console.log(res);
-        //return false;
-        
         const gelen = JSON.parse(res);
         if(gelen.formData){
-          //console.log(gelen.formData);
           if(!gelen.formData.parent_path){
-            //console.log("yok");
-            
-            //gelen.formData.parent_path = JSON.parse(gelen.formData.parent_path);
             gelen.formData.parent_path = ["0"];
           }
-          //console.log(gelen.formData);
-          
           setValues(gelen.formData);
           setPageReady(1);
         }
       })
     }
-    if(!parsed.id){
+    if(parsed.parent){
+      //console.log("parent var");
+      const data = doAjax(
+        appContext.api_url + 'ApiPanel/getParentPath',
+        'GET',
+        {parent: parsed.parent}
+      );
+      data.then((res)=>{
+        //console.log(res);
+        const gelen = JSON.parse(res);
+        if(gelen.formData.parentPath){
+          console.log(gelen.formData.parentPath);
+          
+          setValues({...values, parent_path: gelen.formData.parentPath, parent: parsed.parent});
+          setPageReady(1);
+        }
+      })
+
+    }else if(!parsed.id){
+      setPageReady(1);
+    }
+    if(!parsed.id && !parsed.parent){
       setPageReady(1);
     }
 
@@ -133,10 +145,13 @@ export default function CrudForm (props) {
   }
   const onChangeParent = (e, index) => {
     const value = e.target.value;
-    let newArr = values.parent_path;
+    const newArr = [...values.parent_path];
     newArr.length = index + 1;
     if(value){
       newArr.push(value);
+    }
+    if(newArr[newArr.length-1] == 0 && newArr.length > 1 ){
+      newArr.splice(-1,1);
     }
     setValues({...values, parent_path: newArr, parent: value});
   }

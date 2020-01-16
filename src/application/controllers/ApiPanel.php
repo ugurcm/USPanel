@@ -534,13 +534,33 @@ class ApiPanel extends CI_Controller {
     
     echo json_encode($data);
   }
+
+  public function getParentPath(){
+    $gets = $this->input->get();
+    $data = array();
+    $data['formData'] = array();
+    $liste = $this->PanelModel->findParents('panel_table', $gets['parent']);
+    if($liste){
+      foreach ($liste as $key => $value) {
+        $data['formData']['parentPath'][] = $value['parent'];
+      }
+    }
+    $data['formData']['parentPath'][] = $gets['parent'];
+    if(isset($data['formData']['parent_path']) && $data['formData']['parent_path'] && $data['formData']['parent_path'] != '[]'){
+      $data['formData']['parent_path'] = json_decode($data['formData']['parent_path'], true);
+    }
+    echo json_encode($data);
+    //print_r($liste);
+  }
+
+
   public function getFormData(){
     $gets = $this->input->get();
     //if(!$gets) return false;
     //if(!$gets['id']) return false;
 
     $data = array();
-    if(isset($gets['id']) && $gets['id']){
+    if($gets['id']){
       $this->db->select('pt.*');
       $this->db->from('panel_table pt');
       $this->db->where('pt.id', $gets['id']);
@@ -552,6 +572,7 @@ class ApiPanel extends CI_Controller {
         //$data['formData']['parent_path'] = array("0");
       }
     }
+  
     //$data['formData']['title'] = "ok then";
     //$data['formData']['parent_path'] = array("0", "13", "15", "16");
 
