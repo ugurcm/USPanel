@@ -14,8 +14,7 @@ const Home = props => {
   const appContext = useContext(AppContext);
 
   useEffect(() => {
-    tokenCheck({appContext});
-    loadSidebars({appContext});
+    
     
   },[]);
 

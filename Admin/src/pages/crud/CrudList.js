@@ -1,4 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
+import {useParams, withRouter, Link} from 'react-router-dom';
 import AppContext from '../../context/AppContext';
 import Swal from 'sweetalert2';
 
@@ -6,94 +7,192 @@ import doAjax from '../../libraries/doAjax';
 import TableRows from './TableRows';
 import TableControls from './TableControls'
 
-
 export default function CrudList (props) {
+  let { slug } = useParams();
+  //console.log(slug);
+  
+  return(
+    <CrudListComp slug={slug} />
+  )
+}
+
+function CrudListComp (props) {
+
+  const slug = props.slug;
+  //console.log(slug);
+  //return false;
+  
+  //let { slug } = useParams();  // props.match.params tada geliyor.
+  //console.log(slug);
+  // console.log(props);
+  
   const appContext = useContext(AppContext);
+  const [pageReady, setPageReady] = useState(0);
+  const [pageSlug, setPageSlug] = useState(0);
 
   const [pageData, setPageData] = useState({
-    panelTable: "Şubeler",
-    table: "subeler",
+    title: '',
+    pageTitle: '',
+    slug: slug,
+  })
+  const [crudData, setCrudData] = useState({
+    crudColumns: [],
+    //crudColumnSlugs: [],
     sayfaNo: 1, 
-    kacar: 30,
-    crudData: {
-      crudColumns: [],
-      crudColumnSlugs: [],
-      crudList: {
-        listData: [],
-        nereden: 0,
-        sayfaSayisi: 0,
-        toplam: 0
-      }
-    }
-  });
-  const refreshTable = () => {
-    const data = doAjax(
-      appContext.api_url + 'ApiUser/getCrudData',
-      'GET',
-      {
-        panelTable: pageData.panelTable,
-        table: pageData.table,
-        sayfaNo: pageData.sayfaNo,
-        kacar: pageData.kacar
-      }
-    );
-    data.then((res)=>{
-     
-      
-      const gelen = JSON.parse(res);
-      if(gelen.error){
-        Swal.fire({
-          icon: 'error',
-          title: 'Hata',
-          text: gelen.error,
-        })
-      }else{
-        setPageData({ ...pageData, crudData: gelen.crudData});
-      }
-      
-    })
-  }
-  const yenile = () => {
-    refreshTable();
-  }
+    kacar: 15,
+    nereden: 0,
+    sayfaSayisi: 0,
+    toplam: 0,
+  })
+  const [crudList, setCrudList] = useState([])
+  
+
+  useEffect(()=>{
+    getCrudData();
+  },[slug]);
   useEffect(()=>{
     refreshTable();
-  },[pageData.sayfaNo, pageData.kacar]);
+  },[crudData.sayfaNo, crudData.kacar, crudData.crudColumns]);
 
+  const getCrudData = () => {
+    const data = doAjax(
+      appContext.api_url + 'ApiCrudList/getCrudData',
+      'GET',
+      {tableSlug: slug,}
+    );
+    data.then((res)=>{
+      const gelen = JSON.parse(res);
+      setPageData(gelen.pageData);
+      setCrudData(
+        {...crudData, 
+          crudColumns: gelen.crudData.crudColumns,
+        }
+      );
+    })
+  }
+
+  const refreshTable = () => {
+    //console.log(pageReady);
+    
+    //if(pageReady == 1){
+    if(crudData.crudColumns.length){
+      //console.log(crudData);
+      
+      const data = doAjax(
+        appContext.api_url + 'ApiCrudList/getCrudList',
+        'GET',
+        {
+          tableSlug: pageData.slug,
+          sayfaNo: crudData.sayfaNo,
+          kacar: crudData.kacar,
+          crudColumns: (crudData.crudColumns),
+          nereden: crudData.nereden,
+          sayfaSayisi: crudData.sayfaSayisi,
+          toplam: crudData.toplam,
+        }
+      );
+      data.then((res)=>{
+        //console.log("refresh");
+        //console.log(res);
+        const gelen = JSON.parse(res);
+        //console.log(gelen.crudList);
+        
+        if(gelen.error){
+          Swal.fire({
+            icon: 'error',
+            title: 'Hata',
+            text: gelen.error,
+          })
+        }else{
+          //console.log(gelen);
+          
+          setCrudList(gelen.crudList)
+          //console.log(gelen.crudList);
+          
+          setCrudData({...crudData, ...gelen.crudData})
+        }
+        
+      })
+    }
+  }
+  
+  
+  const yenile = (e) => {
+    e.preventDefault();
+    refreshTable();
+  }
+  
   const crudGoNextPage = () => {
-    if(pageData.sayfaNo < pageData.crudData.crudList.sayfaSayisi){
-      setPageData({ ...pageData, sayfaNo: pageData.sayfaNo + 1 });
+    if(crudData.sayfaNo < crudData.sayfaSayisi){
+      setCrudData({...crudData, sayfaNo: crudData.sayfaNo + 1})
     }
   }
   const crudGoPrevPage = () => {
-    if(pageData.sayfaNo > 1){
-      setPageData({ ...pageData, sayfaNo: pageData.sayfaNo - 1 });
+    if(crudData.sayfaNo > 1){
+      setCrudData({...crudData, sayfaNo: crudData.sayfaNo - 1})
     }
   }
   const crudGoLastPage = () => {
-    setPageData({ ...pageData, sayfaNo: pageData.crudData.crudList.sayfaSayisi });
+    setCrudData({...crudData, sayfaNo: crudData.sayfaSayisi})
   }
   const crudGoFirstPage = () => {
-    setPageData({ ...pageData, sayfaNo: 1 });
+    setCrudData({...crudData, sayfaNo: 1})
   }
   const crudSayfaNoChange = (e) => {
-    setPageData({ ...pageData, sayfaNo: parseInt(e.target.value) });
+    setCrudData({...crudData, sayfaNo: parseInt(e.target.value) })
   }
   const kacarChange = (e) => {
-    setPageData({ ...pageData, kacar: parseInt(e.target.value) , sayfaNo: 1 });
+    setCrudData({...crudData, kacar: parseInt(e.target.value), sayfaNo: 1 })
   }
-  const CrudColumns = (props) => {
-    const items = props.pageData.crudData.crudColumns.map((value, key)=>
-      <th key={key}>{value.title}</th>
-    );
-    return(
-      <tr>{items}</tr>
-    )
-  }
-  const crudAdd = (e) => {
+
+  const deleteRow = (e, itemId) => {
     e.preventDefault();
-    props.history.push('crudForm');
+    let c = confirm('Seçilen satır silinecek. Emin misiniz?');
+    if(!c) return false;
+    const data = doAjax(
+      appContext.api_url + 'ApiCrudList/deleteRow',
+      'POST',
+      {
+        itemId: itemId,
+        tableSlug: slug
+      }
+    );
+    data.then((res)=>{
+      console.log(res);      
+      const gelen = JSON.parse(res);
+      if(gelen.sonuc == 'ok'){
+        Swal.fire({
+          icon: 'success',
+          title: 'İşlem Başarılı',
+          text: gelen.aciklama,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          timer:1000
+        })
+        refreshTable()
+      }
+    })
   }
+  
+
+
+  
+
+  const tableRowButtons = [
+    {
+      name: 'Düzenle',
+      type: 'LinkWidthId',
+      link: '/CrudForm/' + pageData.slug + '/',
+      icon: 'far fa-edit'
+    },
+    {
+      name: 'Sil',
+      type: 'ClickEvent',
+      link: '',
+      icon: 'fa fa-times',
+      eventFunction: deleteRow
+    }
+  ]
   
   return (
     <div className="page-content">      
@@ -101,17 +200,17 @@ export default function CrudList (props) {
         <div className="icon">
           <i className="fa fa-user"></i>
         </div>
-        <div className="desc">{pageData.panelTable}</div>
+        <div className="desc">{pageData.pageTitle}</div>
       </div>
       <div className="page-filter"></div>
       <div className="page-list">
         <div className="list-control">
           <div className="control-left">
             <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
-            <a href="#" onClick={crudAdd} className="addBtn">Ekle</a>
+            <Link to={'/CrudForm/' + pageData.slug + '/'} className="addBtn">Ekle</Link>
           </div>
           <div className="control-right">
-            <TableControls pageData={pageData} 
+            <TableControls crudData={crudData} 
               kacarChange={kacarChange} 
               crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
               crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
@@ -122,10 +221,14 @@ export default function CrudList (props) {
         <div className="list-table">          
           <table>
             <thead>
-              <CrudColumns pageData={pageData} />
+              <tr>
+                {crudData.crudColumns.map((value, key)=>
+                  <th key={key}>{value.title}</th>
+                )}
+              </tr>
             </thead>
             <tbody>
-              <TableRows pageData={pageData} />
+              <TableRows crudList={crudList} crudData={crudData} deleteRow={deleteRow} tableRowButtons={tableRowButtons} />
             </tbody>
           </table>
         </div>
@@ -133,10 +236,10 @@ export default function CrudList (props) {
         <div className="list-control bottom">
           <div className="control-left">
             <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
-            <a href="#" className="addBtn">Ekle </a>
+            <Link to={'/CrudForm/' + pageData.slug + '/'} className="addBtn">Ekle</Link>
           </div>
           <div className="control-right">
-            <TableControls pageData={pageData} 
+            <TableControls crudData={crudData} 
               kacarChange={kacarChange} 
               crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
               crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
@@ -149,3 +252,4 @@ export default function CrudList (props) {
     </div>
   )
 }
+

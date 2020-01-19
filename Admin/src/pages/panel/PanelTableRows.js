@@ -9,9 +9,11 @@ export default function PanelTableRows (props) {
   /*const deleteRow = (e, itemId = 0) => {
     props.deleteRow(e, itemId);
   }*/
-  let items = props.pageData.crudData.crudList.listData.map((item, key) =>
+  //console.log(props);
+  
+  let items = props.crudList.map((item, key) =>
     <tr key={key}>
-      {props.pageData.crudData.crudColumns.map((column,keym)=>{
+      {props.crudData.crudColumns.map((column,keym)=>{
         if(column.slug){
           return(<td key={keym}>{item[column.slug]}</td>)
         }
@@ -52,7 +54,7 @@ export default function PanelTableRows (props) {
       </td>
     </tr>
   )
-  if(props.pageData.crudData.crudList.listData.length <= 0){
+  if(props.crudList.length <= 0){
     //console.log("0 lan");
     items = <tr><td colSpan={10}>Kayıt Bulunamadı.</td></tr>
   }

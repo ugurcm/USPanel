@@ -2,6 +2,8 @@ require("@babel/polyfill");
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 var env = (process.env.NODE_ENV || 'development').trim();
@@ -11,7 +13,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'index_bundle.js',
-    publicPath: '/'  //react router dom linklerin çalışası için
+    publicPath: '/Admin/'  //react router dom linklerin çalışası için
   },
   module:{
     rules: [
@@ -26,17 +28,18 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
+        test: /\.s[ac]ss$/i,
         use: [
-          "style-loader", // creates style nodes from JS strings
-          "css-loader", // translates CSS into CommonJS
-          "sass-loader" // compiles Sass to CSS, using Node Sass by default
-        ]
+          // fallback to style-loader in development
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/,
         use: [
-          env !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+          MiniCssExtractPlugin.loader,
           "css-loader",
           "sass-loader"
         ]
@@ -78,17 +81,9 @@ module.exports = {
       $: 'jquery',
       jquery: 'jquery'
     }),
-    /*new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development', 
-      DEBUG: false,
-      base_url: 'http://localhost:8080/',
-      api_url: 'http://192.168.99.103:8081/',
-    })*/
-    
-  ],
-  devServer: {
-    historyApiFallback: true,
-    contentBase: './',
-    hot: true
-  }
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+  ]
 }

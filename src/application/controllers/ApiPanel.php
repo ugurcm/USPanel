@@ -15,13 +15,17 @@ class ApiPanel extends CI_Controller {
     $this->load->model('PanelModel');
     $this->load->dbforge();
 	}
+  public function panelComponentInit(){
+    $gelen = $this->input->post();
+    if(!$gelen) return false;
+    $panelTableId = $gelen['pageId'];
+    $data['sonuc'] = 'ok';
 
-	public function getPanelTableColumn(){
-    $gets = $this->input->get();
-    if(!$gets) return false;
-    //$data = $this->getTableList($gets);
-    //print_r($gets);
-    
+    $data['panelTable'] = $this->db->select('*')
+    ->from('panel_table pt')
+    ->where('pt.id', $panelTableId)
+    ->get()->row_array();
+
     $data['crudData']['crudColumns'] = array(
       array('title' => 'ID', 'slug' => 'id'),
       array('title' => 'Başlık', 'slug' => 'title'),
@@ -44,7 +48,37 @@ class ApiPanel extends CI_Controller {
       )
     );
 
-    $data['crudData']['crudList'] = $this->getTableList($gets, $data['crudData']['crudColumns'], $tableJoins);
+    echo json_encode($data);
+  }
+	public function getComponentList(){
+    $gets = $this->input->get();
+    if(!$gets) return false;
+    //$data = $this->getTableList($gets);
+    //print_r($gets);
+    
+    $crudColumns = array(
+      array('title' => 'ID', 'slug' => 'id'),
+      array('title' => 'Başlık', 'slug' => 'title'),
+      array('title' => 'İnput Türü', 'slug' => 'title', 'joinTable' => 'panel_table_column_input', 'as' => 'panel_table_column_input_title'),
+      array('title' => 'Kolon Tipi', 'slug' => 'title', 'joinTable' => 'panel_table_column_type', 'as' => 'panel_table_column_type_title'),
+      array('title' => 'Düzenle')
+    );
+    $tableJoins = array(
+      array(
+        'tableName' => 'panel_table_column_input',
+        'sourceCol' => 'id', 
+        'targetCol' => 'panel_table_column_input_id',
+        'selectSlug' => 'panel_table_column_input_title' 
+      ),
+      array(
+        'tableName' => 'panel_table_column_type',
+        'sourceCol' => 'id', 
+        'targetCol' => 'panel_table_column_type_id',
+        'selectSlug' => 'panel_table_column_type_title' 
+      )
+    );
+
+    $data = $this->getTableList($gets, $crudColumns, $tableJoins);
     echo json_encode($data);
   }
 
@@ -61,7 +95,7 @@ class ApiPanel extends CI_Controller {
 	public function getCrudData(){
     $gets = $this->input->get();
     if(!$gets) return false;
-    $data = $this->getTableList($gets);
+    //$data = $this->getTableList($gets);
     //print_r($data);
     
     $data['crudData']['crudColumns'] = array(
@@ -71,7 +105,24 @@ class ApiPanel extends CI_Controller {
       array('title' => 'Düzenle')
     );
     
-    $data['crudData']['crudList'] = $this->getTableList($gets);
+    //$data = $this->getTableList($gets, $data['crudData']['crudColumns']);
+    //$data['gets'] = $gets;
+    echo json_encode($data);
+  }
+  public function getCrudList(){
+    $gets = $this->input->get();
+    if(!$gets) return false;
+    //$data = $this->getTableList($gets);
+    //print_r($data);
+    
+    $data['crudData']['crudColumns'] = array(
+      array('title' => 'ID', 'slug' => 'id'),
+      array('title' => 'Başlık', 'slug' => 'title'),
+      array('title' => 'Tablo Adı', 'slug' => 'slug'),
+      array('title' => 'Düzenle')
+    );
+    
+    $data = $this->getTableList($gets);
     //$data['gets'] = $gets;
     echo json_encode($data);
   }
@@ -187,6 +238,7 @@ class ApiPanel extends CI_Controller {
         $this->db->where('t.'.$itemWhere['name'], $itemWhere['value']);
       }
     }
+    //print_r($gets);
     
     if(isset($gets['pageId'])){
       if($gets['pageId'] || $gets['pageId'] == 0){
@@ -197,14 +249,16 @@ class ApiPanel extends CI_Controller {
 
     $this->db->group_by("t.id");
     $this->db->limit($kacar, $nereden);
-    $data['listData'] = $this->db->get()->result_array();
+    $data['crudList'] = $this->db->get()->result_array();
     //print_r($gets);
-		$data['sayfaSayisi'] = $sSayisi;
+		$data['crudData']['sayfaSayisi'] = $sSayisi;
     //$data['kacar']   = $kacar;
-		$data['nereden'] = $nereden;
-		$data['toplam'] = $kayitSayisi['toplam'];
+		$data['crudData']['nereden'] = $nereden;
+		$data['crudData']['toplam'] = $kayitSayisi['toplam'];
 		//print_r($data);
-		//echo json_encode($data);
+    //echo json_encode($data);
+    
+    //$data['crudData']['crudColumns'] = $crudColumns;
 		return $data;
   }
   public function saveForm(){
@@ -418,6 +472,7 @@ class ApiPanel extends CI_Controller {
         $gonder['panel_table_column_type_id'] = $gelen['formData']['panel_table_column_type_id'];
         $gonder['type_length'] = $gelen['formData']['type_length'];
         $gonder['type_default_value'] = $gelen['formData']['type_default_value'];
+        $gonder['show_in_crud'] = $gelen['formData']['show_in_crud'];
         $this->db->insert('panel_table_column', $gonder);
       }
 
@@ -458,7 +513,8 @@ class ApiPanel extends CI_Controller {
         $gonder['panel_table_column_type_id'] = $gelen['formData']['panel_table_column_type_id'];
         $gonder['type_length'] = $gelen['formData']['type_length'];
         $gonder['type_default_value'] = $gelen['formData']['type_default_value'];
-
+        $gonder['show_in_crud'] = $gelen['formData']['show_in_crud'];
+        
         $this->db->where('id', $gelen['formId']);
         $this->db->update('panel_table_column', $gonder);
       }
@@ -649,21 +705,7 @@ class ApiPanel extends CI_Controller {
     echo json_encode($data);
   }
 
-  public function panelComponentInit(){
-    $gelen = $this->input->post();
-    if(!$gelen) return false;
-    $panelTableId = $gelen['pageId'];
-    $data['sonuc'] = 'ok';
-
-    $data['panelTable'] = $this->db->select('*')
-    ->from('panel_table pt')
-    ->where('pt.id', $panelTableId)
-    ->get()->row_array();
-
-
-
-    echo json_encode($data);
-  }
+  
 
 
 }

@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {BrowserRouter, Route, Switch, Link, Redirect} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Link, Redirect,withRouter } from 'react-router-dom';
 import AppContext from '../context/AppContext';
 
 import Sidebar from '../components/Sidebar';
@@ -16,12 +16,13 @@ const DashboardRoute = props => {
 
   useEffect(()=>{
     console.log("dashboard route yüklendi");
+    //console.log(props);
     
   },[])
 
   return(
     <div className="main">
-      <Sidebar />
+      <Sidebar {...props} />
       <div className="content">       
         <TopBar />       
         <div className="central">
@@ -31,5 +32,5 @@ const DashboardRoute = props => {
     </div>
   )
 }
-export default DashboardRoute;
+export default withRouter(DashboardRoute);
 

@@ -16,7 +16,7 @@ import CrudForm from '../pages/crud/CrudForm';
 import Modal from '../components/form/Modal'
 
 const App = props => {
-
+  
   let initUserData = {userName: "ugur cemil"};
   if(localStorage.getItem('userData')){
     initUserData = JSON.parse(localStorage.getItem('userData'));
@@ -50,7 +50,7 @@ const App = props => {
   })
   return(
     <AppContext.Provider value={ globalVars } >
-      <BrowserRouter>
+      <BrowserRouter basename={'/Admin'}>
         <React.Fragment>
           <Switch>
             <Route path="/" exact render={()=>
@@ -59,16 +59,20 @@ const App = props => {
             <Route path="/login" component={Login} />            
           </Switch>
           {userToken?
-            <DashboardRoute>          
+            <DashboardRoute >          
               <Switch>
-                <Route path="/home" component={Home} />
+                <Route exact path="/home" component={Home} />
                 <Route path="/panel" component={Panel} />
                 <Route path="/panel(/:id)" component={Panel} />
                 <Route path="/panelForm" component={PanelForm} />
                 <Route path="/panelComponent" component={PanelComponent} />
                 <Route path="/panelComponentForm" component={PanelComponentForm} />
-                <Route path="/crudList" component={CrudList} />
-                <Route path="/crudForm" component={CrudForm} />
+               
+                <Route path='/crudList/:slug' render={(props) => <CrudList {...props}/>}/>
+                <Route path='/crudForm' render={(props) => <CrudForm {...props}/>}/>
+                <Route path='/crudForm/:slug' render={(props) => <CrudForm {...props}/>}/>
+               
+                
               </Switch>
             </DashboardRoute>:null
           }

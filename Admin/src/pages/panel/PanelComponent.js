@@ -14,8 +14,8 @@ export default function PanelComponent (props) {
   const appContext = useContext(AppContext);
   const [panelId, setPanelId] = useState(0);
   const [pageName, setPageName] = useState('Panel Bileşenleri');
-  const [pageLoadComplete, setPageLoadComplete] = useState(0);
-  const [pageData, setPageData] = useState({
+  const [pageReady, setPageReady] = useState(0);
+  /*const [pageData, setPageData] = useState({
     table: "panel_table_column",
     sayfaNo: 1, 
     kacar: 30,
@@ -30,22 +30,49 @@ export default function PanelComponent (props) {
         toplam: 0
       }
     }
-  });
+  });*/
+  const [pageData, setPageData] = useState({
+    title: 'Panel Bileşenleri',
+    slug: 'panel_table_column',
+  })
+  const [crudData, setCrudData] = useState({
+    crudColumns: [],
+    //crudColumnSlugs: [],
+    sayfaNo: 1, 
+    kacar: 15,
+    nereden: 0,
+    sayfaSayisi: 0,
+    toplam: 0,
+    where: []
+  })
+  const [crudList, setCrudList] = useState([])
+
   const refreshTable = () => {
-    const data = doAjax(
-      appContext.api_url + 'ApiPanel/getPanelTableColumn',
-      'GET',
-      {
-        table: pageData.table,
-        sayfaNo: pageData.sayfaNo,
-        kacar: pageData.kacar,
-        where: pageData.where
-      }
-    );
-    data.then((res)=>{
-      const gelen = JSON.parse(res);
-      setPageData({ ...pageData, crudData: gelen.crudData});      
-    })    
+    if(pageReady == 1 && crudData.crudColumns.length){
+     
+      const data = doAjax(
+        appContext.api_url + 'ApiPanel/getComponentList',
+        'GET',
+        {
+          table: pageData.slug,
+          sayfaNo: crudData.sayfaNo,
+          kacar: crudData.kacar,
+          crudColumns: (crudData.crudColumns),
+          nereden: crudData.nereden,
+          sayfaSayisi: crudData.sayfaSayisi,
+          toplam: crudData.toplam,
+          where: crudData.where,
+          dede: 123123
+        }
+      );
+      data.then((res)=>{
+        const gelen = JSON.parse(res);
+        //console.log(gelen.crudData);
+        
+        setCrudList(gelen.crudList)
+        setCrudData({...crudData, ...gelen.crudData})      
+      })   
+    } 
   }
   const yenile = () => {
     refreshTable();
@@ -63,45 +90,57 @@ export default function PanelComponent (props) {
       );
       data.then((res)=>{    
         const gelen = JSON.parse(res);
+        //console.log(gelen);
+        
         setPageName(pageName + ' ( ' +gelen.panelTable.title + ' )')
-        let newWhereArr = pageData.where;
+        const newWhereArr = [...crudData.where];
         newWhereArr.push({name:'panel_table_id', 'value': gelen.panelTable.id});
-        setPageData({...pageData,  where: newWhereArr})
-        setPageLoadComplete(1);
+        //setCrudData({...crudData,  where: newWhereArr})
+        //console.log(newWhereArr);
+        
+        setPageReady(1);
+
+        setCrudData(
+          {...crudData, 
+            crudColumns: gelen.crudData.crudColumns,
+            where: newWhereArr
+            //crudColumnSlugs:gelen.crudData.crudColumnSlugs 
+          }
+        );
+
+
       })
     }
   },[]);
 
   useEffect(()=>{
-    if(pageLoadComplete == 1){
-      refreshTable();
-    }
-  },[pageData.sayfaNo, pageData.kacar, pageLoadComplete]);
+    refreshTable();
+  },[crudData.sayfaNo, crudData.kacar, crudData.crudColumns, crudData.where]);
 
   const crudGoNextPage = () => {
-    if(pageData.sayfaNo < pageData.crudData.crudList.sayfaSayisi){
-      setPageData({ ...pageData, sayfaNo: pageData.sayfaNo + 1 });
+    if(crudData.sayfaNo < crudData.sayfaSayisi){
+      setCrudData({...crudData, sayfaNo: crudData.sayfaNo + 1})
     }
   }
   const crudGoPrevPage = () => {
-    if(pageData.sayfaNo > 1){
-      setPageData({ ...pageData, sayfaNo: pageData.sayfaNo - 1 });
+    if(crudData.sayfaNo > 1){
+      setCrudData({...crudData, sayfaNo: crudData.sayfaNo - 1})
     }
   }
   const crudGoLastPage = () => {
-    setPageData({ ...pageData, sayfaNo: pageData.crudData.crudList.sayfaSayisi });
+    setCrudData({...crudData, sayfaNo: crudData.sayfaSayisi})
   }
   const crudGoFirstPage = () => {
-    setPageData({ ...pageData, sayfaNo: 1 });
+    setCrudData({...crudData, sayfaNo: 1})
   }
   const crudSayfaNoChange = (e) => {
-    setPageData({ ...pageData, sayfaNo: parseInt(e.target.value) });
+    setCrudData({...crudData, sayfaNo: parseInt(e.target.value) })
   }
   const kacarChange = (e) => {
-    setPageData({ ...pageData, kacar: parseInt(e.target.value) , sayfaNo: 1 });
+    setCrudData({...crudData, kacar: parseInt(e.target.value), sayfaNo: 1 })
   }
   const CrudColumns = (props) => {
-    const items = props.pageData.crudData.crudColumns.map((value, key)=>
+    const items = props.crudData.crudColumns.map((value, key)=>
       <th key={key}>{value.title}</th>
     );
     return(
@@ -141,7 +180,7 @@ export default function PanelComponent (props) {
   const tableRowButtons = [
     {
       name: 'Düzenle',
-      type: 'Link',
+      type: 'LinkWidthId',
       link: 'PanelComponentForm',
       icon: 'far fa-edit'
     },
@@ -171,21 +210,21 @@ export default function PanelComponent (props) {
             <Link to={'PanelComponentForm?panelId=' + panelId} className="addBtn">Ekle</Link>
           </div>
           <div className="control-right">
-            <TableControls pageData={pageData} 
+            <TableControls crudData={crudData} 
               kacarChange={kacarChange} 
               crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
               crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
               crudSayfaNoChange={crudSayfaNoChange}
-              />
+            />
           </div>
         </div>
         <div className="list-table">          
           <table>
             <thead>
-              <CrudColumns pageData={pageData} />
+              <CrudColumns crudData={crudData} />
             </thead>
             <tbody>
-              <TableRows pageData={pageData} deleteRow={deleteRow} tableRowButtons={tableRowButtons} />
+              <TableRows crudList={crudList} crudData={crudData} deleteRow={deleteRow} tableRowButtons={tableRowButtons} />
             </tbody>
           </table>
         </div>
@@ -196,12 +235,12 @@ export default function PanelComponent (props) {
             <Link to={'PanelComponentForm?panelId=' + panelId} className="addBtn">Ekle</Link>
           </div>
           <div className="control-right">
-            <TableControls pageData={pageData} 
+            <TableControls crudData={crudData} 
               kacarChange={kacarChange} 
               crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
               crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
               crudSayfaNoChange={crudSayfaNoChange}
-              />
+            />
           </div>
         </div>
 

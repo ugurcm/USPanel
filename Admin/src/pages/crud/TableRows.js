@@ -13,8 +13,9 @@ export default function TableRows (props) {
     if(!bProps.type){
       return;
     }
+    //console.log(bProps);
     
-    if(bProps.type == 'Link'){
+    if(bProps.type == 'LinkWidthId'){
       return(
         <Link to={bProps.link + '?id=' + item.id} className="btn-edit" data-tooltip={bProps.name}>
           {buttonProps.children}
@@ -42,27 +43,29 @@ export default function TableRows (props) {
     )
     return buttonCont; 
   }
-
-  let items = props.pageData.crudData.crudList.listData.map((item, key) =>
-    <tr key={key}>
-      {props.pageData.crudData.crudColumns.map((column,keym)=>{
-        if(column.slug){
-          return(<td key={keym}>{(item[column.as]?item[column.as]:item[column.slug])}</td>)
-        }
-      })}   
-      <td className="rowBtns">
-        <div className="editBtns">
-          <Buttons item={item} />
-        </div>
-      </td>
-    </tr>
-  )
-  if(props.pageData.crudData.crudList.listData.length <= 0){
-    items = <tr><td colSpan={10}>Kayıt Bulunamadı.</td></tr>
-  }  
+  //console.log(props);
+  //console.log(props.crudList.listData);
+  //return false;
+  
+  //<Buttons item={item} />
+  //console.log((props.crudList.length?'var':'yok'));
+  
   return(
     <React.Fragment>
-      {items}
+      {props.crudList.length?props.crudList.map((item, key) =>
+        <tr key={key}>
+          {props.crudData.crudColumns.map((column,keym)=>{
+            if(column.slug){
+              return(<td key={keym}>{(item[column.as]?item[column.as]:item[column.slug])}</td>)
+            }
+          })}   
+          <td className="rowBtns">
+            <div className="editBtns">
+              <Buttons item={item} />
+            </div>
+          </td>
+        </tr>
+      ):<tr><td colSpan={10}>Kayıt Bulunamadı.</td></tr>}
     </React.Fragment>
   )
 }

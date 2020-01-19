@@ -15,39 +15,63 @@ export default function Panel (props) {
   const [pageId, setPageId] = useState('');
   const [formLink, setFormLink] = useState('PanelForm');
   const [pageReady, setPageReady] = useState(0);
+
+
   const [pageData, setPageData] = useState({
-    panelTable: "Admin Panel Modülleri",
-    table: "panel_table",
+    title: 'Admin Panel Modülleri',
+    slug: 'panel_table',
+  })
+  const [crudData, setCrudData] = useState({
+    crudColumns: [],
+    //crudColumnSlugs: [],
     sayfaNo: 1, 
-    kacar: 30,
-    where: [],
-    crudData: {
-      crudColumns: [],
-      crudColumnSlugs: [],
-      crudList: {
-        listData: [],
-        nereden: 0,
-        sayfaSayisi: 0,
-        toplam: 0
-      }
-    }
-  });
+    kacar: 15,
+    nereden: 0,
+    sayfaSayisi: 0,
+    toplam: 0,
+  })
+  const [crudList, setCrudList] = useState([])
+
+
+  useEffect(()=>{
+    const data = doAjax(
+      appContext.api_url + 'ApiPanel/getCrudData',
+      'GET',
+      {tableSlug: pageData.slug,}
+    );
+    data.then((res)=>{
+      const gelen = JSON.parse(res);
+      //console.log(gelen.crudData);
+      //setPageData(gelen.pageData);
+      setCrudData(
+        {...crudData, 
+          crudColumns: gelen.crudData.crudColumns,
+          //crudColumnSlugs:gelen.crudData.crudColumnSlugs 
+        }
+      );
+    })
+    
+  },[]);
   const refreshTable = () => {
-    if(pageReady == 1){
+    if(pageReady == 1 && crudData.crudColumns.length){
       const data = doAjax(
-        appContext.api_url + 'ApiPanel/getCrudData',
+        appContext.api_url + 'ApiPanel/getCrudList',
         'GET',
         {
           pageId: pageId, 
-          table: pageData.table,
-          sayfaNo: pageData.sayfaNo,
-          kacar: pageData.kacar
+          table: pageData.slug,
+          sayfaNo: crudData.sayfaNo,
+          kacar: crudData.kacar,
+          crudColumns: (crudData.crudColumns),
+          nereden: crudData.nereden,
+          sayfaSayisi: crudData.sayfaSayisi,
+          toplam: crudData.toplam,
         }
       );
       data.then((res)=>{
-        //console.log(res);      
         const gelen = JSON.parse(res);
-        setPageData({ ...pageData, crudData: gelen.crudData});
+        setCrudList(gelen.crudList)
+        setCrudData({...crudData, ...gelen.crudData})       
       })
     }
   }
@@ -59,7 +83,7 @@ export default function Panel (props) {
     e.preventDefault();
     const data = doAjax(
       appContext.api_url + 'ApiPanel/findPageParent',
-      'GET',{pageId: pageId, table: pageData.table }
+      'GET',{pageId: pageId, table: pageData.slug }
     );
     data.then((res)=>{
       //console.log(res);      
@@ -94,32 +118,32 @@ export default function Panel (props) {
   })
   useEffect(()=>{
     refreshTable();
-  },[pageData.sayfaNo, pageData.kacar, pageId]);
+  },[crudData.sayfaNo, crudData.kacar, crudData.crudColumns, pageId]);
 
   const crudGoNextPage = () => {
-    if(pageData.sayfaNo < pageData.crudData.crudList.sayfaSayisi){
-      setPageData({ ...pageData, sayfaNo: pageData.sayfaNo + 1 });
+    if(crudData.sayfaNo < crudData.sayfaSayisi){
+      setCrudData({...crudData, sayfaNo: crudData.sayfaNo + 1})
     }
   }
   const crudGoPrevPage = () => {
-    if(pageData.sayfaNo > 1){
-      setPageData({ ...pageData, sayfaNo: pageData.sayfaNo - 1 });
+    if(crudData.sayfaNo > 1){
+      setCrudData({...crudData, sayfaNo: crudData.sayfaNo - 1})
     }
   }
   const crudGoLastPage = () => {
-    setPageData({ ...pageData, sayfaNo: pageData.crudData.crudList.sayfaSayisi });
+    setCrudData({...crudData, sayfaNo: crudData.sayfaSayisi})
   }
   const crudGoFirstPage = () => {
-    setPageData({ ...pageData, sayfaNo: 1 });
+    setCrudData({...crudData, sayfaNo: 1})
   }
   const crudSayfaNoChange = (e) => {
-    setPageData({ ...pageData, sayfaNo: parseInt(e.target.value) });
+    setCrudData({...crudData, sayfaNo: parseInt(e.target.value) })
   }
   const kacarChange = (e) => {
-    setPageData({ ...pageData, kacar: parseInt(e.target.value) , sayfaNo: 1 });
+    setCrudData({...crudData, kacar: parseInt(e.target.value), sayfaNo: 1 })
   }
   const CrudColumns = (props) => {
-    const items = props.pageData.crudData.crudColumns.map((value, key)=>
+    const items = props.crudData.crudColumns.map((value, key)=>
       <th key={key}>{value.title}</th>
     );
     return(
@@ -163,7 +187,7 @@ export default function Panel (props) {
         <div className="icon">
           <i className="fa fa-user"></i>
         </div>
-        <div className="desc">{pageData.panelTable}</div>
+        <div className="desc">{pageData.title}</div>
       </div>
       <div className="page-filter"></div>
       <div className="page-list">
@@ -175,21 +199,22 @@ export default function Panel (props) {
             
           </div>
           <div className="control-right">
-            <TableControls pageData={pageData} 
+            <TableControls crudData={crudData} 
               kacarChange={kacarChange} 
               crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
               crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
               crudSayfaNoChange={crudSayfaNoChange}
-              />
+            />  
           </div>
         </div>
         <div className="list-table">          
           <table>
             <thead>
-              <CrudColumns pageData={pageData} />
+              <CrudColumns crudData={crudData} />
             </thead>
             <tbody>
-              <PanelTableRows pageData={pageData} deleteRow={deleteRow} />
+              <PanelTableRows crudList={crudList} crudData={crudData} deleteRow={deleteRow} />
+             
             </tbody>
           </table>
         </div>
@@ -200,12 +225,12 @@ export default function Panel (props) {
             <Link to={formLink} className="addBtn">Ekle</Link>
           </div>
           <div className="control-right">
-            <TableControls pageData={pageData} 
+            <TableControls crudData={crudData} 
               kacarChange={kacarChange} 
               crudGoFirstPage={crudGoFirstPage} crudGoPrevPage={crudGoPrevPage}
               crudGoNextPage={crudGoNextPage} crudGoLastPage={crudGoLastPage} 
               crudSayfaNoChange={crudSayfaNoChange}
-              />
+            />
           </div>
         </div>
 

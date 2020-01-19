@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",
-    "build": "webpack --mode production"
+    "build": "webpack --mode development --config webpack.prod.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,12 +18,14 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.1",
     "dotenv-webpack": "^1.7.0",
     "dropzone": "^5.5.1",
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.4.1",
+    "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.13.0",
     "popper.js": "^1.16.0",
     "prop-types": "^15.7.2",
@@ -35,7 +37,8 @@
     "sweetalert2": "^9.4.3",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "npm-check-updates": "^3.2.2",

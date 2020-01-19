@@ -3,10 +3,11 @@ import AppContext from '../../context/AppContext';
 
 import './Login.scss'
 import Swal from 'sweetalert2';
+import Logo from '../../assets/img/logo.png';
 
 const Login = props => {
   const appContext = useContext(AppContext);
-  //console.log(appContext);
+  console.log(appContext);
   const [values, setValues] = useState({userName:"", password:""});
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
@@ -74,7 +75,7 @@ const Login = props => {
       
       <div className="form">
         <div className="logo">
-          <img src={appContext.base_url + '/src/assets/img/logo.png'} alt="" />
+          <img src={Logo} alt="" />
         </div>
         <div className="head">
           <h4>Hoşgeldiniz.</h4>

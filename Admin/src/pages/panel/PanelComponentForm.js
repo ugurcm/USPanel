@@ -32,6 +32,7 @@ export default function PanelComponentForm (props) {
     panel_table_column_type_id: '',
     type_length: '',
     type_default_value: '',
+    show_in_crud: 0,
   });
   const [panelTable, setPanelTable] = useState({});
   const [panelTableColumnInputs, setPanelTableColumnInputs] = useState([]);
@@ -203,6 +204,18 @@ export default function PanelComponentForm (props) {
               <div className="input-text">
                 <Text name={'type_default_value'} value={values.type_default_value} onChange={onChange} />
               </div>
+            </div>
+          </div>
+
+          <div className="frow">
+            <div className="flabel">
+              Crudda Gözüksün mü?
+            </div>
+            <div className="fval">
+              <div className="radio-cont">
+                <Radio name={'show_in_crud'} value={'0'} checkedValue={values.show_in_crud} onChange={onChange} label={'Hayır - Gözükmesin'}/>   
+                <Radio name={'show_in_crud'} value={'1'} checkedValue={values.show_in_crud} onChange={onChange} label={'Evet - Gözüksün'}/>    
+              </div>      
             </div>
           </div>
 

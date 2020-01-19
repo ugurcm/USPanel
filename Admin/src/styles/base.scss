@@ -450,13 +450,13 @@ label{
   background-color: #fff;
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.14);
   overflow: hidden;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
   .page-title{
     display: flex;
     align-items: center;
     /* justify-content: center; */
-    padding: 1px 12px 0px 12px;
+    padding: 3px 12px 2px 12px;
     color: #252525;
     margin-bottom: 10px;
     background: #f2f1f2;
@@ -466,9 +466,12 @@ label{
     font-weight: 500;
     letter-spacing: -0.4px;
     font-size: 20px;
-    .icon{}
+    .icon{
+      display: none;
+    }
     .desc{
-      padding-left: 10px;
+      padding-left: 0px;
+      font-size: 17px;
     }
   }
   .page-filter{}
