@@ -11,3 +11,4 @@
 2- Admin/.env dosyasınıda buna göre güncellemek gerekir.
 3- webpack prodda publicPath: /Admin/ olarak girilecektir, klasörün ismine göre.
 4- publicPathın anlamı hangi klasörde çalışacak, development ta / ta çalışabilir ancak productionda /Admin olmalıdır.
+5- baştaki leading slash /klasor , sondaki ise trailin slash /klasor/

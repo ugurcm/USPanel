@@ -33,14 +33,19 @@ class ApiAdmin extends CI_Controller {
 		//print_r($liste);
 
 		
-
+		$tree = array();
 
 		$new = array();
 		foreach ($liste as $a){
 				$new[$a['parent']][] = $a;
 		}
-		$tree = $this->createTree($new, $new[0]);
+		if($new){
+			$tree = $this->createTree($new, $new[0]);
+		}
 		//print_r($tree);
+		/*if(empty($tree)){
+			$tree = array();
+		}*/
 
 		echo json_encode($tree);
 		

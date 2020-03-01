@@ -6,6 +6,22 @@ class PanelModel extends CI_Model {
 		$this->load->helper(['jwt', 'authorization']);
   }
   
+  function search($array, $key, $value){
+      $results = array();
+
+      if (is_array($array)) {
+          if (isset($array[$key]) && $array[$key] == $value) {
+              $results[] = $array;
+          }
+
+          foreach ($array as $subarray) {
+              $results = array_merge($results, search($subarray, $key, $value));
+          }
+      }
+
+      return $results;
+  }
+  
   function temizle($str, $options = array()) {
       // Make sure string is in UTF-8 and strip invalid UTF-8 characters
       $str = mb_convert_encoding((string)$str, 'UTF-8', mb_list_encodings());
@@ -103,7 +119,7 @@ class PanelModel extends CI_Model {
       return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
   }
 
-  function findParents($tableName = '', $parentId = 0,$count = 0, $reset = true) {
+  function findParents($tableName = '', $parentId = 0, $count = 0, $parentColumnName = 'parent', $reset = true) {
       static $breadcrumbs;
       if ($reset == true) {
           $breadcrumbs = array();
@@ -113,12 +129,18 @@ class PanelModel extends CI_Model {
       if($q->num_rows()){
         foreach ($q->result_array() as $key => $value) {
           $breadcrumbs[] = $value;
-          $this->findParents($tableName, $value['parent'], $count, false);
+          //echo $parentColumnName;
+          //echo "ic-";
+          //echo $tableName.' '.$value[$parentColumnName].' '.$count.' '.$parentColumnName;
+          $this->findParents($tableName, $value[$parentColumnName], $count, $parentColumnName, false);
         }
       }
       if($breadcrumbs)$sonuc = array_reverse($breadcrumbs);
       return @$sonuc;
   }
 
+
+
+  
 
 }

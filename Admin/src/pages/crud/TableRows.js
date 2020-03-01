@@ -3,10 +3,16 @@ import {Link} from 'react-router-dom';
 import AppContext from '../../context/AppContext';
 import Swal from 'sweetalert2';
 
+import AktifPasif from './listComponents/AktifPasif';
 
 export default function TableRows (props) {
   //console.log(props.pageData.crudData.crudColumns);
+  //console.log(props);
   
+  const listComponents = {
+    'AktifPasif': AktifPasif,
+  }
+
   const CustomButton = (buttonProps) => {
     const bProps = buttonProps.buttonProps;
     const {item} = buttonProps;
@@ -43,21 +49,33 @@ export default function TableRows (props) {
     )
     return buttonCont; 
   }
-  //console.log(props);
-  //console.log(props.crudList.listData);
-  //return false;
-  
-  //<Buttons item={item} />
-  //console.log((props.crudList.length?'var':'yok'));
-  
+
+
+
   return(
     <React.Fragment>
       {props.crudList.length?props.crudList.map((item, key) =>
+        
         <tr key={key}>
           {props.crudData.crudColumns.map((column,keym)=>{
-            if(column.slug){
-              return(<td key={keym}>{(item[column.as]?item[column.as]:item[column.slug])}</td>)
+            if(column.componentName == 'AktifPasif'){
+              column.listComponent = column.componentName;
             }
+            if(column.listComponent){
+              let value = (item[column.as]?item[column.as]:item[column.slug]);
+              const SecilenComponent = listComponents[column.listComponent];
+              return(<td key={keym}><SecilenComponent column={column} value={value} tableName={props.tableName} row={item} /></td>)
+            }else{
+              if(column.slug){
+                let yazi = (item[column.as]?item[column.as]:item[column.slug]);
+                if(column.panel_table_column_input_id == 8){
+                  yazi = <Link to={'/CrudList/' + column.tableName + '?id=' + item.id }>{column.title}</Link>
+                }              
+                return(<td key={keym}>{yazi}</td>)
+              }
+            }
+            
+            
           })}   
           <td className="rowBtns">
             <div className="editBtns">
@@ -65,6 +83,7 @@ export default function TableRows (props) {
             </div>
           </td>
         </tr>
+         
       ):<tr><td colSpan={10}>Kayıt Bulunamadı.</td></tr>}
     </React.Fragment>
   )

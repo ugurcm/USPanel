@@ -44,26 +44,63 @@ class ApiCrudList extends CI_Controller {
 			$data['error'] = 'Panel Tablo Bulunamadı';
 		}
 		if($panelTable){
-			$this->db->select('ptc.id, ptc.title, ptc.slug');
+      $this->db->select('ptc.id, ptc.title, ptc.slug, 
+      pt.slug tableName, 
+      ptc.panel_table_column_input_id,
+      ptc.relation_type_id, ptc.relation_panel_table_id,
+      ptc.relation_panel_table_column_slug as, ptj.slug joinTable,
+      ptci.componentName componentName');
 			$this->db->from('panel_table_column ptc');
+			$this->db->join('panel_table pt', 'pt.id = ptc.panel_table_id', 'left');
+			$this->db->join('panel_table ptj', 'ptj.id = ptc.relation_panel_table_id', 'left');
+			$this->db->join('panel_table_column_input ptci', 'ptci.id = ptc.panel_table_column_input_id', 'left');
 			$this->db->where('ptc.panel_table_id', $panelTable['id']);
 			$this->db->where('ptc.show_in_crud', 1);
       $this->db->order_by('ptc.count', 'asc');
       $tabloKolonlar = $this->db->get()->result_array();
 
       $data['crudData']['crudColumns'] = array();
-			$data['crudData']['crudColumns'][] = array('title' => 'Id', 'slug' => 'id');
+			//$data['crudData']['crudColumns'][] = array('title' => 'Id', 'slug' => 'id');
 			if($tabloKolonlar){
         foreach ($tabloKolonlar as $keyt => $satir) {
+          //$data['crudData']['crudColumns'][] = $satir;
+          if($satir['relation_type_id'] == 2){
+            
+            /*$this->db->select('pt.*');
+            $this->db->from('panel_table pt');
+            $this->db->where('pt.id', $satir['relation_panel_table_id']);
+            $relationPanelTable = $this->db->get()->row_array();
+            
+            //print_r($relationPanelTable);
+            //$satir['relationRow'] = $relationPanelTable;
+            if($relationPanelTable){
+              $satir['joinTable'] = $relationPanelTable['slug'];
+              //$satir['as'] = $satir['relation_panel_table_slug'];
+            }*/
+
+
+            /*if($relationPanelTable){
+              
+              $this->db->select('t.*');
+              $this->db->from($relationPanelTable['slug'].' t');  
+              $satir['relationList'] = $this->db->get()->result_array();
+            }*/
+
+
+
+
+            
+          }
+          //print_r($satir);
           $data['crudData']['crudColumns'][] = $satir;
         }
       }
 			$data['crudData']['crudColumns'][] = array('title' => 'İşlemler');
 		}
 		echo json_encode($data);
-	}
-
-	public function getCrudList(){
+  }
+  
+  public function getCrudList(){
 		$gets = $this->input->get();
 
 		$data = array();
@@ -78,6 +115,7 @@ class ApiCrudList extends CI_Controller {
 			//return false;
 		}
 		$tableListData = array();
+		$tableListData['pageData'] = $gets['pageData'];
 		$tableListData['table'] = $gets['tableSlug'];
 		$tableListData['sayfaNo'] = $gets['sayfaNo'];
 		$tableListData['kacar'] = $gets['kacar'];
@@ -86,11 +124,120 @@ class ApiCrudList extends CI_Controller {
 		$tableListData['toplam'] = $gets['toplam'];
 		$tableListData['selectColumns'] = $gets['crudColumns'];
 		//print_r($tableListData);
-		$data = $this->getTableList($tableListData,$gets['crudColumns']);
+    //print_r($gets['crudColumns']);
+    
+    $tableJoins = array();
+    if($gets['crudColumns']){
+      foreach ($gets['crudColumns'] as $key => $value) {
+        $item = array();
+        if(!empty($value['joinTable']) && !empty($value['tableName'])){
+          $item['tableName'] = $value['tableName'];
+          $item['sourceCol'] = $value['slug'];
+          $item['targetTable'] = $value['joinTable'];
+          $item['targetCol'] = $value['as'];
+          $item['selectSlug'] = $item['sourceCol'].'_'.$item['targetCol'];
+          $tableJoins []=$item;
+        }
+        /*$item['sourceCol'] = $value['slug'];
+        $item['targetCol'] = $value['slug'];
+        $item['selectSlug'] = $value['slug'];*/
+        
+      }
+    }
+    //print_r($tableJoins);
+    /*$tableJoins = array(
+      array(
+        'tableName' => 'panel_table_column_input',
+        'sourceCol' => 'id', 
+        'targetCol' => 'panel_table_column_input_id',
+        'selectSlug' => 'panel_table_column_input_title' 
+      ),
+      array(
+        'tableName' => 'panel_table_column_type',
+        'sourceCol' => 'id', 
+        'targetCol' => 'panel_table_column_type_id',
+        'selectSlug' => 'panel_table_column_type_title' 
+      )
+    );*/
+
+    //print_r($tableListData);
+    $parent = '';
+    if(!empty($tableListData['selectColumns'])){
+      foreach ($tableListData['selectColumns'] as $key => $value) {
+        if(!empty($value['panel_table_column_input_id'])){
+          if($value['panel_table_column_input_id'] == 8){
+            $parent = $value;
+          }
+        }
+        
+      }
+    }
+    //print_r($tableListData['selectColumns']);
+    //print_r($parent);
+    //print_r($gets);
+    /*$whereItem = array(
+      array(
+        'name' => 'id',
+        'value' => '2'
+      )
+    );*/
+    //print_r($gets);
+    //echo $gets['pageId'];
+    $parentId = 0;
+
+    if($gets['pageId']){
+      $parentId = $gets['pageId'];
+    }
+
+    if($parent){
+      //print_r($parent);
+      //echo "parent var";
+      //print_r($parent);
+      $whereItem = array(
+        array(
+          'name' => $parent['slug'],
+          'value' => $parentId
+        )
+      );
+      $tableListData['where'] = $whereItem;
+    }
+
+    //print_r($parent);
+
+    //print_r($gets);
+    //print_r($whereItem);
+
+		$data = $this->getTableList($tableListData,$gets['crudColumns'],$tableJoins);
     
 
 		echo json_encode($data);
-	}
+  }
+  
+
+  public function findPageParent(){
+    $gets = $this->input->get();
+    if(!$gets) return false;
+    $data['gets'] = $gets;
+    $parent = '';
+    if(!empty($gets['crudColumns'])){
+      foreach ($gets['crudColumns'] as $key => $value) {
+        if(!empty($value['panel_table_column_input_id'])){
+          if($value['panel_table_column_input_id'] == 8){
+            $parent = $value;
+          }
+        }
+        
+      }
+    }
+    $data['parent'] = $parent;
+    $this->db->select('t.*');
+    $this->db->from($gets['table'].' t');
+    $this->db->where('t.id', $gets['pageId']);
+    $data['secilenPage'] = $this->db->get()->row_array();
+    echo json_encode($data);
+  }
+  
+	
 
 	public function getTableList($gets = array(), $crudColumns = array(), $tableJoins = array()){
 		//$gets = $this->input->get();
@@ -130,6 +277,12 @@ class ApiCrudList extends CI_Controller {
       //$gets['pageId'] = 0;
     }
 
+    /*$groupBy = 't.id';
+    if($gets['pageData']['language_active'] == 1){
+      //$groupBy = 't.content_id';
+    }*/
+
+
     //print_r($gets);
     
     $selectStr = '';
@@ -143,10 +296,10 @@ class ApiCrudList extends CI_Controller {
     $this->db->from($gets['table'] . ' t');
     if($tableJoins){
       foreach ($tableJoins as $keyj => $joinRow) {
-        //echo $joinRow['tableName'].' '.$joinRow['tableName'], $joinRow['tableName'].'.'.$joinRow['sourceCol'].'= t.'.$joinRow['targetCol'],'left';
+        //echo $joinRow['targetTable'].' '.$joinRow['targetTable'], $joinRow['targetTable'].'.'.$joinRow['sourceCol'].'= t.'.$joinRow['sourceCol'],'left';
 
         //echo '-------------\n';
-        $this->db->join($joinRow['tableName'].' '.$joinRow['tableName'], $joinRow['tableName'].'.'.$joinRow['sourceCol'].'= t.'.$joinRow['targetCol'],'left');
+        $this->db->join($joinRow['targetTable'].' '.$joinRow['targetTable'], $joinRow['targetTable'].'.id = t.'.$joinRow['sourceCol'],'left');
       }
     }
     if(isset($gets['where']) && $gets['where']){
@@ -159,47 +312,37 @@ class ApiCrudList extends CI_Controller {
         $this->db->where('t.parent', $gets['pageId']);
       }      
     }
+    if($gets['pageData']['language_active'] == 1){
+      //$groupBy = 't.content_id';
+      $this->db->where('t.language_id', 1);
+    }
 
-    
+    $this->db->group_by('t.id');
     $kayitSayisi = $this->db->get()->row_array();
 
 
     $sSayisi = ceil($kayitSayisi['toplam'] / $kacar);
     $nereden = ($sayfaNo * $kacar) - $kacar;
 		
-    //print_r($crudColumns);
     $dbSelectStr = '';
     if($crudColumns){
       foreach ($crudColumns as $keyc => $valuec) {
-        //print_r($valuec);
-        if(isset($valuec['slug']) && $valuec['slug']){
+        if(!empty($valuec['slug'])){
           $selectedTable = 't';
-          
-          if(isset($valuec['joinTable'])){
-            $selectedTable = $valuec['joinTable'];
-            $dbSelectStr .= $selectedTable.'.'.$valuec['slug'].' as '.$valuec['as'].', ';
-          }else{
-            $dbSelectStr .= $selectedTable.'.'.$valuec['slug'].', ';
+          if(!empty($valuec['joinTable'])){
+            $dbSelectStr .= $valuec['joinTable'].'.'.$valuec['as'].' as '.$valuec['as'].', ';//.'_'.$valuec['as'].', '
           }
-
-          //$dbSelectStr.= $selectedTable.'.'.$valuec['slug'].' as '.$valuec['as'];
+          $dbSelectStr .= $selectedTable.'.'.$valuec['slug'].', ';
         }
       }
     }
-
     //echo $dbSelectStr;
-		//echo '----';
-		//echo $gets['table'];
-    $this->db->select($dbSelectStr);
+    $this->db->select($dbSelectStr.'');
     $this->db->from($gets['table'] . ' t');
 
-    //print_r($tableJoins);
     if($tableJoins){
       foreach ($tableJoins as $keyj => $joinRow) {
-        //echo $joinRow['tableName'].' '.$joinRow['tableName'], $joinRow['tableName'].'.'.$joinRow['sourceCol'].'= t.'.$joinRow['targetCol'],'left';
-
-        //echo '-------------\n';
-        $this->db->join($joinRow['tableName'].' '.$joinRow['tableName'], $joinRow['tableName'].'.'.$joinRow['sourceCol'].'= t.'.$joinRow['targetCol'],'left');
+        $this->db->join($joinRow['targetTable'].' '.$joinRow['targetTable'], $joinRow['targetTable'].'.id = t.'.$joinRow['sourceCol'],'left');
       }
     }
     if(isset($gets['where']) && $gets['where']){
@@ -214,29 +357,89 @@ class ApiCrudList extends CI_Controller {
       }      
     }
 
-
-    $this->db->group_by("t.id");
+    //$this->db->where('t.language_id', 1);
+    
+    //$this->db->group_by(array('t.id', 't.content_id'));
+    if($gets['pageData']['language_active'] == 1){
+      $this->db->where('t.language_id', 1);
+    }
+    
+    $this->db->group_by('t.id');
     $this->db->limit($kacar, $nereden);
     $data['crudList'] = $this->db->get()->result_array();
-    //print_r($gets);
 		$data['crudData']['sayfaSayisi'] = $sSayisi;
-    //$data['kacar']   = $kacar;
 		$data['crudData']['nereden'] = $nereden;
     $data['crudData']['toplam'] = $kayitSayisi['toplam'];
     
-    //$data['crudData']['sayfaNo'] = $sayfaNo;
-    //$data['crudData']['kacar'] = $kacar;
-    //$data['toplam']
-    /*
-    sayfaNo: 1, 
-    kacar: 30,
-    listData: [],
-    nereden: 0,
-    sayfaSayisi: 0,
-    toplam: 0,
-    */
-		//print_r($data);
-		//echo json_encode($data);
+
+    if($data['crudList']){
+      foreach ($data['crudList'] as $keyList => $valueList) {
+        if($valueList){
+          foreach ($valueList as $key => $value) {
+            if($crudColumns){
+              foreach ($crudColumns as $keyc => $column) {
+                if(!empty($column['slug'])){
+                  if($key == $column['slug'] && $column['panel_table_column_input_id'] == 17){
+                    /*$liste = '';
+                    if($value){
+                      $values = json_decode($value, true);
+                      $listeYazisi = '';
+                      $data['crudList'][$keyList][$key] = '';
+                      foreach ($values as $icListe => $listeItem) {
+                        $data['crudList'][$keyList][$key] .= $listeItem['title'].($icListe+1 < count($values)?', ':'');
+                      }
+                    }*/
+
+                    //print_r($valueList);
+                    //print_r($column);
+                  
+                      $itemler = array();
+                      $cokluTableAdi = $column['tableName'].'_to_'.$column['joinTable'];
+                      $mevcutTableId = $column['tableName'].'_id';
+                      
+                      $this->db->select('*');
+                      $this->db->where($mevcutTableId, $valueList['id']);
+                      $this->db->from($cokluTableAdi);
+                      $liste = $this->db->get()->result_array();
+                      //print_r($liste);
+                      if($liste){
+                        foreach ($liste as $key => $value) {
+                          $this->db->select('t.'.$column['as'].' title');
+                          $this->db->from($column['joinTable'].' t');
+                          $this->db->where('t.id', $value[$column['joinTable'].'_id']);
+                          $item = $this->db->get()->row_array();
+                          //print_r($item);
+                          if($item){
+                            $itemler []= $item;
+                          }
+                        }
+                      }
+                      $listeYazisi = '';
+                      $data['crudList'][$keyList][$column['slug']] = '';
+                      foreach ($itemler as $icListe => $listeItem) {
+                        $data['crudList'][$keyList][$column['slug']] .= $listeItem['title'].($icListe+1 < count($itemler)?', ':'');
+                      }
+
+                      //print_r($itemler);
+
+                      //$data['crudList'][$keyList][$key] = $itemler;
+                      
+                      //$data['formData'][$column['slug']] = $itemler;
+               
+
+
+
+
+                  }
+                }
+               
+              }
+            }
+          }
+        }
+      }
+    }
+
 		return $data;
   }
 

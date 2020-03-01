@@ -8,10 +8,12 @@ export default function tokenCheck (props) {
     appContext.api_url + 'ApiAdmin/loadSidebars','GET',{}
   );
   data.then((res)=>{
-    //console.log(res);      
+    //console.log(res);  
+  
     const gelen = JSON.parse(res);
     //console.log(gelen);
     appContext.setSidebarData(gelen);
+  
   })
 
 

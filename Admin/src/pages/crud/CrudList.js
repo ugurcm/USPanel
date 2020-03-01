@@ -6,13 +6,32 @@ import Swal from 'sweetalert2';
 import doAjax from '../../libraries/doAjax';
 import TableRows from './TableRows';
 import TableControls from './TableControls'
+import queryString from 'query-string';
+
 
 export default function CrudList (props) {
+  const [pageId, setPageId] = useState(0);
+  
   let { slug } = useParams();
   //console.log(slug);
+  //console.log(slug);
+  useEffect(()=>{
+    const parsed = queryString.parse(location.search);
+    if(!parsed.id){
+      //setPageReady(1);
+      setPageId(0);
+      //console.log("sıfırlandı");
+      
+    }
+    if(parsed.id){
+      //setPageReady(1);
+      setPageId(parsed.id);
+      //setFormLink('PanelForm?parent=' + parsed.id);
+    }
+  })
   
   return(
-    <CrudListComp slug={slug} />
+    <CrudListComp slug={slug} pageId={pageId} history={props.history} />
   )
 }
 
@@ -25,7 +44,7 @@ function CrudListComp (props) {
   //let { slug } = useParams();  // props.match.params tada geliyor.
   //console.log(slug);
   // console.log(props);
-  
+  const [formLink, setFormLink] = useState('');
   const appContext = useContext(AppContext);
   const [pageReady, setPageReady] = useState(0);
   const [pageSlug, setPageSlug] = useState(0);
@@ -46,15 +65,19 @@ function CrudListComp (props) {
   })
   const [crudList, setCrudList] = useState([])
   
+  
 
   useEffect(()=>{
     getCrudData();
+    setPageReady(0);
   },[slug]);
+  
   useEffect(()=>{
     refreshTable();
   },[crudData.sayfaNo, crudData.kacar, crudData.crudColumns]);
 
   const getCrudData = () => {
+    //setPageId(0);
     const data = doAjax(
       appContext.api_url + 'ApiCrudList/getCrudData',
       'GET',
@@ -62,6 +85,9 @@ function CrudListComp (props) {
     );
     data.then((res)=>{
       const gelen = JSON.parse(res);
+      //console.log(gelen);
+      setFormLink('/CrudList/' + gelen.pageData.slug)
+      
       setPageData(gelen.pageData);
       setCrudData(
         {...crudData, 
@@ -72,7 +98,8 @@ function CrudListComp (props) {
   }
 
   const refreshTable = () => {
-    //console.log(pageReady);
+    //console.log(pageReady + " " + props.pageId);
+    //console.log(props.pageId);
     
     //if(pageReady == 1){
     if(crudData.crudColumns.length){
@@ -82,6 +109,7 @@ function CrudListComp (props) {
         appContext.api_url + 'ApiCrudList/getCrudList',
         'GET',
         {
+          pageData: pageData,
           tableSlug: pageData.slug,
           sayfaNo: crudData.sayfaNo,
           kacar: crudData.kacar,
@@ -89,6 +117,7 @@ function CrudListComp (props) {
           nereden: crudData.nereden,
           sayfaSayisi: crudData.sayfaSayisi,
           toplam: crudData.toplam,
+          pageId: props.pageId,
         }
       );
       data.then((res)=>{
@@ -105,21 +134,75 @@ function CrudListComp (props) {
           })
         }else{
           //console.log(gelen);
-          
+
+          setFormLink('/CrudForm/' + pageData.slug + (props.pageId?'?parent=' + props.pageId :''))
+
           setCrudList(gelen.crudList)
           //console.log(gelen.crudList);
-          
           setCrudData({...crudData, ...gelen.crudData})
+          setPageReady(1);
         }
         
       })
     }
   }
   
+  useEffect(()=>{
+    //console.log(props.pageId); 
+    //refreshTable();
+    if(props.pageId > 0){
+      refreshTable();
+      console.log("pageId Değişti 0dan büyük");
+    }
+    if(pageReady == 1 && props.pageId == 0){
+      refreshTable();
+      console.log("pageid 0 ve sayfa yüklendi");
+    }
+    //console.log("sayfa id ");
+    
+
+
+  },[props.pageId])
+
   
   const yenile = (e) => {
     e.preventDefault();
+    //console.log(props.pageId);
+    
     refreshTable();
+  }
+  const yukari = (e) => {
+    e.preventDefault();
+    //console.log(props.pageId);
+    //console.log(pageData);
+    
+    
+    const data = doAjax(
+      appContext.api_url + 'ApiCrudList/findPageParent',
+      'GET',{pageId: props.pageId, table: pageData.slug, crudColumns: crudData.crudColumns}
+    );
+    data.then((res)=>{
+      //console.log(res);      
+      const gelen = JSON.parse(res);
+      //console.log(gelen);
+      
+      if(gelen.secilenPage){
+        let yonlendirilecekUrl = '/CrudList/' + pageData.slug + '';
+        //let panelFormLinki = 'PanelForm';
+        //console.log(gelen.secilenPage);
+        //console.log(gelen.parent.slug);
+        
+        if(gelen.secilenPage[gelen.parent.slug] > 0){
+          yonlendirilecekUrl += '?id=' + gelen.secilenPage[gelen.parent.slug];
+        }   
+        //console.log(yonlendirilecekUrl);
+        //console.log(props);
+        
+        props.history.push(yonlendirilecekUrl);
+      }
+      
+      //setPageData({ ...pageData, crudData: gelen.crudData});
+    })
   }
   
   const crudGoNextPage = () => {
@@ -207,7 +290,8 @@ function CrudListComp (props) {
         <div className="list-control">
           <div className="control-left">
             <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
-            <Link to={'/CrudForm/' + pageData.slug + '/'} className="addBtn">Ekle</Link>
+            <Link to={formLink} className="addBtn">Ekle</Link>
+            {(props.pageId>0?<a href="#" onClick={yukari} className="refreshBtn">Yukarı Git</a>:null)}
           </div>
           <div className="control-right">
             <TableControls crudData={crudData} 
@@ -228,7 +312,7 @@ function CrudListComp (props) {
               </tr>
             </thead>
             <tbody>
-              <TableRows crudList={crudList} crudData={crudData} deleteRow={deleteRow} tableRowButtons={tableRowButtons} />
+              <TableRows crudList={crudList} crudData={crudData} deleteRow={deleteRow} tableRowButtons={tableRowButtons} tableName={slug} />
             </tbody>
           </table>
         </div>

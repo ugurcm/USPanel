@@ -31,7 +31,8 @@ export default function CrudForm (props) {
     title: '',
     parent: 0,
     parent_path: ["0"],
-    hasTable : 0
+    hasTable : 0,
+    language_active : 0
   });
   const [parentPathList, setParentPathList ] = useState([]);
   const [pageReady, setPageReady] = useState(0);
@@ -91,7 +92,7 @@ export default function CrudForm (props) {
   const formSubmit = (e) => {
     e.preventDefault();
     //console.log(values);
-    
+
     //return false;
     const data = doAjax(
       appContext.api_url + 'ApiPanel/saveForm',
@@ -100,6 +101,7 @@ export default function CrudForm (props) {
     );
     data.then((res)=>{
       //console.log(res);
+      //return false;
       
       const gelen = JSON.parse(res);
       if(gelen.sonuc == 'err'){
@@ -142,16 +144,33 @@ export default function CrudForm (props) {
   const formCancel = (e) => {
     e.preventDefault();
     props.history.goBack();
+    //console.log(values);
+    
   }
   const onChangeParent = (e, index) => {
-    const value = e.target.value;
+    let value = e.target.value;
     const newArr = [...values.parent_path];
     newArr.length = index + 1;
+    //console.log(value)
     if(value){
       newArr.push(value);
+      /*console.log("ekledik");
+      console.log(newArr);*/
     }
     if(newArr[newArr.length-1] == 0 && newArr.length > 1 ){
+      /*console.log("evet burası");
+      console.log(newArr);
+      console.log(newArr.length);
+      console.log(newArr[newArr.length-1]);*/
+      
+      
       newArr.splice(-1,1);
+      /*console.log(newArr);
+      console.log(value);*/
+      
+    }
+    if(value == 0){
+      value = newArr[newArr.length-1];
     }
     setValues({...values, parent_path: newArr, parent: value});
   }
@@ -199,6 +218,18 @@ export default function CrudForm (props) {
               <div className="radio-cont">
                 <Radio name={'hasTable'} value={'0'} checkedValue={values.hasTable} onChange={onChange} label={'Yok - Kategori'}/>   
                 <Radio name={'hasTable'} value={'1'} checkedValue={values.hasTable} onChange={onChange} label={'Var - Tablo'}/>    
+              </div>      
+            </div>
+          </div>
+
+          <div className="frow">
+            <div className="flabel">
+              Dil Seçimi
+            </div>
+            <div className="fval">
+              <div className="radio-cont">
+                <Radio name={'language_active'} value={'0'} checkedValue={values.language_active} onChange={onChange} label={'Pasif'}/>   
+                <Radio name={'language_active'} value={'1'} checkedValue={values.language_active} onChange={onChange} label={'Aktif'}/>    
               </div>      
             </div>
           </div>

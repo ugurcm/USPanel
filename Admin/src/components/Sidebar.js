@@ -6,6 +6,7 @@ import loadSidebars from '../libraries/loadSidebars';
 
 import AppContext from '../context/AppContext';
 
+import SidebarLogo from '../assets/img/logo-w.png';
 
 function isInArray(array, search)
 {
@@ -80,10 +81,11 @@ const Sidebar = props => {
       return v.toString(16);
     });
   }
+  
   return(
     <div className="sidebar">
       <div className="logo-cont">
-        <Link to="/"><img src={'/src/assets/img/logo-w.png'} 
+        <Link to="/"><img src={SidebarLogo} 
           alt="UğurSoft Yönetim Paneli" /></Link>
       </div>
       <div className="sb-list">  
@@ -91,7 +93,7 @@ const Sidebar = props => {
       </div>
       <div className="btn-add-panel">
         <Link to="/Panel">Panel Ekle</Link>
-        <Link to="/crudList">Liste ve Form</Link>
+        <Link to="/Language">Dil Ekle</Link>
       </div>
     </div>
   )

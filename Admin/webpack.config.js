@@ -5,8 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 var env = (process.env.NODE_ENV || 'development').trim();
+
+const CopyPlugin = require('copy-webpack-plugin');
+
 module.exports = {
-  entry: ["@babel/polyfill", "./src/index.js"],
+  entry: ["@babel/polyfill", "./src/index.js", ],
   //entry: './src/index.js',
   output: {
     path: path.join(__dirname, '/dist'),
@@ -71,7 +74,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: './src/assets/html/index.html',
-      favicon: "./src/assets/img/favicon.ico"
+      favicon: "./src/assets/img/favicon.ico",
     }),
     new webpack.ProvidePlugin({   
       jQuery: 'jquery',
@@ -84,11 +87,17 @@ module.exports = {
       base_url: 'http://localhost:8080/',
       api_url: 'http://192.168.99.103:8081/',
     })*/
+    // eger klasorde yüklenecek dosyalar varsa ve bu dosyalar import edilemiyorsa 
+    // copyPlugin ile bu dosyaları root klasörün altına yükleyebiliyoruz.
+    // bu şekilde webpack dev serverda da çalışıyor.
+    new CopyPlugin([    
+      { from: './node_modules/tinymce/skins', to: './skins' }
+    ]),
     
   ],
   devServer: {
     historyApiFallback: true,
-    contentBase: './',
+    contentBase: './Admin/',
     hot: true
   }
 }

@@ -10,6 +10,7 @@ export default function PanelTableRows (props) {
     props.deleteRow(e, itemId);
   }*/
   //console.log(props);
+  //console.log(props.crudData.crudColumns);
   
   let items = props.crudList.map((item, key) =>
     <tr key={key}>

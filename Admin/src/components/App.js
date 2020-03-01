@@ -15,6 +15,9 @@ import CrudForm from '../pages/crud/CrudForm';
 //console.log(process.env.BASE_URL)
 import Modal from '../components/form/Modal'
 
+import Language from '../pages/panel/Language';
+import LanguageForm from '../pages/panel/LanguageForm';
+
 const App = props => {
   
   let initUserData = {userName: "ugur cemil"};
@@ -50,7 +53,7 @@ const App = props => {
   })
   return(
     <AppContext.Provider value={ globalVars } >
-      <BrowserRouter basename={'/Admin'}>
+      <BrowserRouter basename={'/'}>
         <React.Fragment>
           <Switch>
             <Route path="/" exact render={()=>
@@ -71,7 +74,9 @@ const App = props => {
                 <Route path='/crudList/:slug' render={(props) => <CrudList {...props}/>}/>
                 <Route path='/crudForm' render={(props) => <CrudForm {...props}/>}/>
                 <Route path='/crudForm/:slug' render={(props) => <CrudForm {...props}/>}/>
-               
+                
+                <Route path="/language" component={Language} />
+                <Route path="/languageForm" component={LanguageForm} />
                 
               </Switch>
             </DashboardRoute>:null

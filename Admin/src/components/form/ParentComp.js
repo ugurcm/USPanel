@@ -14,6 +14,8 @@ export default function ParentComp (props) {
   useEffect(()=>{
     //console.log("güncellendi");
     if(pageReady == 1){
+      //console.log(props);
+      
       //console.log(parentPath);
       const data = doAjax(
         appContext.api_url + 'ApiPanel/getParentList',
@@ -33,14 +35,13 @@ export default function ParentComp (props) {
   },[props.parentPath , props.pageReady]);
 
   const parentWrapper = parentPathList.map((liste, keyl)=>{
-    liste = liste.filter((item) => item.id !== formId );
-    //console.log(liste.length);
+    //console.log(liste);
     
-    //if(liste.length){
-      //console.log("work");
-      
+    liste = liste.filter((item) => item.id !== formId );
+    //console.log(parentPath[keyl+1]);
+    
       return (
-        <Select key={keyl} name={'parent_path'} value={parentPath[keyl+1]} inputList={liste} onChange={(e)=>props.onChangeParent(e, keyl)} itemKeyValue="id" itemKeyName="title" defaultValue={0} />
+        <Select key={keyl} name={'parent_path'} value={parentPath[keyl+1]} inputList={liste} onChange={(e)=>props.onChangeParent(e, keyl)} itemKeyValue="id" itemKeyName="title" defaultValue={0} hasDefault={1} />
       )
     //}
   })
