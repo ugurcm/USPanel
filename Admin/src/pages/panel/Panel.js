@@ -66,6 +66,8 @@ export default function Panel (props) {
           nereden: crudData.nereden,
           sayfaSayisi: crudData.sayfaSayisi,
           toplam: crudData.toplam,
+          orderby: 't.count',
+          orderType: 'asc',
         }
       );
       data.then((res)=>{

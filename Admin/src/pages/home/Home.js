@@ -22,7 +22,7 @@ const Home = props => {
   
   return(
     <div className="page-home">
-      anasayfa
+      <div >anasayfa</div>
     </div>
   )
 }

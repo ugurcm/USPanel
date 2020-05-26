@@ -23,7 +23,10 @@ import AktifPasif from '../../components/form/AktifPasif';
 import CrudFormLangTab from './CrudFormLangTab';
 
 import Editor from '../../components/form/Editor';
-
+import ResimGaleri from '../../components/form/ResimGaleri';
+import DosyaGaleri from '../../components/form/DosyaGaleri';
+import DosyaTekli from '../../components/form/DosyaTekli';
+import { object } from 'prop-types';
 /*import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'*/
 
@@ -74,6 +77,9 @@ export default function CrudFormEdit (props) {
     AltKategori: AltKategori,
     AktifPasif: AktifPasif,
     Editor: Editor,
+    ResimGaleri: ResimGaleri,
+    DosyaGaleri: DosyaGaleri,
+    DosyaTekli: DosyaTekli,
   }
 
   
@@ -421,8 +427,21 @@ export default function CrudFormEdit (props) {
         ozelTanim = 1;
         valuesInitObj[value.slug] = [];
         //console.log("array ekle");
+        //console.log("burası");
+        //console.log(value.slug);
+        //console.log(valuesInitObj);
         
       }
+      //console.log(value);
+      if(value.form_type == 'Array'){
+        ozelTanim = 1;
+        valuesInitObj[value.slug] = [];
+      }
+      if(value.panel_table_column_input_id == '13'){  //eğer çoklu file upload ise default sütunu açalım.
+        ozelTanim = 1;
+        valuesInitObj[value.slug + '_default'] = '';
+      }
+
       if(value.panel_table_column_input_id == '8'){
         ozelTanim = 1;
         valuesInitObj[value.slug + '_path'] = ["0"];
@@ -444,6 +463,8 @@ export default function CrudFormEdit (props) {
         valuesInitObj[value.slug] = [];
       }
       if(ozelTanim == 0){
+        //console.log("şimdide burası");
+        //console.log(value.slug);
         valuesInitObj[value.slug] = '';
       }
       
@@ -451,6 +472,7 @@ export default function CrudFormEdit (props) {
     //console.log(cokluSelectListInit);
     setCokluSelectList({...cokluSelectList, ...cokluSelectListInit})
     //console.log(valuesInitObj);
+    //console.log("init oldu");
     
     setValues(valuesInitObj);
     
@@ -471,21 +493,16 @@ export default function CrudFormEdit (props) {
         {id: parsed.id, tableSlug: slug}
       );
       data.then((res)=>{
+        //console.log(res);
+        
         const gelen = JSON.parse(res);
-        console.log(gelen);
+        //console.log(gelen);
         
         if(gelen.formData){
           //console.log(gelen.formData);
           
           setValues(gelen.formData);
           setValuesLang(gelen.lang);
-
-
-          //console.log(gelen.lang);
-          /*Object.keys(gelen.lang).map((value,key) => {
-            console.log(gelen.lang[value].adi);
-          })*/
-          
           setPageReady(1);
           
         }
@@ -578,18 +595,74 @@ export default function CrudFormEdit (props) {
    
     
   },[])
+
+
+  useEffect(()=>{
+    //console.log(values);
+    //uploadCompChange();
+  },[values]);
+
+  const uploadCompChange = (compName, gelen, type, selectedItem = 0) => {
+    if(values.hasOwnProperty(compName)){
+      //console.log(values);
+      
+      let news = values[compName];
+      if(type == 'add'){
+        news.push({name:gelen['name'], value:gelen['filename']})
+      }
+      if(type == 'update'){
+        news[selectedItem] = gelen;
+      }
+      setValues(currentValues => ({...currentValues, [compName]: news}))
+    }
+  }
+  const uploadCompChangeOneFile = (compName, gelen) => {
+
+    //console.log(compName);
+    //console.log(gelen);
+    setValues(currentValues => ({...currentValues, [compName]: gelen.filename}))
+    
+  }
+
+  const listSortEnd = (compName, newData) => {
+    //console.log(compName);
+    setValues({...values, [compName]: newData});
+  }
+
+  const uploadDeleteItem = (props) => {
+    const {compName,itemKey} = props;
+    let fakeValuesCompName = [...values[compName]];
+    fakeValuesCompName.splice(itemKey,1);
+    setValues(currentValues => ({...currentValues, [compName]: fakeValuesCompName}));
+  }
+  const uploadMakeDefault = (props) => {
+    const {compName,itemKey} = props;
+    let fakeValuesCompName = [...values[compName]];
+    setValues(currentValues => ({...currentValues, [compName + '_default']: fakeValuesCompName[itemKey].value}));
+  }
+  const setMyValueEmpty = (props) => { 
+    const {e, compName, myValue} = props;
+    e.preventDefault();
+    setValues(currentValues => ({...currentValues, [compName]: ''}));
+  }
+  
   
   const formCancel = (e) => {
     e.preventDefault();
+    //uploadDeleteItem();
+    
     console.log(values);
-    console.log(valuesLang);
+    //console.log(valuesLang);
     //console.log(valuesEditor);
 
     //props.history.goBack();
-    //setFormAktifmi(0);
+   
   }
   //console.log(crudColumns);
   
+
+
+
   return (
     <div className="page-content">      
       <div className="page-title">
@@ -618,7 +691,21 @@ export default function CrudFormEdit (props) {
                   </div>
                   <div className="fval">
                     <div className="input-text">                  
-                      <SecilenComponent componentId={value.id} name={value.slug} value={values[value.slug] || ''} onChange={onChange} onChangeEditor={onChangeEditor} formAktifmi={formAktifmi} inputList={value.relationList} itemKeyValue="id" itemKeyName={value.relation_panel_table_column_slug} hasDefault={1} cokluSecimEkle={cokluSecimEkle} cokluSecimKaldir={cokluSecimKaldir} cokluSelectList={cokluSelectList} onChangeCoklu={onChangeCoklu} parentPath={values[value.slug + '_path']} pageReady={pageReady} pageData={pageData} altKategoriSlug={value.altkategori_slug} valueSlug={value.slug} onChangeParent={onChangeParent} crudColumn={value} />
+                      <SecilenComponent componentId={value.id} name={value.slug} value={values[value.slug] || ''} onChange={onChange} onChangeEditor={onChangeEditor} formAktifmi={formAktifmi} inputList={value.relationList} itemKeyValue="id" itemKeyName={value.relation_panel_table_column_slug} hasDefault={1} cokluSecimEkle={cokluSecimEkle} cokluSecimKaldir={cokluSecimKaldir} cokluSelectList={cokluSelectList} onChangeCoklu={onChangeCoklu} parentPath={values[value.slug + '_path']} pageReady={pageReady} pageData={pageData} altKategoriSlug={value.altkategori_slug} valueSlug={value.slug} onChangeParent={onChangeParent} crudColumn={value}
+                      compName={value.slug}
+                      url={appContext.api_url + 'ApiUser/fileUploadChunk'} 
+                      uploadFolderName={value.slug} 
+                      uploadCompChange={uploadCompChange} 
+                      uploadListData={values[value.slug]}
+                      listSortEnd={listSortEnd}
+                      maxFiles={50}
+                      uploadDeleteItem={uploadDeleteItem}
+                      uploadMakeDefault={uploadMakeDefault}
+                      uploadCompChangeOneFile={uploadCompChangeOneFile}
+                      setMyValueEmpty={setMyValueEmpty}
+                      values={values}
+                      appContext={appContext}
+                       />
                     </div>
                     
                   </div>

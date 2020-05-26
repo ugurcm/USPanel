@@ -69,7 +69,7 @@ class ApiUser extends CI_Controller {
 
 		//$data['tokenValidate'] = AUTHORIZATION::validateToken($gelen['token']);
 		//$data['token'] = $gelen['token'];
-		$data['veriler'] = array('verilerdeneme' => "deneme veri 1");
+		//$data['veriler'] = array('verilerdeneme' => "deneme veri 1");
 		$data['userData'] = $this->UserModel->userCheck($gelen);
 		echo json_encode($data);
 	}
@@ -215,7 +215,7 @@ class ApiUser extends CI_Controller {
 		if(!empty($_FILES['file']['name'])){
 			
 			// Set preference
-			$config['upload_path'] = 'uploads/'; 
+			$config['upload_path'] = 'assets/upload/'; 
 			$config['allowed_types'] = 'jpg|jpeg|png|gif|rar';
 			//$config['allowed_types'] = '*';
 			$config['max_size'] = '10240000000'; // max_size in kb
@@ -247,7 +247,7 @@ class ApiUser extends CI_Controller {
 				$_FILES['file']['error'] = $_FILES['files']['error'][$i];
 				$_FILES['file']['size'] = $_FILES['files']['size'][$i];
 
-				$config['upload_path'] = 'uploads/'; 
+				$config['upload_path'] = 'upload/'; 
 				$config['allowed_types'] = 'jpg|jpeg|png|gif';
 				$config['max_size'] = '5000';
 				$config['file_name'] = $_FILES['files']['name'][$i];
@@ -274,7 +274,7 @@ class ApiUser extends CI_Controller {
 	}
 	public function fileUploadChunk(){
 
-		$uploadFolderName = 'whole_from_chunks';
+		//$uploadFolderName = 'whole_from_chunks';
 		if($_POST['uploadFolderName']){
 			$uploadFolderName = $_POST['uploadFolderName'];
 		}
@@ -327,7 +327,7 @@ class ApiUser extends CI_Controller {
 			$successes = array();
 			$errors = array();
 			$warnings = array();
-			$dir = "uploads/tmp/";
+			$dir = "assets/upload/tmp/";
 			$identifier = ( isset($_POST['dzuuid']) )?  trim($_POST['dzuuid']) : '';
 			$file_chunks_folder = "$dir$identifier";
 			if (!is_dir($file_chunks_folder)) {
@@ -396,7 +396,7 @@ class ApiUser extends CI_Controller {
 		 */
 		function createFileFromChunks($uploadFolderName, $file_chunks_folder, $fileName, $extension, $total_size, $total_chunks,
 																						&$successes, &$errors, &$warnings) {
-				$rel_path = "uploads/".$uploadFolderName."/";
+				$rel_path = "assets/upload/".$uploadFolderName."/";
 				$saveName = getNextAvailableFilename( $rel_path, $fileName, $extension, $errors );
 				if( !$saveName ){
 						return false;

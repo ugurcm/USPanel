@@ -7,8 +7,9 @@ import Logo from '../../assets/img/logo.png';
 
 const Login = props => {
   const appContext = useContext(AppContext);
-  console.log(appContext);
+  //console.log(appContext);
   const [values, setValues] = useState({userName:"", password:""});
+  const [loading, setLoading] = useState(0);
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
   }
@@ -16,6 +17,10 @@ const Login = props => {
     e.preventDefault();
     console.log("form gönderildi");
     //console.log(appContext.api_url)
+
+    setLoading(x => (1));
+
+    //return false;
     $.ajax({
       type:'POST',
       url: appContext.api_url + 'ApiUser/formLogin',
@@ -23,10 +28,11 @@ const Login = props => {
       //dataType: 'json'
       error: function(res){
         console.log(res);
-        
+
       }
     }).done(function(res){
       //console.log(res);
+
       try {
         let gelen = JSON.parse(res);
         //console.log(gelen);
@@ -36,6 +42,7 @@ const Login = props => {
             title: 'Hata',
             text: gelen.sonuc,
           })
+          setLoading(x => (0));
         }
         if(gelen.code == 2){  //basarili
           Swal.fire({
@@ -69,10 +76,10 @@ const Login = props => {
     })
   }
   //console.log("login sayfası");
-  
+
   return (
     <div className="login-cont">
-      
+
       <div className="form">
         <div className="logo">
           <img src={Logo} alt="" />
@@ -105,6 +112,10 @@ const Login = props => {
             <div className="irow">
               <button type="submit" className="submit-ok">Giriş Yap</button>
             </div>
+            {loading == 1 ? <div className="loading-cont">
+              <div className="icon"></div>
+              <div className="desc">Giriş Yapılıyor</div>
+            </div> : null}
           </form>
         </div>
       </div>

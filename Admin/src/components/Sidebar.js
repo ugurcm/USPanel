@@ -48,11 +48,15 @@ const SidebarListe = (props) => {
           if(value.hasTable == 1){
             link = '/CrudList/' + value.slug;
           }
+          if(value.componentName){
+            link = '/' + value.componentName;
+          }
           //const isim = '/crudList/subeler';
           return (
             <CSSTransition in={(isInArray(props.activeTabArr, parseInt(value.id)) )} key={value.id} timeout={500} classNames="selected" >
-              <li className={((isInArray(props.activeTabArr, parseInt(value.id))   )? 'selected-enter-done' : '')}>
+              <li className={((isInArray(props.activeTabArr, parseInt(value.id))   )? 'selected-enter-done' : '') + " listType" + value.list_type}>
                 <Link to={link} onClick={(e) => linkOnClick(value, props.order)} >
+                  {(value.icon?<div className="icon"><i className={value.icon}></i></div>:'')}
                   <span>{value.title}</span>
                 </Link>
                 <SidebarListe listArr={value.children} activeTabArr={props.activeTabArr} setActiveTabArr={props.setActiveTabArr} order={props.order + 1} activeOrder={props.activeOrder} setActiveOrder={props.setActiveOrder} />

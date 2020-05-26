@@ -254,6 +254,25 @@ class ApiCrudForm extends CI_Controller {
                     $data['formData'][$key.'_path'] = json_decode('["0"]', true);
                   }
                 }
+                if($column['panel_table_column_input_id'] == 11){ // foto galeri ise array init etsin.
+                  
+                  if($data['formData'][$key] && $data['formData'][$key] != '[]'){
+                    $data['formData'][$key] = json_decode($data['formData'][$key], true);
+                  }else{
+                    $data['formData'][$key] = array();
+                  }
+                }
+                if($column['panel_table_column_input_id'] == 13){ // dosya galeri ise array init etsin.
+                  //$data['formData'][$key] = array();
+                  //print_r($data['formData']);
+                  if($data['formData'][$key] && $data['formData'][$key] != '[]'){
+                    $data['formData'][$key] = json_decode($data['formData'][$key], true);
+                  }else{
+                    $data['formData'][$key] = array();
+                  }
+                }
+
+
               }
             }
           }
@@ -644,9 +663,17 @@ class ApiCrudForm extends CI_Controller {
   public function getSubRowsList(){
     $gets = $this->input->get();
     //print_r($gets);
-    
+
+    $this->db->select('pt.*');
+    $this->db->from('panel_table pt');
+    $this->db->where('pt.id', $gets['crudColumn']['relation_panel_table_id']);
+    $panelTable = $this->db->get()->row_array();
+
+    //print_r($panelTable);
+
+
     $this->db->select('t.*');
-    $this->db->from($gets['crudColumn']['slug'].' t');
+    $this->db->from($panelTable['slug'].' t');
     $this->db->where('t.'.$gets['crudColumn']['relation_panel_table_altkategori_slug'], $gets['relationSelectId']);
     $data['altKategoriler'] = $this->db->get()->result_array();
     echo json_encode($data);

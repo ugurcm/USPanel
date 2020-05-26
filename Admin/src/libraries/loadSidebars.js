@@ -4,7 +4,7 @@ import doAjax from './doAjax';
 export default function tokenCheck (props) {
   const {appContext} = props;
   
-  const data = doAjax(
+  /*const data = doAjax(
     appContext.api_url + 'ApiAdmin/loadSidebars','GET',{}
   );
   data.then((res)=>{
@@ -14,7 +14,7 @@ export default function tokenCheck (props) {
     //console.log(gelen);
     appContext.setSidebarData(gelen);
   
-  })
+  })*/
 
 
 }

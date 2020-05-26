@@ -255,6 +255,7 @@ class ApiPanel extends CI_Controller {
     }
 
     
+    
     $kayitSayisi = $this->db->get()->row_array();
 
 
@@ -308,8 +309,8 @@ class ApiPanel extends CI_Controller {
         }      
       }
     }
-
-
+    
+    $this->db->order_by($orderby,$orderType);
     $this->db->group_by("t.id");
     $this->db->limit($kacar, $nereden);
     $data['crudList'] = $this->db->get()->result_array();
@@ -392,10 +393,16 @@ class ApiPanel extends CI_Controller {
         $gonder['title'] = $gelen['formData']['title'];
         $gonder['parent'] = $gelen['formData']['parent'];
         $gonder['hasTable'] = $gelen['formData']['hasTable'];
+        
         $gonder['language_active'] = $gelen['formData']['language_active'];
         if($gelen['formData']['parent_path']){
           $gonder['parent_path'] = json_encode($gelen['formData']['parent_path']);
         }
+
+        $gonder['componentName'] = $gelen['formData']['componentName'];
+        $gonder['icon'] = $gelen['formData']['icon'];
+        $gonder['list_type'] = $gelen['formData']['list_type']; //1 başlık, 2 açılır
+
         $this->db->insert('panel_table', $gonder);
 
         //tablo eklendi, id kolonunu ekleyelim.
@@ -431,6 +438,10 @@ class ApiPanel extends CI_Controller {
         $gonder['parent_path'] = json_encode($gelen['formData']['parent_path']);
       }
       
+      $gonder['componentName'] = $gelen['formData']['componentName'];
+      $gonder['icon'] = $gelen['formData']['icon'];
+      $gonder['list_type'] = $gelen['formData']['list_type'];
+
       $this->db->where('id', $gelen['formId']);
       $this->db->update('panel_table', $gonder);
       $panel_table_id = $gelen['formId'];
@@ -661,6 +672,15 @@ class ApiPanel extends CI_Controller {
       
 
       $gonder['slug'] = $this->PanelModel->temizle($gelen['formData']['title']);
+
+      if($gelen['formData']['slug']){
+        $gonder['slug'] = $gelen['formData']['slug'];
+      }
+      
+
+
+
+
       $tabloSonucArr = $this->addTableField($panelTable['slug'], $gonder['slug'], $selectedPanelTableColumnType['slug'],$gelen['formData']['type_length'], $gelen['formData']['type_default_value'] );
       if($tabloSonucArr['sonuc'] == 'err'){
         $data['sonuc'] = 'err';
@@ -712,6 +732,12 @@ class ApiPanel extends CI_Controller {
       
 
       $gonder['slug'] = $this->PanelModel->temizle($gelen['formData']['title']);
+
+      if($gelen['formData']['slug']){
+        $gonder['slug'] = $gelen['formData']['slug'];
+      }
+
+      
 
       $tabloSonucArr = $this->modifyTableField($panelTable['slug'], $gonder['slug'], $panelTableColumn['slug'], $selectedPanelTableColumnType['slug'], $gelen['formData']['type_length'], $gelen['formData']['type_default_value'] );
       if($tabloSonucArr['sonuc'] == 'err'){
@@ -778,7 +804,7 @@ class ApiPanel extends CI_Controller {
       }
 
     }
-    if($gelen['formData']['panel_table_column_input_id'] == 8){
+    if($gelen['formData']['panel_table_column_input_id'] == 8){  // alt kategori seçim
 
       if($gelen['formType'] == 'add'){
         $tabloSonucArr = $this->addTableField($panelTable['slug'], $gonder['slug'].'_path', 'VARCHAR','2000', '["0"]' );
@@ -788,11 +814,35 @@ class ApiPanel extends CI_Controller {
 
         //public function addTableField($tableName='', $columnName = '', $columnDataType='VARCHAR', $type_length = '255', $type_default_value = ''){
         //public function modifyTableField($tableName='', $columnName = '', $oldColumnName = '', $columnDataType='VARCHAR', $type_length = '255', $type_default_value = ''){
-          
       }
-      
-      
     }
+
+    if($gelen['formData']['panel_table_column_input_id'] == 11){
+      $acilacakKlasorYolu = FCPATH.'assets/upload/'.$gonder['slug'];
+      if (!file_exists($acilacakKlasorYolu)) {
+        mkdir($acilacakKlasorYolu, 0777, true);
+      }
+    }
+    if($gelen['formData']['panel_table_column_input_id'] == 12){
+      $acilacakKlasorYolu = FCPATH.'assets/upload/'.$gonder['slug'];
+      if (!file_exists($acilacakKlasorYolu)) {
+        mkdir($acilacakKlasorYolu, 0777, true);
+      }
+    }
+    if($gelen['formData']['panel_table_column_input_id'] == 13){    //çoklu dosya yükleme modülü klasör aç.
+      $acilacakKlasorYolu = FCPATH.'assets/upload/'.$gonder['slug'];
+      if (!file_exists($acilacakKlasorYolu)) {
+        mkdir($acilacakKlasorYolu, 0777, true);
+      }
+      if($gelen['formType'] == 'add'){
+        $tabloSonucArr = $this->addTableField($panelTable['slug'], $gonder['slug'].'_default', 'VARCHAR','200', '' );
+      }
+      if($gelen['formType'] == 'update'){
+        $tabloSonucArr = $this->modifyTableField($panelTable['slug'], $gonder['slug'].'_default', $panelTableColumn['slug'].'_default', 'VARCHAR', '200', '');
+      }
+
+    }
+
 
     echo json_encode($data);    
   }

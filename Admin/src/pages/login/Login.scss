@@ -112,12 +112,44 @@
           }
         }
       }
+      .loading-cont{
+        display: flex;
+        width: 100%;
+        padding-top: 10px;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease-out;
+        .icon{
+          color: rgb(0, 97, 235);
+          position: relative;
+          height: 1.375rem;
+          width: 1.375rem;
+          display: inline-block;
+          border-width: 2px;
+          border-style: solid;
+          border-color: #037ef3 #037ef3 transparent;
+          border-image: initial;
+          border-radius: 50%;
+          animation: 0.75s linear 0s infinite normal both running rotateLoading;
+        }
+        .desc{
+          padding-left: 15px;
+        }
+      }
     }
   }
 }
 
 
 
+@keyframes rotateLoading{
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}
 
 
 

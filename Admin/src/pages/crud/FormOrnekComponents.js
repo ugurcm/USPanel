@@ -129,6 +129,7 @@ export default function CrudForm (props) {
             <div className="flabel">
               Dosya Yükleme Şubeler
             </div>
+            
             <div className="fval">
               <UploadComp 
                 compName={'subelerUpload'}

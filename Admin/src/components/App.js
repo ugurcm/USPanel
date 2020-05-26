@@ -49,7 +49,6 @@ const App = props => {
   }
   useEffect(()=>{
     //console.log("app render");
-    
   })
   return(
     <AppContext.Provider value={ globalVars } >
@@ -57,7 +56,7 @@ const App = props => {
         <React.Fragment>
           <Switch>
             <Route path="/" exact render={()=>
-              (userToken == 0 ? (<Redirect to="/login" />):(<Redirect to="/home" />))
+              (userToken == 0 ? (<Redirect to="/login" />):(<Redirect to="/Home" />))
             } />
             <Route path="/login" component={Login} />            
           </Switch>
@@ -76,8 +75,7 @@ const App = props => {
                 <Route path='/crudForm/:slug' render={(props) => <CrudForm {...props}/>}/>
                 
                 <Route path="/language" component={Language} />
-                <Route path="/languageForm" component={LanguageForm} />
-                
+                <Route path="/languageForm" component={LanguageForm} />                
               </Switch>
             </DashboardRoute>:null
           }

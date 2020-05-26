@@ -29,6 +29,7 @@ export default function PanelComponentForm (props) {
   const [values, setValues] = useState({
     panel_table_id: 0,
     title: '',
+    slug: '',
     panel_table_column_input_id: '',
     panel_table_column_type_id: '',
     type_length: '',
@@ -48,7 +49,7 @@ export default function PanelComponentForm (props) {
   const [panelTableColumnInputs, setPanelTableColumnInputs] = useState([]);
   const [panelTableColumnTypes, setPanelTableColumnTypes] = useState([]);
   const [componentRelationTypes, setComponentRelationTypes] = useState([]);
-
+  
   const [panelTableList, setPanelTableList] = useState([]);
   const [panelTableComponentList, setPanelTableComponentList] = useState([]);
   const [altKategoriSlugList, setAltKategoriSlugList] = useState([]);
@@ -289,6 +290,16 @@ export default function PanelComponentForm (props) {
             </div>
           </div>
 
+          <div className="frow">
+            <div className="flabel">
+              Başlık Slug (Opsionel)
+            </div>
+            <div className="fval">
+              <div className="input-text">
+                <Text name={'slug'} value={values.slug} onChange={onChange} />
+              </div>              
+            </div>
+          </div>
          
 
           <div className="frow">

@@ -32,7 +32,10 @@ export default function CrudForm (props) {
     parent: 0,
     parent_path: ["0"],
     hasTable : 0,
-    language_active : 0
+    language_active : 0,
+    componentName: '',
+    icon: '',
+    list_type: '1',
   });
   const [parentPathList, setParentPathList ] = useState([]);
   const [pageReady, setPageReady] = useState(0);
@@ -234,6 +237,39 @@ export default function CrudForm (props) {
             </div>
           </div>
 
+          <div className="frow">
+            <div className="flabel">
+              Özel Bileşen Adı
+            </div>
+            <div className="fval">
+              <div className="input-text">
+                <Text name={'componentName'} value={values.componentName} onChange={onChange} />
+              </div>              
+            </div>
+          </div>
+
+          <div className="frow">
+            <div className="flabel">
+              İkon Adı
+            </div>
+            <div className="fval">
+              <div className="input-text">
+                <Text name={'icon'} value={values.icon} onChange={onChange} />
+              </div>              
+            </div>
+          </div>
+
+          <div className="frow">
+            <div className="flabel">
+              Liste Türü
+            </div>
+            <div className="fval">
+              <div className="radio-cont">
+                <Radio name={'list_type'} value={'1'} checkedValue={values.list_type} onChange={onChange} label={'Başlık'}/>   
+                <Radio name={'list_type'} value={'2'} checkedValue={values.list_type} onChange={onChange} label={'Açılır'}/>    
+              </div>      
+            </div>
+          </div>
 
           
 

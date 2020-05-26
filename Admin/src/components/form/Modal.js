@@ -21,7 +21,7 @@ export default function Modal (props) {
 
     setLoading(false);
     setTimeout(()=>{setLoading(true);}, 20)
-    setTimeout(()=>{setContLoading(true);}, 50)
+    setTimeout(()=>{setContLoading(true);}, 550)
     
     
     const handleKeyb = props => {
@@ -54,10 +54,6 @@ export default function Modal (props) {
     }, 200)
   }
   const modalSave = (e, formData) => {
-    //console.log("modal saved");
-    //console.log(formData);
-    //console.log(modalData.compName);
-    
     modalData.uploadCompChange(modalData.compName, formData, 'update', modalData.selectedItem);
     modalClose(e);
   }
