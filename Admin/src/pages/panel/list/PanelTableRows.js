@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import AppContext from '../../context/AppContext';
+import AppContext from '../../../context/AppContext';
 import Swal from 'sweetalert2';
 
 export default function PanelTableRows (props) {
@@ -14,7 +14,7 @@ export default function PanelTableRows (props) {
   
   let items = props.crudList.map((item, key) =>
     <tr key={key}>
-      {props.crudData.crudColumns.map((column,keym)=>{
+      {props.crudColumns.map((column,keym)=>{
         if(column.slug){
           return(<td key={keym}>{item[column.slug]}</td>)
         }

@@ -1,17 +1,17 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {BrowserRouter, Route, Switch, Link, Redirect, withRouter} from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import doAjax from '../libraries/doAjax';
 import tokenCheck from '../libraries/tokenCheck';
-import loadSidebars from '../libraries/loadSidebars';
 
 import AppContext from '../context/AppContext';
-
 import SidebarLogo from '../assets/img/logo-w.png';
 
 function isInArray(array, search)
 {
     return array.indexOf(search) >= 0;
 }
+
 
 const SidebarListe = (props) => {
   if (!props.listArr) {
@@ -77,14 +77,19 @@ const Sidebar = props => {
   }, [appContext.sidebarData])
   useEffect(() => {
     tokenCheck({appContext});
-    loadSidebars({appContext});
-  }, [])
-  function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
+    
+    const data = doAjax(
+      appContext.api_url + 'ApiAdmin/loadSidebars','GET',{}
+    );
+    data.then((res)=>{
+      //console.log(res);  
+    
+      const gelen = JSON.parse(res);
+      //console.log(gelen);
+      appContext.setSidebarData(gelen);
+    })
+
+  }, [])  
   
   return(
     <div className="sidebar">

@@ -4,8 +4,8 @@ import {BrowserRouter, Route, Switch, Link, Redirect} from 'react-router-dom';
 
 import Home from '../pages/home/Home';
 import CrudList from '../pages/crud/CrudList';
-import Panel from '../pages/panel/Panel';
-import PanelForm from '../pages/panel/PanelForm';
+import Panel from '../pages/panel/list/Panel';
+import PanelForm from '../pages/panel/form/PanelForm';
 import PanelComponent from '../pages/panel/PanelComponent';
 import PanelComponentForm from '../pages/panel/PanelComponentForm';
 import Login from '../pages/login/Login';

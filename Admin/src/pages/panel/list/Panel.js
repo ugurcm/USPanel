@@ -1,18 +1,17 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import queryString from 'query-string';
-import AppContext from '../../context/AppContext';
+import AppContext from '../../../context/AppContext';
 import Swal from 'sweetalert2';
 
-import doAjax from '../../libraries/doAjax';
-import TableRows from '../crud/TableRows';
-import TableControls from '../crud/TableControls'
-import PanelTableRows from './PanelTableRows'
+import doAjax from '../../../libraries/doAjax';
+import PanelTableRows from './PanelTableRows';
+import TableControls from './TableControls';
 
 
 export default function Panel (props) {
   const appContext = useContext(AppContext);
-  const [pageId, setPageId] = useState('');
+  const [pageId, setPageId] = useState(0);
   const [formLink, setFormLink] = useState('PanelForm');
   const [pageReady, setPageReady] = useState(0);
 
@@ -22,60 +21,50 @@ export default function Panel (props) {
     slug: 'panel_table',
   })
   const [crudData, setCrudData] = useState({
-    crudColumns: [],
-    //crudColumnSlugs: [],
     sayfaNo: 1, 
     kacar: 15,
     nereden: 0,
     sayfaSayisi: 0,
     toplam: 0,
   })
+  const [crudColumns, setCrudColumns] = useState([])
   const [crudList, setCrudList] = useState([])
 
-
   useEffect(()=>{
+    const parsed = queryString.parse(location.search);
+    if(!parsed.id){   //eger yukari gidilirse alt sayfaya bakmasin
+      setPageId(x=> (x = 0));
+    }
+    if(parsed.id){  //eger alt sayfaya gidilirse guncelleyelim
+      setPageId(x => (x = parsed.id));
+      setFormLink('PanelForm?parent=' + parsed.id);
+    }
+  })
+  useEffect(()=>{},[]);
+  const refreshTable = () => {
     const data = doAjax(
-      appContext.api_url + 'ApiPanel/getCrudData',
+      appContext.api_url + 'ApiPanel/getCrudList',
       'GET',
-      {tableSlug: pageData.slug,}
+      {
+        pageId: pageId, 
+        table: pageData.slug,
+        sayfaNo: crudData.sayfaNo,
+        kacar: crudData.kacar,
+        //crudColumns: (crudData.crudColumns),
+        nereden: crudData.nereden,
+        sayfaSayisi: crudData.sayfaSayisi,
+        toplam: crudData.toplam,
+        orderby: 't.count',
+        orderType: 'asc',
+      }
     );
     data.then((res)=>{
+      //console.log(res);
       const gelen = JSON.parse(res);
-      //console.log(gelen.crudData);
-      //setPageData(gelen.pageData);
-      setCrudData(
-        {...crudData, 
-          crudColumns: gelen.crudData.crudColumns,
-          //crudColumnSlugs:gelen.crudData.crudColumnSlugs 
-        }
-      );
+      setCrudColumns(x => (x = gelen.crudColumns));
+      setCrudList(x => (x = gelen.crudList));
+      setCrudData(x => ({...crudData, ...gelen.crudData}))
     })
-    
-  },[]);
-  const refreshTable = () => {
-    if(pageReady == 1 && crudData.crudColumns.length){
-      const data = doAjax(
-        appContext.api_url + 'ApiPanel/getCrudList',
-        'GET',
-        {
-          pageId: pageId, 
-          table: pageData.slug,
-          sayfaNo: crudData.sayfaNo,
-          kacar: crudData.kacar,
-          crudColumns: (crudData.crudColumns),
-          nereden: crudData.nereden,
-          sayfaSayisi: crudData.sayfaSayisi,
-          toplam: crudData.toplam,
-          orderby: 't.count',
-          orderType: 'asc',
-        }
-      );
-      data.then((res)=>{
-        const gelen = JSON.parse(res);
-        setCrudList(gelen.crudList)
-        setCrudData({...crudData, ...gelen.crudData})       
-      })
-    }
   }
   const yenile = (e) => {
     e.preventDefault();
@@ -87,6 +76,7 @@ export default function Panel (props) {
       appContext.api_url + 'ApiPanel/findPageParent',
       'GET',{pageId: pageId, table: pageData.slug }
     );
+    
     data.then((res)=>{
       //console.log(res);      
       const gelen = JSON.parse(res);
@@ -98,31 +88,18 @@ export default function Panel (props) {
           yonlendirilecekUrl += '?id=' + gelen.secilenPage.parent;
           panelFormLinki += 'PanelForm?parent=' + gelen.secilenPage.parent;
         }
-        //setPageId(gelen.secilenPage.parent);
         setFormLink(panelFormLinki);
         props.history.push(yonlendirilecekUrl);
       }
-      
-      //setPageData({ ...pageData, crudData: gelen.crudData});
     })
   }
-  useEffect(()=>{
-    const parsed = queryString.parse(location.search);
-    if(!parsed.id){
-      setPageReady(1);
-      setPageId(0);
-    }
-    if(parsed.id){
-      setPageReady(1);
-      setPageId(parsed.id);
-      setFormLink('PanelForm?parent=' + parsed.id);
-    }
-  })
+  
   useEffect(()=>{
     refreshTable();
-  },[crudData.sayfaNo, crudData.kacar, crudData.crudColumns, pageId]);
+  },[crudData.sayfaNo, crudData.kacar, pageId]);
 
   const crudGoNextPage = () => {
+    console.log(crudData)
     if(crudData.sayfaNo < crudData.sayfaSayisi){
       setCrudData({...crudData, sayfaNo: crudData.sayfaNo + 1})
     }
@@ -144,14 +121,7 @@ export default function Panel (props) {
   const kacarChange = (e) => {
     setCrudData({...crudData, kacar: parseInt(e.target.value), sayfaNo: 1 })
   }
-  const CrudColumns = (props) => {
-    const items = props.crudData.crudColumns.map((value, key)=>
-      <th key={key}>{value.title}</th>
-    );
-    return(
-      <tr>{items}</tr>
-    )
-  }
+  
   const deleteRow = (e, itemId) => {
     e.preventDefault();
     let c = confirm('Tablo ve içindeki tüm veriler silinecek. Emin misiniz?');
@@ -182,7 +152,17 @@ export default function Panel (props) {
 
  
 
-  
+  const CrudColumnsComp = (props) => {
+    const items = props.crudColumns.map((value, key)=>
+      <th key={key}>{value.title}</th>
+    );
+    return(
+      <tr>{items}</tr>
+    )
+  }
+
+  //
+             
   return (
     <div className="page-content">      
       <div className="page-title">
@@ -212,11 +192,10 @@ export default function Panel (props) {
         <div className="list-table">          
           <table>
             <thead>
-              <CrudColumns crudData={crudData} />
+              <CrudColumnsComp crudColumns={crudColumns} />
             </thead>
             <tbody>
-              <PanelTableRows crudList={crudList} crudData={crudData} deleteRow={deleteRow} />
-             
+              <PanelTableRows crudColumns={crudColumns} crudList={crudList} crudData={crudData} deleteRow={deleteRow} />
             </tbody>
           </table>
         </div>

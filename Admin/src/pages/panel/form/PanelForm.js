@@ -1,21 +1,22 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
-import AppContext from '../../context/AppContext';
+
 import Swal from 'sweetalert2';
-
-import doAjax from '../../libraries/doAjax';
-
-import Text from '../../components/form/Text'
-import Checkbox from '../../components/form/Checkbox';
-import CheckboxGroup from '../../components/form/CheckboxGroup';
-import Radio from '../../components/form/Radio';
-import Select from '../../components/form/Select';
-import UploadComp from '../../components/form/UploadComp'
-//import Dropzone from 'react-dropzone-uploader'
-import Modal from '../../components/form/Modal'
-import ParentComp from '../../components/form/ParentComp';
-
 import queryString from 'query-string';
+
+import AppContext from '../../../context/AppContext';
+import doAjax from '../../../libraries/doAjax';
+import Text from '../../../components/form/Text'
+import Checkbox from '../../../components/form/Checkbox';
+import CheckboxGroup from '../../../components/form/CheckboxGroup';
+import Radio from '../../../components/form/Radio';
+import Select from '../../../components/form/Select';
+import UploadComp from '../../../components/form/UploadComp'
+//import Dropzone from 'react-dropzone-uploader'
+import Modal from '../../../components/form/Modal'
+import ParentComp from '../../../components/form/ParentComp';
+
+
 
 
 export default function CrudForm (props) {

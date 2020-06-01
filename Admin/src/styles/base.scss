@@ -323,13 +323,14 @@ label{
         padding-top: 14px;
         ul{
           @extend .ul;
+          margin: 10px;
           /*display: flex;
           flex-wrap: wrap;
           flex-direction: column;*/
           li{
             position: relative;
             overflow:hidden;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             transition: all 0.5s linear;
             &.selected-enter {
               //opacity: 0;
@@ -361,7 +362,7 @@ label{
               //max-height: 500px;
               //transition: opacity 200ms;
               >a{
-                background-color: rgb(66, 66, 67);
+                background-color: #111;
                 span{
                   opacity: 1;
                 }
@@ -426,13 +427,13 @@ label{
               //padding: 2px 17px;
               color: inherit;
               text-decoration: none;
-              padding: 4px 9px;
-              background-color: #111;
-              border-radius: 0px;
+              padding: 1px 9px;
+              /*background-color: #111;*/
+              border-radius: 4px;
               margin-right: 3px;
               @include transition(all .2s ease-out);
               &:hover{
-                background-color: rgb(66, 66, 67);
+                background-color: #111;
                 span{
                   opacity: 1;
                 }
@@ -443,6 +444,13 @@ label{
           
               .icon{
                 margin-right: 5px;
+                width: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 15px;
+                position: relative;
+                top: -1px;
               }
               span{
                 font-size: 16px;
@@ -461,10 +469,10 @@ label{
               max-height: 0px;
               opacity: 0;
               overflow: hidden;
-              padding-left: 5px;
+              
               li{
                 a{
-                  padding: 4px 17px;
+                  padding: 1px 17px;
                   padding-left: 17px;
                 }
               }
@@ -709,7 +717,7 @@ label{
               //box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.8);
               border: 2px solid rgba(0, 0, 0, 0.8);
               padding: 2px 0px 2px 9px;
-              border-radius: 4px;
+              border-radius: 1px;
             }
             a{
               display: flex;
@@ -719,7 +727,7 @@ label{
               font-size: 15px;
               cursor: pointer;
               transition: all 0.2s ease-out;
-              border-radius: 4px;
+              border-radius: 1px;
               box-shadow: inset 0px 0px 1px 2px rgba(0, 0, 0, 0.4);
               background-color: #fff;
               color: #2b2b2b;
