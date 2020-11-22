@@ -4,76 +4,92 @@ import AppContext from '../../context/AppContext';
 import './Login.scss'
 import Swal from 'sweetalert2';
 import Logo from '../../assets/img/logo.png';
+import { func } from 'prop-types';
 
 const Login = props => {
   const appContext = useContext(AppContext);
   //console.log(appContext);
-  const [values, setValues] = useState({userName:"", password:""});
-  const [loading, setLoading] = useState(0);
+  const [values, setValues] = useState({user_name:"", password:""});
+  //const [loading, setLoading] = useState(0);
+  
+  const [formLock, setFormLock] = useState(0);
+
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
   }
   const formSubmit = e => {
     e.preventDefault();
-    console.log("form gönderildi");
-    //console.log(appContext.api_url)
 
-    setLoading(x => (1));
-
+    if(formLock == 1){return false;}
+    setFormLock( x => x = 1);
+    //setLoading(x => (1));
+    
     //return false;
-    $.ajax({
-      type:'POST',
-      url: appContext.api_url + 'ApiUser/formLogin',
-      data: {formData: values},
-      //dataType: 'json'
-      error: function(res){
-        console.log(res);
+    //console.log("form gönderildi")
+    setTimeout(function(){
 
-      }
-    }).done(function(res){
-      //console.log(res);
+      
+      $.ajax({
+        type:'POST',
+        url: appContext.api_url + 'Admin/ApiUser/formLogin',
+        data: {formData: values},
+        //dataType: 'json',
+        error: function(res){
+          console.log("UST ERROR")
+          console.log(res);
+        }
+      }).done(function(res){
+        //console.log(res);
+        //setFormLock( x => x = 0);
+        //setLoading(x=> 0);
+        
+        try {
+          let gelen = JSON.parse(res);
+          //let gelen = res;
+          //console.log(gelen.aciklama);
+          if(gelen.code == 1){  // sifre hatali
+            Swal.fire({
+              icon: 'error',
+              title: 'Hata',
+              text: gelen.sonuc,
 
-      try {
-        let gelen = JSON.parse(res);
-        //console.log(gelen);
-        if(gelen.code == 1){  // sifre hatali
+            })
+            setFormLock( x => x = 0);
+            //setLoading(x=> 0);
+          }
+          if(gelen.code == 2){  //basarili
+            Swal.fire({
+              icon: 'success',
+              title: 'Giriş Başarılı',
+              text: 'Yönlendiriliyorsunuz...',
+              showConfirmButton: false,
+              allowOutsideClick: false,
+              timer:1500
+            })
+            //console.log(gelen)
+            appContext.setUserToken(gelen.userToken);
+            appContext.setUserData(gelen.userData);
+            localStorage.setItem('userToken', gelen.userToken);
+            localStorage.setItem('userData', JSON.stringify(gelen.userData));
+
+            setTimeout(() => {
+              props.history.push('/');
+            }, 1500);
+
+
+          }
+        } catch (error) {
+          console.log(error);
           Swal.fire({
             icon: 'error',
             title: 'Hata',
-            text: gelen.sonuc,
+            text: error,
           })
-          setLoading(x => (0));
         }
-        if(gelen.code == 2){  //basarili
-          Swal.fire({
-            icon: 'success',
-            title: 'Giriş Başarılı',
-            text: 'Yönlendiriliyorsunuz...',
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            timer:1500
-          })
+      })
 
-          appContext.setUserToken(gelen.userToken);
-          appContext.setUserData(gelen.userData);
-          localStorage.setItem('userToken', gelen.userToken);
-          localStorage.setItem('userData', JSON.stringify(gelen.userData));
+    },1000);
 
-          setTimeout(() => {
-            props.history.push('/');
-          }, 1500);
-
-
-        }
-      } catch (error) {
-        console.log(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Hata',
-          text: error,
-        })
-      }
-    })
   }
   //console.log("login sayfası");
 
@@ -92,10 +108,10 @@ const Login = props => {
           <form action="" onSubmit={e => formSubmit(e)}>
             <div className="irow">
               <div className="ival">
-                <input type="text" name="userName"
+                <input type="text" name="user_name"
                 placeholder="Kullanıcı Adı"
                 className=""
-                value={values.userName}
+                value={values.user_name}
                 onChange={e=> onChange(e)}/>
               </div>
             </div>
@@ -110,16 +126,28 @@ const Login = props => {
               </div>
             </div>
             <div className="irow">
-              <button type="submit" className="submit-ok">Giriş Yap</button>
+              <button type="submit" className="submit-ok">
+                {(formLock==0?'Giriş Yap':
+                  <div className="btn-loader">
+                    <div className="icon"></div>
+                    <div className="desc">Lütfen Bekleyiniz...</div>
+                  </div>
+                )}
+              </button>
             </div>
-            {loading == 1 ? <div className="loading-cont">
-              <div className="icon"></div>
-              <div className="desc">Giriş Yapılıyor</div>
-            </div> : null}
+            
           </form>
         </div>
       </div>
     </div>
   )
 }
+
+/* 
+  {loading == 1 ? <div className="loading-cont">
+              <div className="icon"></div>
+              <div className="desc">Giriş Yapılıyor</div>
+            </div> : null}
+*/
+
 export default Login;

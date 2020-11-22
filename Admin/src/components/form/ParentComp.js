@@ -13,12 +13,12 @@ export default function ParentComp (props) {
   //console.log(props);
   useEffect(()=>{
     //console.log("güncellendi");
+    //console.log(props.pageReady);
     if(pageReady == 1){
-      //console.log(props);
-      
+      //console.log(props);      
       //console.log(parentPath);
       const data = doAjax(
-        appContext.api_url + 'ApiPanel/getParentList',
+        appContext.api_url + 'Admin/Panel/getParentList',
         'GET',
         {parentPath: parentPath}
       );
@@ -33,17 +33,18 @@ export default function ParentComp (props) {
       })
     }
   },[props.parentPath , props.pageReady]);
-
+  
   const parentWrapper = parentPathList.map((liste, keyl)=>{
-    //console.log(liste);
-    
     liste = liste.filter((item) => item.id !== formId );
-    //console.log(parentPath[keyl+1]);
     
-      return (
-        <Select key={keyl} name={'parent_path'} value={parentPath[keyl+1]} inputList={liste} onChange={(e)=>props.onChangeParent(e, keyl)} itemKeyValue="id" itemKeyName="title" defaultValue={0} hasDefault={1} />
-      )
-    //}
+    let youReturn = null;
+    //console.log(liste.length);
+    if(liste.length > 0){
+      youReturn = <Select key={keyl} name={'parent_path'} value={parentPath[keyl+1]} inputList={liste} onChange={(e)=>props.onChangeParent(e, keyl)} itemKeyValue="id" itemKeyName="title" defaultValue={0} hasDefault={1} />
+    }
+    return (
+      youReturn
+    )
   })
     
   
@@ -59,3 +60,5 @@ export default function ParentComp (props) {
 ParentComp.propTypes = {
   parentPath: propTypes.array
 }
+
+

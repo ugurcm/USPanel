@@ -55,7 +55,7 @@
         .ival{
           position: relative;
           input[type="text"],input[type="password"]{
-            border-radius: 4px;
+            border-radius: 2px;
             border: 1px solid #d6d6d6;
             border: 0;
             font-size: 17px;
@@ -94,18 +94,41 @@
           background-color: #037ef3;
           color: #fff;
           text-align: center;
-          padding: 2px 15px;
-          font-size: 17px;
+          padding: 0px 15px;
+          font-size: 1em;
           border: 1px solid rgba(0, 0, 0, 0.07);
           /* border-bottom: 3px solid rgba(0, 0, 0, 0.22); */
           border: 0;
           border: 1px solid #07c;
           cursor: pointer;
           transition: all 0.2s ease-out;
-          border-radius: 3px;
-          float: right;
+          border-radius: 4px;
           width: 100%;
-          letter-spacing: -.022em;
+          .btn-loader{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .icon{
+              color: rgb(0, 97, 235);
+              position: relative;
+              height: 20px;
+              width: 20px;
+              display: inline-block;
+              border-width: 2px;
+              border-style: solid;
+              border-color: #fff transparent transparent;
+              border-image: initial;
+              border-radius: 50%;
+              margin-right: 10px;
+              animation: 0.75s linear 0s infinite normal both running rotateLoading;
+            }
+            .desc{
+              margin-right: 2px;
+            }
+          }
+          
+          //width: 100%;
+          //letter-spacing: -.022em;
           //background: -webkit-linear-gradient(top, rgba(101,175,232,1) 0%,rgba(49,113,193,1) 100%);
           &:hover{
             background-color: #0081fc;

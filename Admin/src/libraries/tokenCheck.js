@@ -5,16 +5,19 @@ export default function tokenCheck (props) {
   //console.log(appContext);
   //return false;
   
-  
+  //console.log("gönder")
+  //console.log(appContext.userToken);
   if(appContext.userToken != 0){
     $.ajax({
       type:'POST',
-      url: appContext.api_url + 'ApiUser/loadDashboard',
+      url: appContext.api_url + 'ApiUser/checkToken',
       data:{token: appContext.userToken},
       success: function(res){
-        //console.log(res);    
+        console.log(res);    
         if(res){
-          let gelen = JSON.parse(res);
+          let gelen = res;
+
+          //let gelen = JSON.parse(res);
           //console.log(gelen);
           if(gelen.userData.sonuc == 'token_created'){
             appContext.setUserToken(gelen.userData.newUserToken);

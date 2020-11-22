@@ -98,6 +98,7 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     contentBase: './Admin/',
-    hot: true
+    hot: true,
+    host: '0.0.0.0',
   }
 }

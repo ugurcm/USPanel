@@ -6,7 +6,6 @@ import Sidebar from '../components/Sidebar';
 import TopBar from '../components/TopBar';
 
 
-
 import Swal from 'sweetalert2';
 
 
@@ -15,8 +14,9 @@ const DashboardRoute = props => {
   const appContext = useContext(AppContext);
 
   useEffect(()=>{
-    console.log("dashboard route yüklendi");
+    //console.log("dashboard route yüklendi");
     //console.log(props);
+    
     
   },[])
 

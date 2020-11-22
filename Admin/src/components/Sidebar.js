@@ -1,66 +1,37 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {BrowserRouter, Route, Switch, Link, Redirect, withRouter} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Link, Redirect, withRouter, useParams,useRouteMatch} from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+
 import doAjax from '../libraries/doAjax';
+import menuTreeSelector from '../libraries/menuTreeSelector';
 import tokenCheck from '../libraries/tokenCheck';
 
 import AppContext from '../context/AppContext';
 import SidebarLogo from '../assets/img/logo-w.png';
 
-function isInArray(array, search)
-{
-    return array.indexOf(search) >= 0;
-}
-
-
 const SidebarListe = (props) => {
-  if (!props.listArr) {
-    return false;
-  }
-  const linkOnClick = (value, order) => {
-    if(order <= props.activeOrder ){   // esit seviyede ise
-      let newArr = [...props.activeTabArr];
-      let aIndex = newArr.find(index => index == parseInt(value.id))
-      if(newArr.indexOf(aIndex) != -1){   // Aynı satırın alt sayfaları seçilirse arrayı bir arttır
-        newArr.length = newArr.indexOf(aIndex)+1;
-        props.setActiveTabArr(newArr);
-      }
-      if(newArr.indexOf(aIndex) == -1){   // Başka bir satır seçilirse arrayı seçilen seviyeye kadar azalt
-        newArr.length = order - 1;
-        newArr.push(parseInt(value.id))
-        props.setActiveTabArr(newArr);
-      }
-      props.setActiveOrder(order);
-    }
-    if(order > props.activeOrder ){   // alt seviye ise arrayı 0dan oluştur
-      const newArr = [...props.activeTabArr];
-      newArr.push(parseInt(value.id));
-      props.setActiveTabArr(newArr);
-      props.setActiveOrder(order); 
-    }
-  }
+  const {listArr} = props;
+  if (!listArr) {return false;}
   return (
     <div className="smenu">
-      {(props.listArr?<ul>    
-        {props.listArr.map((value, key) => {
-          
+      {(listArr?<ul>    
+        {listArr.map((value, key) => {
           let link = '#';
-          if(value.hasTable == 1){
-            link = '/CrudList/' + value.slug;
+          if(value.has_table == 1){
+            link = '/crudList/' + value.slug;
           }
-          if(value.componentName){
-            link = '/' + value.componentName;
+          if(value.component_name){
+            link = '/' + value.component_name;
           }
-          //const isim = '/crudList/subeler';
           return (
-            <CSSTransition in={(isInArray(props.activeTabArr, parseInt(value.id)) )} key={value.id} timeout={500} classNames="selected" >
-              <li className={((isInArray(props.activeTabArr, parseInt(value.id))   )? 'selected-enter-done' : '') + " listType" + value.list_type}>
-                <Link to={link} onClick={(e) => linkOnClick(value, props.order)} >
+            <CSSTransition in={true} key={value.id} timeout={500} >
+              <li className={(( props.menuSecilenler[props.seviye] == key )? 'selected-enter-done' : '') + " listType" + value.list_type} data-key={key}>
+                <Link to={link} onClick={(e) => props.clickMenuItem(e, link, key, props.seviye)} >
                   {(value.icon?<div className="icon"><i className={value.icon}></i></div>:'')}
                   <span>{value.title}</span>
+                  {(value.children?<div className="arrow"><i className="fa fa-angle-down"></i></div>:null)}
                 </Link>
-                <SidebarListe listArr={value.children} activeTabArr={props.activeTabArr} setActiveTabArr={props.setActiveTabArr} order={props.order + 1} activeOrder={props.activeOrder} setActiveOrder={props.setActiveOrder} />
-
+                <SidebarListe listArr={value.children} menuSecilenler={props.menuSecilenler} clickMenuItem={props.clickMenuItem} seviye={props.seviye+1} />
               </li>
             </CSSTransition>
           )
@@ -70,39 +41,70 @@ const SidebarListe = (props) => {
   )
 }
 const Sidebar = props => {
+  //console.log(props)
   const appContext = useContext(AppContext);
-  const [activeTabArr, setActiveTabArr] = useState([2]);
-  const [activeOrder, setActiveOrder] = useState(1);
+  const [menuSecilenler, setMenuSecilenler] = useState([]);
+  //const [suankiUrl, setSuankiUrl] = useState('');
   useEffect(() => {
-  }, [appContext.sidebarData])
-  useEffect(() => {
-    tokenCheck({appContext});
-    
     const data = doAjax(
-      appContext.api_url + 'ApiAdmin/loadSidebars','GET',{}
+      appContext.api_url + 'Admin/ApiAdmin/loadSidebars','GET',{}
     );
     data.then((res)=>{
-      //console.log(res);  
-    
       const gelen = JSON.parse(res);
-      //console.log(gelen);
-      appContext.setSidebarData(gelen);
+      appContext.setSidebarData(gelen.tree);
+      //console.log(gelen.tree)
+
+      if(gelen.tree){
+        let suankiUrl = props.history.location.pathname.substring(props.history.location.pathname.lastIndexOf('/') + 1);
+        menuTreeSelector({tree:gelen.tree, suankiUrl:suankiUrl, suankiUrlMenuSec: suankiUrlMenuSec});
+        /*console.log(suankiUrl);
+        if(gelen.tree){
+          gelen.tree.map((item,key)=>{
+            //console.log(item);
+            if(item.slug == suankiUrl){
+              setMenuSecilenler([key])
+            }
+          })
+        }*/
+      }
     })
+    //console.log(props);
+    //console.log(props.history.location.pathname.substring(props.history.location.pathname.lastIndexOf('/') + 1));
+    //console.log(props.history.location.pathname);
+
+    
 
   }, [])  
-  
+  useEffect(()=>{
+    //console.log(menuSecilenler);
+  },[menuSecilenler])
+  const clickMenuItem = (e, link, key, seviye) => {
+    e.preventDefault();
+    if(link != '#'){
+      props.history.push(link)
+    } 
+    //console.log(link);
+    //console.log("menu seçildi " + seviye + " " + key);
+    let newArr = [...menuSecilenler];
+    newArr[seviye] = key;
+    newArr.length = seviye + 1;
+    setMenuSecilenler(x => newArr);
+  }
+  const suankiUrlMenuSec = (secilenMenuArr) => {
+    setMenuSecilenler(secilenMenuArr)
+  }
+
   return(
     <div className="sidebar">
       <div className="logo-cont">
-        <Link to="/"><img src={SidebarLogo} 
-          alt="UğurSoft Yönetim Paneli" /></Link>
+        <Link to="/"><img src={SidebarLogo} alt="Fümesoft Yönetim Paneli" /></Link>
       </div>
       <div className="sb-list">  
-        <SidebarListe listArr={appContext.sidebarData} activeTabArr={activeTabArr} setActiveTabArr={setActiveTabArr} order={1} activeOrder={activeOrder} setActiveOrder={setActiveOrder} />
+        <SidebarListe listArr={appContext.sidebarData} menuSecilenler={menuSecilenler} clickMenuItem={clickMenuItem} seviye={0} />
       </div>
       <div className="btn-add-panel">
-        <Link to="/Panel">Panel Ekle</Link>
-        <Link to="/Language">Dil Ekle</Link>
+        <Link to="/panel">Panel Ekle</Link>
+        <Link to="/language">Dil Ekle</Link>
       </div>
     </div>
   )

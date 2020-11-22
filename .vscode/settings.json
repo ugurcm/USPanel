@@ -1,0 +1,5 @@
+{
+  "terminal.integrated.fontWeightBold": "normal",
+  "terminal.integrated.fontFamily": "hack",
+  "git.ignoreLimitWarning": true
+}
