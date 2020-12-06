@@ -56,11 +56,12 @@ class ApiAdmin extends BaseController
 			$aranan = end($liste);	// sondaki parametre aranıyor.  /home gibi
 		}*/
 
-
+		
 		$liste = $db->query('select p.id, p.title, p.parent,
 			p.slug,p.list_type,p.icon,p.has_table, 
 			p.component_name
 			from panel p 
+			where p.show_sidebar = 1
 			order by p.count asc, p.parent asc')->getResultArray();
 		//print_r($liste);
 		//return false;

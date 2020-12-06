@@ -17,43 +17,24 @@ export const pageInitWork = ({appContext, state, setState}) => {
     //console.log(res);    
     const gelen = JSON.parse(res);
     //console.log(gelen);
+        
 
     let formLink = "/crudForm/" + gelen.panel.slug + (state.id!=undefined?'?parent='+state.id:'');
-    /*if(gelen['altKategoriColumn']){
-      if(gelen['altKategoriColumn']['slug']){
-        //console.log(gelen['altKategoriColumn']['slug']);
-        formLink = formLink + "?" + gelen['altKategoriColumn']['slug'] + "=" + (state.id!=undefined?state.id:'')
-      }
-    }*/
-
-
+    
     setState((state) => ({
       ...state, 
       initWorkLoading:true,
       title: gelen.baslik,
       panel: gelen.panel,
       formLink: formLink,
-      crudData: {...state.crudData, table: gelen.panel.slug},
+      crudData: {...state.crudData, 
+        table: gelen.panel.slug, 
+        order_column:gelen.panel.order_column,
+        order_type: gelen.panel.order_type
+      },
     }))
     
-    //console.log();
 
-    //+ (state.id != null ? '/?parent')
-    //console.log(table);
-    
-    //setState((refreshKey) => (refreshKey+1))
-    /*console.log({
-      ...state, 
-      title: 'Panel Bileşenleri (' + gelen.panel.title + ')',
-      panel: gelen.panel,
-      formLink: "/crudForm/" + gelen.panel.slug,
-      crudData: {...state.crudData, table: gelen.panel.slug},
-    });*/
-    /*setTitle("Panel Bileşenleri ( " + gelen.panel.title + " )");
-    setPanel((x) => (x = gelen.panel)); 
-    setFormLink("/crudForm/" + gelen.panel.slug);
-    setCrudData((crudData) => ({...crudData, table: gelen.panel.slug}));*/
-    //console.log(gelen.panel.slug);
   });
 }
 
@@ -72,8 +53,8 @@ export const refreshTableWork = ({appContext, state, setState}) => {
       kacar: state.crudData.kacar,
       sayfaSayisi: state.crudData.sayfaSayisi,
       toplam: state.crudData.toplam,
-      orderby: "t.id",
-      orderType: "asc",        
+      orderby: state.crudData.order_column,
+      orderType: state.crudData.order_type,        
     }
   );
   data.then((res) => {
@@ -153,3 +134,10 @@ export const yukariGit = ({e,state,appContext,history}) => {
 
   })
 }
+
+
+
+
+
+
+

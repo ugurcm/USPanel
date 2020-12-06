@@ -290,6 +290,12 @@ class Panel extends BaseController {
         $gonder['component_name'] = $gelen['formData']['component_name'];
         $gonder['icon'] = $gelen['formData']['icon'];
         $gonder['list_type'] = $gelen['formData']['list_type']; //1 başlık, 2 açılır
+        $gonder['show_sidebar'] = $gelen['formData']['show_sidebar']; //0 Gözükme, 1 Gözük
+        $gonder['order_column'] = $gelen['formData']['order_column']; // siralama kolonu
+        $gonder['order_type'] = $gelen['formData']['order_type']; // siralama turu
+        $gonder['order_drag'] = $gelen['formData']['order_drag']; // siralama sürükleme aktifmi
+        $gonder['drag_column'] = $gelen['formData']['drag_column']; // siralama sürükleme aktifmi
+        
         //print_r($gonder);
         $db->table('panel')->insert($gonder);
         //echo $db->affectedRows();
@@ -338,6 +344,11 @@ class Panel extends BaseController {
       $gonder['component_name'] = $gelen['formData']['component_name'];
       $gonder['icon'] = $gelen['formData']['icon'];
       $gonder['list_type'] = $gelen['formData']['list_type'];
+      $gonder['show_sidebar'] = $gelen['formData']['show_sidebar']; //0 Gözükme, 1 Gözük
+      $gonder['order_column'] = $gelen['formData']['order_column']; // siralama kolonu
+      $gonder['order_type'] = $gelen['formData']['order_type']; // siralama turu
+      $gonder['order_drag'] = $gelen['formData']['order_drag']; // siralama sürükleme aktifmi
+      $gonder['drag_column'] = $gelen['formData']['drag_column']; // siralama sürükleme aktifmi
 
       $db->table('panel p')->where('id',$gelen['formId'])->update($gonder);
       /*$this->db->where('id', $gelen['formId']);

@@ -103,6 +103,7 @@ const Sidebar = props => {
         <SidebarListe listArr={appContext.sidebarData} menuSecilenler={menuSecilenler} clickMenuItem={clickMenuItem} seviye={0} />
       </div>
       <div className="btn-add-panel">
+        <Link to="/sortableTest">Sortable Test</Link>
         <Link to="/panel">Panel Ekle</Link>
         <Link to="/language">Dil Ekle</Link>
       </div>

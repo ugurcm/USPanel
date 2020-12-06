@@ -40,9 +40,11 @@ export default function PanelComponentForm (props) {
     type_length: '',
     target_table:'',
     target_table_title: '',
+    target_table_secilen_kolon: '',
     type_default_value: '',
     show_in_crud: 1,
     form_edit: 1,
+    
   });
   const [panel, setPanel] = useState({});
   const [componentList, setComponentList] = useState([]);
@@ -95,6 +97,7 @@ export default function PanelComponentForm (props) {
           <div>
             <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Adı'} slug={'target_table'} onChange={onChange} />
             <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Başlık Kolonu'} slug={'target_table_title'} onChange={onChange} />
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Seçilen Alt Kategori Kolonu'} slug={'target_table_secilen_kolon'} onChange={onChange} />
           </div>
           :null}
         
@@ -106,8 +109,7 @@ export default function PanelComponentForm (props) {
           <RowInputText values={values} label={'Mysql Default Veri'} slug={'type_default_value'} onChange={onChange} />
 
           <RowInputRadio values={values} label={'Crudda Gözüksün mü?'} slug={'show_in_crud'} onChange={onChange} radioList={[{label:'Hayır Gözükmesin', value: 0}, {label:'Evet Gözüksün', value: 1}]} />
-
-
+          
           <RowInputRadio values={values} label={'Formda Gözüksün mü?'} slug={'form_edit'} onChange={onChange} radioList={[{label:'Hayır Gözükmesin', value: 0}, {label:'Evet Gözüksün', value: 1}]} />
 
           

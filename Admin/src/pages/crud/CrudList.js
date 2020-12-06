@@ -1,27 +1,36 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {useParams, withRouter, Link} from 'react-router-dom';
+
+import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc';
+
+
 import AppContext from '../../context/AppContext';
 import Swal from 'sweetalert2';
 import doAjax from '../../libraries/doAjax';
-import TableRows from './compList/TableRow';
 import TableControls from './compList/TableControls'
 import {pageInitWork, refreshTableWork, deleteRow, yukariGit} from './compList/CrudLib';
 
 import queryString from 'query-string';
 import TableRow from './compList/TableRow';
-import { func } from 'prop-types';
 
-/*export default function CrudList (props) {
-  const [pageId, setPageId] = useState(0);
-  let { slug,id } = useParams();
-  useEffect(()=>{
-    const parsed = queryString.parse(location.search);
-    if(parsed.id){setPageId(parsed.id);}
-  })
-  return(
-    <CrudListComp slug={slug} pageId={pageId} history={props.history} />
+
+const DragHandle = SortableHandle(()=> <span>::</span>);
+
+const SortableItem = SortableElement(({key,item,state,setState,appContext,deleteRow})=>
+
+  <TableRow key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow}/>
+
+)
+const SortableList = SortableContainer(({state,setState,appContext,deleteRow})=>{
+  return (
+    <tbody>
+      {state.crudList.map((item,key)=>
+        <SortableItem key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow} index={key} />
+      )}
+    </tbody>
   )
-}*/
+})
+
 
 export default function CrudList (props) {
   //const {slug, pageId, history} = props;
@@ -42,6 +51,7 @@ export default function CrudList (props) {
       kacar: 15,
       sayfaSayisi: 0,
       toplam: 0,
+      order_drag: 0
     },
     crudColumns: [],
     crudList: []
@@ -61,12 +71,10 @@ export default function CrudList (props) {
 
   const yenile = (e) => {
     e.preventDefault();
-    //refreshTableWork({table:slug, appContext, state, setState });
-    //console.log(history);
-    //history.push('/crudList/siniflar');
+    console.log(state);
   }
   
-  
+    
 
   return (
     <div className="page-content">    
@@ -89,7 +97,8 @@ export default function CrudList (props) {
           </div>
         </div>
 
-        <div className="list-table">          
+        <div className="list-table">  
+
           <table>
             <thead>
               <tr>
@@ -100,12 +109,16 @@ export default function CrudList (props) {
                 })}
               </tr>
             </thead>
+            {state.crudData.order_drag == 0 ?
             <tbody>
               {state.crudList.map((item,key)=>
                 <TableRow key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow}/>
               )}
             </tbody>
+            :<SortableList state={state} setState={setState} appContext={appContext} deleteRow={deleteRow} />}
+
           </table>
+
         </div>
 
         
@@ -124,6 +137,7 @@ export default function CrudList (props) {
 
 
       </div>
+
 
     </div>
   )

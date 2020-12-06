@@ -2,6 +2,8 @@ import React, {useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import AppContext from '../../../context/AppContext';
 import Swal from 'sweetalert2';
+import DragRow from './DragRow';
+
 export default function TableRow ({item, state, setState, deleteRow, appContext}) {
   //console.log(item);
   //console.log(crudColumns);
@@ -44,6 +46,10 @@ export default function TableRow ({item, state, setState, deleteRow, appContext}
               //console.log(column);
               //console.log(btn);
               btnReturn = <Link key={keyb} to={btn.link + '/' +item.id} className="altkategori-link">{btn.name}</Link>
+            }
+
+            if(btn.type == 'DragRow'){
+              btnReturn = <DragRow key={key} />
             }
 
             return btnReturn;

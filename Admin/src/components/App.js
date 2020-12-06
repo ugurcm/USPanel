@@ -8,6 +8,8 @@ import Panel from '../pages/panel/Panel';
 import PanelForm from '../pages/panel/PanelForm';
 import PanelComponent from '../pages/panelComponent/PanelComponent';
 import PanelComponentForm from '../pages/panelComponent/PanelComponentForm';
+import SortableTest from '../pages/sortableTest/SortableTest';
+
 import Login from '../pages/login/Login';
 import DashboardRoute from '../layouts/DashboardRoute';
 import AppContext from '../context/AppContext'
@@ -75,6 +77,8 @@ const App = props => {
                 
                 <Route path='/crudForm/:table/:id' render={(props) => <CrudForm {...props}/>}/>
                 <Route path='/crudForm/:table' render={(props) => <CrudForm {...props}/>}/>
+
+                <Route path='/sortableTest/' render={(props) => <SortableTest {...props}/>}/>
 
                 <Route path="*">
                   <Redirect to="/home" />

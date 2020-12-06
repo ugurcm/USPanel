@@ -2,6 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import TextCrudForm from '../../../components/form/TextCrudForm'
 import AltKategori from '../../../components/form/AltKategori'
 import TekliSelect from '../../../components/form/TekliSelect'
+import TekliSelectAltKategori from '../../../components/form/TekliSelectAltKategori'
 
 export default function Column ({state,setState, item, onChange, appContext,id}){
   //console.log(state.columns)
@@ -16,6 +17,10 @@ export default function Column ({state,setState, item, onChange, appContext,id})
   }
   if(item.component_id == 3){
     myComponent = <TekliSelect item={item} values={values} onChange={onChange} state={state} 
+      setState={setState} appContext={appContext} id={id} />
+  }
+  if(item.component_id == 4){
+    myComponent = <TekliSelectAltKategori item={item} values={values} onChange={onChange} state={state} 
       setState={setState} appContext={appContext} id={id} />
   }
 

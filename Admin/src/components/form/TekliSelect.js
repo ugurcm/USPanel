@@ -10,9 +10,9 @@ export default function TekliSelect (props) {
   const name = item.slug; //siniflar_id
   const value = values[item.slug] || '';
   //console.log(item);
-  const [stateComp,setStateComp] = useState({
+  /*const [stateComp,setStateComp] = useState({
     liste: []
-  })
+  })*/
 
   useEffect(()=>{
     //console.log(item);
@@ -28,17 +28,31 @@ export default function TekliSelect (props) {
       let gelen = JSON.parse(res);
       //console.log(gelen);
       if(gelen['tableList']){
-        setStateComp((state)=>({...stateComp, liste: gelen['tableList']}))
+        //setStateComp((state)=>({...stateComp, liste: gelen['tableList']}))
+        
+        setState((state)=>({...state, stateComp: 
+          {...state.stateComp, ['state_'+item.id]: {liste:gelen['tableList']}}
+        }))
       }
 
     });
   },[])
-  
+  const stateYazdir = (e) => {
+    e.preventDefault();
+    console.log(stateComp);
+  }
   return(
+    <>
+    {(['state_'+item.id] in state.stateComp?
     <Select name={name} value={value} onChange={onChange} 
-      hasDefault={1} defaultValue={0} inputList={stateComp.liste} 
+      hasDefault={1} defaultValue={0} inputList={state.stateComp['state_'+item.id].liste} 
       itemKeyValue={'id'} itemKeyName={item.target_table_title}
       />
+    :null)} 
+    </>
   )
 }
 
+/* 
+
+*/

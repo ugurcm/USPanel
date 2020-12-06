@@ -47,6 +47,8 @@ class PanelLib{
       $breadcrumbs = array();
     }
     $sql = "SELECT * FROM ".$tableName." t WHERE t.id = '".$parentId."'    ";
+    //echo $sql;
+    //return false;
     $q = $db->query($sql);
     if($q->getResultArray()){
       foreach ($q->getResultArray() as $key => $value) {

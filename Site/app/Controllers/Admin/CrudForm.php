@@ -144,10 +144,15 @@ class CrudForm extends BaseController
     $db = \Config\Database::connect();
     
     //print_r($gets);
+    //return false;
+    
     $data['gets'] = $gets;
     $panelLib = new PanelLib();
     $breadCrumbList = $panelLib->findParents($gets['table'], $gets['id'], 0, $gets['name']);
     //print_r($breadCrumbList);
+    //print_r($data);
+    //return false;
+
     $parentList = array();
     if($breadCrumbList){
       foreach ($breadCrumbList as $key => $value) {
@@ -177,7 +182,10 @@ class CrudForm extends BaseController
         //print_r($sonItem);
         if($sonItem[])
       }*/
-      $parentList[] = $item;
+      if($item['liste']){
+        $parentList[] = $item;
+      }
+      
     }
 
     
@@ -188,16 +196,20 @@ class CrudForm extends BaseController
     echo json_encode($data);
   }
 
-
-
+  
   public function getAltKategori(){
     $gets = $this->request->getGet(null, FILTER_SANITIZE_STRING);
     if(!$gets) return false;
     $db = \Config\Database::connect();
 
     //print_r($gets);return;
+    /* 
+      table: siniflar, name: alt_siniflar, 
+      target_table_title: baslik, id: 0, idCikar
+    */
     
-    //$data['selected'] = $gets['id'];
+    $data['selected'] = $gets['id'];
+    //$data['selected'] = 0;
     $data['liste'] = array();
     
     
@@ -208,6 +220,7 @@ class CrudForm extends BaseController
 
     //print_r($liste);
 
+    //echo json_encode(array($data));
     echo json_encode($data);
 
   }

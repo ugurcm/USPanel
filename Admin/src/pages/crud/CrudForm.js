@@ -40,9 +40,10 @@ export default function CrudForm (props) {
     values: {},
     altKategori:[],
     parent:0,
-    params: params
+    params: params,
+    stateComp: {}
   });
-
+  
 
   useEffect(()=>{
     pageLoad({ appContext, table, id, state, setState, params });
@@ -64,7 +65,7 @@ export default function CrudForm (props) {
     //props.history.goBack();
     console.log(state);
   }
- 
+  
   return (
     <div className="page-content">      
       <div className="page-title">

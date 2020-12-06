@@ -335,6 +335,9 @@ class PanelComponent extends BaseController {
         if(!empty($gelen['formData']['target_table_title'])){
           $gonder['target_table_title'] = $gelen['formData']['target_table_title'];
         }
+        if(!empty($gelen['formData']['target_table_secilen_kolon'])){
+          $gonder['target_table_secilen_kolon'] = $gelen['formData']['target_table_secilen_kolon'];
+        }
 
         $db->table('column')->insert($gonder);
 
@@ -400,6 +403,9 @@ class PanelComponent extends BaseController {
         }
         if(!empty($gelen['formData']['target_table_title'])){
           $gonder['target_table_title'] = $gelen['formData']['target_table_title'];
+        }
+        if(!empty($gelen['formData']['target_table_secilen_kolon'])){
+          $gonder['target_table_secilen_kolon'] = $gelen['formData']['target_table_secilen_kolon'];
         }
         
         $db->table('column')->where('id', $gelen['formData']['id'])->update($gonder);

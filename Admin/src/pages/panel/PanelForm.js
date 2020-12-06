@@ -33,12 +33,18 @@ export default function CrudForm (props) {
     title: '',
     parent: 0,
     parent_path: ["0"],
-    has_table : 0,
+    has_table : 1,
     language_active : 0,
     component_name: '',
     icon: '',
-    //list_type: '1',
+    list_type: 2,
+    show_sidebar: 1,
+    order_column: 'id',
+    order_type: 'asc',
+    order_drag: 0,
+    drag_column: ''
   });
+  
   const [parentPathList, setParentPathList ] = useState([]);
   const [pageReady, setPageReady] = useState(0);
   const [formLock, setFormLock] = useState(0);
@@ -114,7 +120,7 @@ export default function CrudForm (props) {
     data.then((res)=>{
       //console.log(res);
       //return false;
-      
+
       const gelen = JSON.parse(res);
       if(gelen.sonuc == 'err'){
         Swal.fire({
@@ -151,7 +157,7 @@ export default function CrudForm (props) {
       
     })
 
-  }
+  }  
 
   const formCancel = (e) => {
     e.preventDefault();
@@ -225,8 +231,9 @@ export default function CrudForm (props) {
             </div>
             <div className="fval">
               <div className="radio-cont">
+                <Radio name={'has_table'} value={'1'} checkedValue={values.has_table} onChange={onChange} label={'Var'}/> 
                 <Radio name={'has_table'} value={'0'} checkedValue={values.has_table} onChange={onChange} label={'Yok'}/>   
-                <Radio name={'has_table'} value={'1'} checkedValue={values.has_table} onChange={onChange} label={'Var'}/>    
+                   
               </div>      
             </div>
           </div>
@@ -265,18 +272,74 @@ export default function CrudForm (props) {
             </div>
           </div>
 
-          {<div className="frow">
+          <div className="frow">
             <div className="flabel">
               Ana Kategorimi (Başlık Alanı)
             </div>
             <div className="fval">
               <div className="radio-cont">
-                <Radio name={'list_type'} value={'1'} checkedValue={values.list_type} onChange={onChange} label={'Evet'}/>   
-                <Radio name={'list_type'} value={'2'} checkedValue={values.list_type} onChange={onChange} label={'Hayır'}/>    
+                <Radio name={'list_type'} value={'2'} checkedValue={values.list_type} onChange={onChange} label={'Hayır'} />    
+                <Radio name={'list_type'} value={'1'} checkedValue={values.list_type} onChange={onChange} label={'Evet'} />   
               </div>      
             </div>
-          </div>}
+          </div>
 
+          <div className="frow">
+            <div className="flabel">
+              Sidebarda Görünüm
+            </div>
+            <div className="fval">
+              <div className="radio-cont">
+                <Radio name={'show_sidebar'} value={'1'} checkedValue={values.show_sidebar} onChange={onChange} label={'Evet'}/>   
+                <Radio name={'show_sidebar'} value={'0'} checkedValue={values.show_sidebar} onChange={onChange} label={'Hayır'}/>    
+              </div>      
+            </div>            
+          </div>
+
+          <div className="frow">
+            <div className="flabel">
+              Sıralama Kolonu
+            </div>
+            <div className="fval">
+              <div className="input-text">
+                <Text name={'order_column'} value={values.order_column} onChange={onChange} />
+              </div>              
+            </div>
+          </div>
+          <div className="frow">
+            <div className="flabel">
+              Sıralama Türü
+            </div>
+            <div className="fval">
+              <div className="input-text">
+                <Text name={'order_type'} value={values.order_type} onChange={onChange} />
+              </div>              
+            </div>
+          </div>
+
+          <div className="frow">
+            <div className="flabel">
+              Sıralama Sürükleme Aktifmi
+            </div>
+            <div className="fval">
+              <div className="radio-cont">
+                <Radio name={'order_drag'} value={'0'} checkedValue={values.order_drag} onChange={onChange} label={'Hayır'}/>   
+                <Radio name={'order_drag'} value={'1'} checkedValue={values.order_drag} onChange={onChange} label={'Evet'}/>    
+              </div>      
+            </div>            
+          </div>
+
+
+          <div className="frow">
+            <div className="flabel">
+              Drag Column
+            </div>
+            <div className="fval">
+              <div className="input-text">
+                <Text name={'drag_column'} value={values.drag_column} onChange={onChange} />
+              </div>              
+            </div>
+          </div>
           
 
           <div className="frow fsubmit">

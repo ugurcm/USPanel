@@ -21,7 +21,7 @@ class CrudList extends BaseController
     //print_r($gets);
     $data['gets'] = $gets;
     $dbo = $db->table('panel p');
-    $dbo->select('p.id, p.title, p.slug');
+    $dbo->select('p.id, p.title, p.slug,p.order_column,p.order_type');
     $dbo->where('p.slug', $gets['table']);
     $data['panel'] = $dbo->get()->getRowArray();
     
@@ -69,13 +69,13 @@ class CrudList extends BaseController
     //print_r($gets);
     
     $dbo = $db->table('panel p');
-    $dbo->select('p.id, p.title, p.slug');
+    $dbo->select('p.id, p.title, p.slug,p.order_drag, p.drag_column');
     $dbo->where('p.id', $gets['panelId']);
     $panel = $dbo->get()->getRowArray();
 
     //print_r($panel);
 
-
+    
     $dbo = $db->table('column c');
     $dbo->select('c.title, c.slug,c.show_in_crud, c.component_id, c.target_table, c.target_table_title');
     $dbo->where('c.panel_id', $panel['id']);
@@ -83,8 +83,19 @@ class CrudList extends BaseController
     $column = $dbo->get()->getResultArray();
 
     //print_r($column);
-    
-    
+    if($panel['order_drag'] == 1 & $panel['drag_column'] != ''){
+      $data['crudColumns'] [] = array(    // sürükle bırak butonu
+        'title' => '',
+        'show_in_crud' => 1,
+        'db_select' => 0,
+        'buttons' => array(
+          array(
+            'name' => 'Taşı',
+            'type' => 'DragRow',            
+          )
+        )
+      );
+    }
     if($column){
       foreach ($column as $keyi => $item) {
         $item['db_select'] = 1;
@@ -115,13 +126,17 @@ class CrudList extends BaseController
     );
 
     $item = array(
-      'title' => 'Düzenle',
+      'title' => 'İşlem',
       'show_in_crud'=> 1,
       'db_select' => 0, 
       'buttons'=> array($button1,$button2)
     );
 
+    
+
     $data['crudColumns'] [] = $item;
+
+    
 
     //print_r($data['crudColumns']);
 
@@ -176,6 +191,10 @@ class CrudList extends BaseController
             //print_r($value);
             $joinStr .= ' LEFT JOIN '.$value['target_table'].' ON ('.$value['target_table'].'.id = t.'.$value['slug'].') ';
           }
+          if($value['component_id'] == 4){
+            //print_r($value);
+            $joinStr .= ' LEFT JOIN '.$value['target_table'].' ON ('.$value['target_table'].'.id = t.'.$value['slug'].') ';
+          }
         }
       }
     }
@@ -225,6 +244,9 @@ class CrudList extends BaseController
     $dbSelectStr = rtrim($dbSelectStr, ', ');
     
     //echo $dbSelectStr;
+    //return false;
+
+
     /*echo "SELECT ".$dbSelectStr." FROM ".$gets['table']." t
     ".$whereStr."
     ".$joinStr." 
@@ -287,6 +309,7 @@ class CrudList extends BaseController
     $data['crudData']['kacar']   = $kacar;
 		$data['crudData']['nereden'] = $nereden;
 		$data['crudData']['toplam'] = $kayitSayisi['toplam'];
+		$data['crudData']['order_drag'] = $panel['order_drag'];
     
     
 
