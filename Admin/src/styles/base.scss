@@ -302,7 +302,8 @@ label{
       
       //background: url(../assets/img/sidebar-bg.png) no-repeat left 0 bottom 0 #051e34;
       /*background-color: #1e1e2d;*/
-      background-color: #101823;
+      //background-color: #101823;
+      background-color: #1f1f23;
       flex: 0 0 256px;
       max-width: 256px;
       background-size: 256px 556px;
@@ -314,6 +315,7 @@ label{
         padding-top: 6px;
         padding-bottom: 6px;
         box-shadow: 0 -1px 0 rgba(255,255,255,0.1) inset;
+        background-color: #18181b;
         a{
           display: block;
           padding-left: 20px;
@@ -533,12 +535,12 @@ label{
                   display: inline-block;
                   opacity: 1;
                   flex-grow: 1;
-                  color: #c9c9c9;
+                  color: #efeff1;
                   //font-weight: 300;
                 }
                 .arrow{
                   font-size: 12px;
-                  color:#a2a3b7;
+                  color:#efeff1;
                   transition: all 0.3s ease;
                 }
                 
@@ -667,10 +669,9 @@ label{
           justify-content: flex-end;
           flex-grow: 1;
           a{
-            //background-color: #eaeaea;
             color: #111;
             display: block;
-            padding: 0px 8px;
+            padding: 0px 10px;
             height: 25px;
             display: flex;
             align-items: center;
@@ -680,6 +681,9 @@ label{
             position: relative;
             font-weight: 500;
             transition: all 0.2s ease-in-out;
+            border-radius: 2px;
+            background-color: #1111111c;
+            font-size: 1em;
             i{}
             span{
               padding-left: 5px;
@@ -945,6 +949,76 @@ label{
       }
     }
   }
+}
+
+
+.tasinacakTr{
+  z-index: 10;
+  display: table !important;
+  td{
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #c9c9c9;
+    border-right: 1px solid #c9c9c9;
+    vertical-align: middle;
+    padding: 1px 4px;
+    font-size: 14px;
+    letter-spacing: -0.2px;
+    color: #000;
+    font-weight: 500;
+    background-color: #fff;
+    &.rowBtns{
+      width: 1%;
+      white-space: nowrap;
+    }
+  }
+  .editBtns{
+    display: flex;
+    margin-left: -2px;
+    margin-right: -2px;
+    align-items: center;
+    justify-content: center;
+    .item{
+      display: flex;
+      padding: 0px 1px;
+    }
+    a{   
+      font-size: 14px;
+      color: #2b2b2b;
+      display: flex;
+      padding: 2px 6px 1px 6px;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 0px;
+      background-color: rgba(0, 0, 0, 0.1);
+      font-weight: 600;
+      transition: all .2s ease-in-out;
+      margin:1px;
+      &:hover{
+        background-color: #b3b3b3;
+      }
+      
+      .icon{
+       
+        &+ .desc{
+          padding-left: 2px;
+        }
+      }
+      .desc{
+
+      }
+      
+    }
+    .btn-edit{
+      //background-color: #037ef3;
+      //color: #fff;
+    }
+    .btn-delete{
+      //background-color: #ec207b;
+      //color: #fff;
+    }
+  }
+
 }
 
 
@@ -1228,6 +1302,7 @@ label{
       background-color: #fff;
       color: #000;
       border: 2px solid #111;
+      
       &:hover{
         //background-color: rgba(0, 0, 0, 0.16);
       }
@@ -1833,6 +1908,79 @@ aui-spinner[filled]{height:0!important;width:0!important;margin:auto}
     }
   }
 }
+
+
+
+
+
+.dragTable tr td{
+  padding:5px;
+  color: #f00;
+}
+.sortableTr td{
+  padding:5px;
+  color: #f00;
+}
+
+
+
+.coklu-select{
+  .ust{
+    display: flex;
+    margin-bottom: 10px;
+    .select-item{
+
+    }
+    .select-btn{
+      padding-left: 10px;
+      padding-top: 2px;
+      button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 15px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        border-radius: 4px;
+        margin-right: 10px;      
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        border: 0;
+        font-weight: 500;
+        background-color: #fff;
+        color: #000;
+        border: 2px solid #111;
+      }
+    }
+  }
+  .liste{
+    width: 200px;
+    .item{      
+      display: flex;
+      background-color: #ebecf0;
+      align-items: center;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      .title{
+        flex-grow: 1;
+        padding: 4px;
+        font-size: 0.8em;
+      }
+      .ctrl{
+        button{
+          border:0;
+          cursor: pointer;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}
+
+
+
 
 
 

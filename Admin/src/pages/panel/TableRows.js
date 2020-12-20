@@ -2,22 +2,23 @@ import React, {useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import AppContext from '../../context/AppContext';
 import Swal from 'sweetalert2';
+import {SortableHandle} from 'react-sortable-hoc';
+
+const DragHandle = SortableHandle(()=> <span><i className="fas fa-arrows-alt"></i></span>);
 
 export default function TableRows (props) {
   //console.log(props)
-  //console.log(props.pageData.crudData.crudColumns);
-  
-  /*const deleteRow = (e, itemId = 0) => {
-    props.deleteRow(e, itemId);
-  }*/
-  //console.log(props);
-  //console.log(props.crudData.crudColumns);
-  //console.log(props.crudList);
-  let items = props.crudList.map((item, key) =>
-    <tr key={key}>
+  const {item,key} = props;
+  //console.log(item);
+  //let items = props.crudList.map((item, key) =>
+  let items = 
+    <tr>
+      <td><DragHandle key={key} /></td>
       {props.crudColumns.map((column,keym)=>{
         if(column.slug && column.show_in_crud){
-          return(<td key={keym}>{item[column.slug]}</td>)
+          let returnEdilecek = item[column['slug']];
+
+          return(<td key={keym}>{returnEdilecek}</td>)
         }
       })}   
       <td className="rowBtns">
@@ -55,11 +56,11 @@ export default function TableRows (props) {
         </div>
       </td>
     </tr>
-  )
-  if(props.crudList.length <= 0){
+  //)
+  /*if(props.crudList.length <= 0){
     //console.log("0 lan");
     items = <tr><td colSpan={10}>Kayıt Bulunamadı.</td></tr>
-  }
+  }*/
   //console.log(items);
   
   return(

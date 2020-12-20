@@ -4,6 +4,9 @@ import queryString from 'query-string';
 import AppContext from '../../context/AppContext';
 
 import Swal from 'sweetalert2';
+import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc';
+import arrayMove from 'array-move';
+import {isEqual} from 'lodash';
 
 import doAjax from '../../libraries/doAjax';
 import TableRows from './TableRows';
@@ -74,6 +77,7 @@ export default function Panel (props) {
   }
   const yenile = (e) => {
     e.preventDefault();
+    console.log(crudList);
     refreshTable();
   }
   const yukari = (e) => {
@@ -150,6 +154,43 @@ export default function Panel (props) {
     })
   }
 
+  const SortableItem = SortableElement(({key,item,crudColumns,crudList,crudData,deleteRow})=>
+    <TableRows key={key} item={item} crudColumns={crudColumns} crudList={crudList} crudData={crudData} deleteRow={deleteRow}/>
+  )
+  const SortableList = SortableContainer(({crudColumns,crudList,setCrudList,crudData,deleteRow})=>{
+    return (
+      <tbody>
+        {crudList.map((item,key)=>
+          <SortableItem key={key} item={item} crudColumns={crudColumns} crudList={crudList} setCrudList={setCrudList} appContext={appContext} deleteRow={deleteRow} index={key}   />
+        )}
+      </tbody>
+    )
+  })
+
+  const onSortEnd = ({e,crudList,setCrudList,appContext}) => {
+
+    //console.log(`${e.oldIndex} ${e.newIndex}`);
+    const newArr = arrayMove(crudList, e.oldIndex, e.newIndex);
+    
+    if(!isEqual(crudList, newArr)){
+      setCrudList((crudList) => (crudList = newArr))
+      var ids = [];
+      newArr.map((val,key)=>{
+        ids.push(val.id) 
+      });
+      
+      if(ids.length){
+        const data = doAjax(
+          appContext.api_url + 'Admin/Panel/saveOrder','POST', 
+          {ids}
+        )
+        data.then((res)=>{
+          console.log(res);
+        })
+      }
+    }
+  }
+
   //console.log(crudColumns);    
   return (
     <div className="page-content">      
@@ -187,9 +228,10 @@ export default function Panel (props) {
                   })}
               </tr>
             </thead>
-            <tbody>
+            {/*<tbody>
               <TableRows crudColumns={crudColumns} crudList={crudList} crudData={crudData} deleteRow={deleteRow} />
-            </tbody>
+            </tbody>*/}
+            <SortableList crudColumns={crudColumns} crudList={crudList} setCrudList={setCrudList} crudData={crudData} deleteRow={deleteRow} onSortEnd={(e)=>onSortEnd({e,crudList,setCrudList,appContext})} helperClass="tasinacakTr" useDragHandle />
           </table>
         </div>
 

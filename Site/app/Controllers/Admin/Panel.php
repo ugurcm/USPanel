@@ -20,6 +20,7 @@ class Panel extends BaseController {
     //print_r($gets);
     //return false;
 		$data['crudColumns'] = array(
+      array('title' => '', 'slug' => '', 'show_in_crud'=> 1, 'db_select' => 0),
       array('title' => 'ID', 'slug' => 'id', 'show_in_crud'=> 1, 'db_select' => 1),
       array('title' => 'Başlık', 'slug' => 'title' , 'show_in_crud'=> 1, 'db_select' => 1),
       array('title' => 'Tablo Adı', 'slug' => 'slug', 'show_in_crud'=> 1, 'db_select' => 1),
@@ -351,105 +352,31 @@ class Panel extends BaseController {
       $gonder['drag_column'] = $gelen['formData']['drag_column']; // siralama sürükleme aktifmi
 
       $db->table('panel p')->where('id',$gelen['formId'])->update($gonder);
-      /*$this->db->where('id', $gelen['formId']);
-      $this->db->update('panel', $gonder);*/
-      $panel_id = $gelen['formId'];
-      
-    }
-
-    /*
-    //print_r($gelen);
-    if($gelen['formType'] == 'update'){
-      $data['aciklama'] = 'Kayıt Güncellenmiştir. Yönlendiriliyorsunuz...';
-      $gonder['title'] = $gelen['formData']['title'];
-      $gonder['parent'] = $gelen['formData']['parent'];
-      $gonder['hasTable'] = $gelen['formData']['hasTable'];
-      $gonder['language_active'] = $gelen['formData']['language_active'];
-      //print_r($gonder);
-      if($gelen['formData']['parent_path']){
-        $gonder['parent_path'] = json_encode($gelen['formData']['parent_path']);
-      }
-
-      $gonder['componentName'] = $gelen['formData']['componentName'];
-      $gonder['icon'] = $gelen['formData']['icon'];
-      $gonder['list_type'] = $gelen['formData']['list_type'];
-
-      $this->db->where('id', $gelen['formId']);
-      $this->db->update('panel', $gonder);
       $panel_id = $gelen['formId'];
     }
-
-    if($gelen['formData']['language_active'] == 1){
-      //$panel_id
-      $selectedPanelTable = $this->db->select('pt.*')
-        ->from('panel pt')
-        ->where('pt.id', $panel_id)
-        ->get()->row_array();
-      //print_r($selectedPanelTable);
-      $tabloAdi = $selectedPanelTable['slug'];
-
-      $eklenecekIsim = 'language_id';
-      if(!$this->db->field_exists($eklenecekIsim, $tabloAdi)){
-        $fields = array(
-          $eklenecekIsim =>
-            array('type' => 'INT', 'constraint' => 11, 'default' => '1', 'unsigned' => TRUE)
-        );
-        $this->dbforge->add_column($tabloAdi, $fields);
-
-        $gonderCol['panel_id'] = $selectedPanelTable['id'];
-        $gonderCol['title'] = $eklenecekIsim;
-        $gonderCol['slug'] = $eklenecekIsim;
-        $gonderCol['column_input_id'] = 1;
-        $gonderCol['column_type_id'] = 2;
-        $gonderCol['type_length'] = 11;
-        $gonderCol['type_default_value'] = 1;     //1 türkçe
-        $gonderCol['edit_form'] = 0;
-        $gonderCol['show_in_crud'] = 0;
-        $gonderCol['relation_type_id'] = 0;
-        $gonderCol['form_type'] = 'Int';
-        $this->db->insert('column', $gonderCol);
-      }
-
-      $eklenecekIsim = 'content_id';
-      if(!$this->db->field_exists($eklenecekIsim, $tabloAdi)){
-        $fields = array(
-          $eklenecekIsim =>
-            array('type' => 'INT', 'constraint' => 11, 'default' => '0', 'unsigned' => TRUE)
-        );
-        $this->dbforge->add_column($tabloAdi, $fields);
-
-        $gonderCol['panel_id'] = $selectedPanelTable['id'];
-        $gonderCol['title'] = $eklenecekIsim;
-        $gonderCol['slug'] = $eklenecekIsim;
-        $gonderCol['column_input_id'] = 1;
-        $gonderCol['column_type_id'] = 2;
-        $gonderCol['type_length'] = 11;
-        $gonderCol['type_default_value'] = 0;     //1 türkçe
-        $gonderCol['edit_form'] = 0;
-        $gonderCol['show_in_crud'] = 0;
-        $gonderCol['relation_type_id'] = 0;
-        $gonderCol['form_type'] = 'Int';
-        $this->db->insert('column', $gonderCol);
-      }
-
-      $selectedLangTable = $this->db->select('pt.*')
-        ->from($tabloAdi.' pt')
-        ->get()->result_array();
-      if($selectedLangTable){
-        foreach ($selectedLangTable as $key => $value) {
-          $gonderContentId['content_id'] = $value['id'];
-          $this->db->where('id', $value['id'])->update($tabloAdi, $gonderContentId);
-
-        }
-      }
-        //print_r($selectedPanelTable);
-
-
-    }*/
-
     echo json_encode($data);
   }
 
+
+  public function saveOrder(){
+    $gets = $this->request->getPost(null, FILTER_SANITIZE_STRING);
+    if(!$gets) return false;
+    $db = \Config\Database::connect();
+    //print_r($gets);
+    //print_r($gets['ids']);
+
+    if($gets['ids']){
+      
+      foreach ($gets['ids'] as $key => $id) {
+        //echo $id.' ';
+        $i = $key + 1;
+        $sql = "UPDATE panel t SET t.count = '".$i."' WHERE id='".$id."' ";
+        $db->query($sql);
+        //echo $sql;
+        //echo '<br/>';
+      }
+    }
+  }
 
 
 }

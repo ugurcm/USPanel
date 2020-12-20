@@ -11,7 +11,7 @@ export default function formSubmit ({appContext,e,values,formType,props}){
     {formData: values, formType:formType}
   );// formType: formType, formId: formId, panelId: panelId, tableName:tableName
   data.then((res)=>{
-    //console.log(res);    
+    console.log(res);    
     const gelen = JSON.parse(res);
     if(gelen.sonuc == 'err'){
       Swal.fire({
@@ -35,7 +35,7 @@ export default function formSubmit ({appContext,e,values,formType,props}){
       setTimeout(()=>{ 
         props.history.push('panelComponent?id=' + values.panel_id);
       }, 1500)      
-    }else{}   
+    }else{}  
      
 
   })

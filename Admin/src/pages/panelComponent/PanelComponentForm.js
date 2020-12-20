@@ -65,6 +65,7 @@ export default function PanelComponentForm (props) {
     console.log(values);
     console.log(formType);
   }
+  
 
   return (
     <div className="page-content">      
@@ -100,6 +101,30 @@ export default function PanelComponentForm (props) {
             <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Seçilen Alt Kategori Kolonu'} slug={'target_table_secilen_kolon'} onChange={onChange} />
           </div>
           :null}
+
+          {values.component_id == 5 ? 
+          <div>
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Adı'} slug={'target_table'} onChange={onChange} />
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Başlık Kolonu'} slug={'target_table_title'} onChange={onChange} />
+           
+          </div>
+          :null}
+          {values.component_id == 6 ? 
+          <div>
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Adı'} slug={'target_table'} onChange={onChange} />
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Başlık Kolonu'} slug={'target_table_title'} onChange={onChange} />
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Seçilen Alt Kategori Kolonu'} slug={'target_table_secilen_kolon'} onChange={onChange} />
+          </div>
+          :null}
+          {values.component_id == 7 ? 
+          <div>
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Adı'} slug={'target_table'} onChange={onChange} />
+            <RowInputText values={values} label={'Bağlantı Kurulacak Tablo Seçilen Alt Kategori Kolonu'} slug={'target_table_secilen_kolon'} onChange={onChange} />
+          
+          </div>
+          :null}
+
+
         
 
           <RowInputSelect values={values} label={'Mysql Column Type'} slug={'column_type_id'} onChange={onChange} 

@@ -2,10 +2,12 @@ import { func } from 'prop-types';
 import React from 'react';
 import Swal from 'sweetalert2';
 import doAjax from '../../../libraries/doAjax';
+import arrayMove from 'array-move';
+import {isEqual} from 'lodash';
 
 
 export default function CrudLib({isim}){}
-export const pageInitWork = ({appContext, state, setState}) => {
+export const pageInitWork = ({appContext, state, setState, queryStringList}) => {
   
   setState((state)=>({...state, initWorkLoading:false}))
   //console.log("page init work");
@@ -18,8 +20,29 @@ export const pageInitWork = ({appContext, state, setState}) => {
     const gelen = JSON.parse(res);
     //console.log(gelen);
         
+    //console.log("page init güncelledi");
+    //let formLink = "/crudForm/" + gelen.panel.slug + (state.id!=undefined?'?parent='+state.id:'');
 
-    let formLink = "/crudForm/" + gelen.panel.slug + (state.id!=undefined?'?parent='+state.id:'');
+
+    let formLink = "/crudForm/" + gelen.panel.slug;
+
+    let qsIcon = '';
+    if(state.id!=undefined){
+      qsIcon = '?';
+      formLink += qsIcon + 'parent=' + state.id;
+    }
+    //console.log(formLink);
+    //console.log(qsIcon);
+    if(queryStringList.parentTable){
+      
+      if(qsIcon == '?'){
+        qsIcon ='&';
+      }else{
+        qsIcon = '?';
+      }
+      formLink += `${qsIcon}parentTable=${queryStringList.parentTable}&parentName=${queryStringList.parentName}&parentValue=${queryStringList.parentValue}`;
+    }
+    //console.log(formLink);
     
     setState((state) => ({
       ...state, 
@@ -32,7 +55,9 @@ export const pageInitWork = ({appContext, state, setState}) => {
         order_column:gelen.panel.order_column,
         order_type: gelen.panel.order_type
       },
+      queryStringList:queryStringList
     }))
+    //console.log(queryStringList);
     
 
   });
@@ -54,7 +79,8 @@ export const refreshTableWork = ({appContext, state, setState}) => {
       sayfaSayisi: state.crudData.sayfaSayisi,
       toplam: state.crudData.toplam,
       orderby: state.crudData.order_column,
-      orderType: state.crudData.order_type,        
+      orderType: state.crudData.order_type,  
+      queryStringList: state.queryStringList      
     }
   );
   data.then((res) => {
@@ -136,6 +162,55 @@ export const yukariGit = ({e,state,appContext,history}) => {
 }
 
 
+
+export const onSortEnd = ({e, state, setState, appContext}) => {
+  const newArr = arrayMove(state.crudList, e.oldIndex, e.newIndex);
+  if(!isEqual(state.crudList, newArr)){
+    setState((state) => ({...state, crudList: newArr }))
+
+    var ids = [];
+    newArr.map((val,key)=>{
+      ids.push(val.id) 
+    });
+
+    
+
+    if(ids.length){
+      const data = doAjax(
+        appContext.api_url + 'Admin/CrudList/saveOrder','POST', 
+        {ids:ids, table: state.panel.slug, orderColumn: state.crudData.order_column}
+      )
+      data.then((res)=>{
+        console.log(res);
+      })
+    }
+    //console.log(ids);
+
+  }
+}
+
+
+
+
+
+export const ozellikYukari = ({e,state,appContext,history}) => {
+  e.preventDefault();
+
+  //console.log(state);
+  const data = doAjax(
+    appContext.api_url + 'Admin/CrudList/ozellikYukariGit',
+    'GET',{params: state.queryStringList}
+  );
+  data.then((res)=>{
+    //console.log(res);
+    const gelen = JSON.parse(res);
+    //console.log(gelen);
+    let gidecekLink = `/crudList/${gelen.method}/${(gelen.ustKategoriId>0?gelen.ustKategoriId:``)}`;
+    //console.log(gidecekLink);
+    history.push(gidecekLink);
+  })
+
+}
 
 
 

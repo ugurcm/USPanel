@@ -2,6 +2,7 @@
 use App\Controllers\BaseController;
 use App\Libraries\GenelLib;
 use App\Libraries\PanelLib;
+use App\Libraries\ElfinderLib;
 class ApiAdmin extends BaseController
 {
 
@@ -103,5 +104,29 @@ class ApiAdmin extends BaseController
 		//print_r($sonuc);
 
 	}
+
+	public function elfinder_init() {
+		$opts = array(
+      'debug' => true, 
+      'roots' => array(
+        array(
+          'driver' => 'LocalFileSystem',
+          'path' => FCPATH.'assets/upload/user_files',
+          //'path' => WRITEPATH.'uploads',
+          'URL' => site_url('assets/upload/user_files') . '/'
+        )
+      )
+		);
+		//print_r($opts);
+		$elfinder = new ElfinderLib($opts);
+	}
+
+	public function dosyaYonetim(){
+		return view("dosyayonetim/index");
+	}
 	
+
+
+
+
 }

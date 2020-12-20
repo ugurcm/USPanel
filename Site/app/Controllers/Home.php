@@ -8,7 +8,9 @@ class Home extends BaseController
 	}
 	public function iletisim()
 	{
-		echo "iletisim";
+		//echo "iletisim";
+		echo FCPATH;
+		//mkdir(FCPATH.'assets/deneme',0777,true);
 	}
 	//--------------------------------------------------------------------
 

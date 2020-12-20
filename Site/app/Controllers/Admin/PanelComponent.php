@@ -295,6 +295,9 @@ class PanelComponent extends BaseController {
       ->where('ct.id', $gelen['formData']['column_type_id'])
       ->get()->getRowArray();
     //print_r($selectedMysqlColumnType);
+
+    
+
     if($gelen['formType'] == 'add'){
       $panelId = $gelen['formData']['panel_id'];
       $panel = $db->table('panel p')->select('*')->where('p.id', $panelId)->get()->getRowArray();
@@ -363,7 +366,6 @@ class PanelComponent extends BaseController {
 
 
       
-
       
 
       $column = $db->table('column c')->select('c.*')        
@@ -433,7 +435,22 @@ class PanelComponent extends BaseController {
       
 
     }
+
+    // Eğer çoklu seçimse to tablosunu oluşturalım
+    if($gelen['formData']['component_id'] == 5){
+      $birlesimTablosu = $panel['slug'].'_to_'.$gelen['formData']['target_table'];
+      $kolon1isim = $panel['slug'].'_id';
+      $kolon2isim = $gelen['formData']['target_table'].'_id';
+      $panelLib->createTableNToN($birlesimTablosu, $kolon1isim, $kolon2isim);
+    }
+    if($gelen['formData']['component_id'] == 6){
+      $birlesimTablosu = $panel['slug'].'_to_'.$gelen['formData']['target_table'];
+      $kolon1isim = $panel['slug'].'_id';
+      $kolon2isim = $gelen['formData']['target_table'].'_id';
+      $panelLib->createTableNToN($birlesimTablosu, $kolon1isim, $kolon2isim);
+    }
     
+
 
     echo json_encode($data);
   }

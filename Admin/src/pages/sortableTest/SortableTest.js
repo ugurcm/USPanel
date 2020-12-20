@@ -30,7 +30,7 @@ export default function SortableTest(props){
   const DragHandle = SortableHandle(()=> <span>::</span>);
 
   const SortableItem = SortableElement(({value})=>
-    <tr><td><DragHandle /></td><td>{value.id}</td><td>{value.title}</td></tr>
+    <tr className="sortableTr"><td><DragHandle /></td><td>{value.id}</td><td>{value.title}</td></tr>
   )
   const SortableList = SortableContainer(({items})=>{
     return (      
@@ -45,7 +45,7 @@ export default function SortableTest(props){
   })
   
   return <div>    
-    <table>
+    <table className="dragTable">
     <SortableList items={state.items} onSortEnd={onSortEnd} useDragHandle />     
     </table>
   </div>

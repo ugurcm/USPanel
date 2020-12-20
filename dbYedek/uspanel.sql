@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80021
 File Encoding         : 65001
 
-Date: 2020-12-07 00:46:43
+Date: 2020-12-20 23:58:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -146,7 +146,7 @@ CREATE TABLE `column` (
   `target_table_title` varchar(255) DEFAULT '',
   `target_table_secilen_kolon` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of column
@@ -172,9 +172,15 @@ INSERT INTO `column` VALUES ('25', '11', 'Slider Alt', 'slider_alt', '0', '3', '
 INSERT INTO `column` VALUES ('26', '12', 'Sınıf Başkanı', 'sinif_baskani', '0', '3', '2', '11', '0', null, '0', '0', '1', '1', 'ogrenciler', 'ad_soyad', '');
 INSERT INTO `column` VALUES ('27', '13', 'ID', 'id', '0', '1', '2', '11', '0', 'Int', '0', '0', '1', '0', '', '', '');
 INSERT INTO `column` VALUES ('28', '13', 'Etüd Adı', 'etud_adi', '0', '1', '1', '200', '', null, '0', '0', '1', '1', '', '', '');
-INSERT INTO `column` VALUES ('29', '13', 'Sınıf', 'sinif_id', '0', '4', '2', '11', '0', null, '0', '0', '1', '1', 'siniflar', 'baslik', 'alt_siniflar');
-INSERT INTO `column` VALUES ('30', '13', 'Öğrenci', 'ogrenci', '0', '3', '2', '11', '0', null, '0', '0', '1', '1', 'ogrenciler', 'ad_soyad', '');
 INSERT INTO `column` VALUES ('31', '13', 'Count', 'count', '0', '1', '2', '11', '0', null, '0', '0', '0', '0', '', '', '');
+INSERT INTO `column` VALUES ('36', '14', 'ID', 'id', '0', '1', '2', '11', '0', 'Int', '0', '0', '1', '0', '', '', '');
+INSERT INTO `column` VALUES ('37', '14', 'Başlık', 'baslik', '0', '1', '1', '255', '', null, '0', '0', '1', '1', '', '', '');
+INSERT INTO `column` VALUES ('38', '14', 'Etüd ID', 'etud_id', '0', '3', '1', '255', '', null, '0', '0', '1', '0', 'etudler', 'etud_adi', '');
+INSERT INTO `column` VALUES ('39', '14', 'Count', 'count', '0', '1', '2', '11', '0', null, '0', '0', '0', '0', '', '', '');
+INSERT INTO `column` VALUES ('40', '13', 'Özellikleri', 'ozellikleri', '0', '7', '1', '50', '', null, '0', '0', '1', '0', 'etud_ozellikleri', '', 'etud_id');
+INSERT INTO `column` VALUES ('41', '13', 'Üst Kategori', 'ust_kategori', '0', '2', '2', '11', '0', null, '0', '0', '1', '1', '', 'etud_adi', '');
+INSERT INTO `column` VALUES ('42', '14', 'Değer', 'deger', '0', '1', '1', '255', '', null, '0', '0', '1', '1', '', '', '');
+INSERT INTO `column` VALUES ('44', '13', 'İçerik', 'icerik', '0', '8', '3', '', '', null, '0', '0', '0', '1', '', '', '');
 
 -- ----------------------------
 -- Table structure for column_copy
@@ -243,7 +249,7 @@ CREATE TABLE `component` (
   `title` varchar(255) DEFAULT NULL,
   `componentName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of component
@@ -252,7 +258,10 @@ INSERT INTO `component` VALUES ('1', 'Input Text', 'Text');
 INSERT INTO `component` VALUES ('2', 'Alt Kategori Modülü', 'AltKategori');
 INSERT INTO `component` VALUES ('3', 'Selectbox [1e1 secim]', 'Selectbox');
 INSERT INTO `component` VALUES ('4', 'Selectbox [1e1 secim][AltKategorili]', 'SelectboxAltKategorili');
-INSERT INTO `component` VALUES ('5', 'Selectbox [1e1 secim] Çoklu', 'SelectboxCoklu');
+INSERT INTO `component` VALUES ('5', 'Selectbox [1eN secim] Çoklu', 'SelectboxCoklu');
+INSERT INTO `component` VALUES ('6', 'Selectbox [1eN secim] Çoklu [AltKategorili]', 'SelectboxCokluAltKategorili');
+INSERT INTO `component` VALUES ('7', 'Selectbox [1e1 secim]  Liste Butonu', 'SelectboxListeBtn');
+INSERT INTO `component` VALUES ('8', 'Text İçerik', 'TextEditor');
 
 -- ----------------------------
 -- Table structure for component_copy
@@ -288,27 +297,61 @@ INSERT INTO `component_copy` VALUES ('17', 'n-n Çoktan Çoğa Seçim', 'CokluSe
 INSERT INTO `component_copy` VALUES ('18', 'Aktif Pasif (Durumu)', 'AktifPasif');
 
 -- ----------------------------
+-- Table structure for etud_ozellikleri
+-- ----------------------------
+DROP TABLE IF EXISTS `etud_ozellikleri`;
+CREATE TABLE `etud_ozellikleri` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `baslik` varchar(255) DEFAULT '',
+  `etud_id` varchar(255) DEFAULT '',
+  `count` int DEFAULT '0',
+  `deger` varchar(255) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of etud_ozellikleri
+-- ----------------------------
+INSERT INTO `etud_ozellikleri` VALUES ('1', 'Mavi', '1', '2', '');
+INSERT INTO `etud_ozellikleri` VALUES ('2', 'Yeşil', '1', '1', '');
+INSERT INTO `etud_ozellikleri` VALUES ('3', 'Türkçe Özellik', '2', '3', '');
+INSERT INTO `etud_ozellikleri` VALUES ('4', 'tr2', '2', '4', '');
+INSERT INTO `etud_ozellikleri` VALUES ('5', 'aaa', '2', '5', '');
+INSERT INTO `etud_ozellikleri` VALUES ('6', 'b etüdü mavi', '5', '2', '');
+INSERT INTO `etud_ozellikleri` VALUES ('7', 'b etüdü yeşil', '5', '1', '');
+INSERT INTO `etud_ozellikleri` VALUES ('8', 'En alt mat 01 yeni', '7', '1', '');
+INSERT INTO `etud_ozellikleri` VALUES ('9', 'en alt mat 02', '7', '2', '');
+INSERT INTO `etud_ozellikleri` VALUES ('10', 'm2', '7', '6', '220');
+INSERT INTO `etud_ozellikleri` VALUES ('11', 'Kırmızı', '16', '7', '');
+INSERT INTO `etud_ozellikleri` VALUES ('12', 'Mavi', '16', '8', '');
+
+-- ----------------------------
 -- Table structure for etudler
 -- ----------------------------
 DROP TABLE IF EXISTS `etudler`;
 CREATE TABLE `etudler` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `etud_adi` varchar(200) DEFAULT '',
-  `sinif_id` int DEFAULT '0',
-  `ogrenci` int DEFAULT '0',
   `count` int DEFAULT '0',
+  `ozellikleri` varchar(50) DEFAULT '',
+  `ust_kategori` int DEFAULT '0',
+  `icerik` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of etudler
 -- ----------------------------
-INSERT INTO `etudler` VALUES ('1', 'Etüd 01', '9', '2', '0');
-INSERT INTO `etudler` VALUES ('2', 'Etüd Türkçe', '1', '0', '0');
-INSERT INTO `etudler` VALUES ('3', '1 a mat etüdüs', '10', '0', '0');
-INSERT INTO `etudler` VALUES ('4', '1a mats', '10', '3', '0');
-INSERT INTO `etudler` VALUES ('5', '1b alt etüdü', '14', '2', '0');
-INSERT INTO `etudler` VALUES ('6', 'hasan develi 1 a mat etüd', '10', '2', '0');
+INSERT INTO `etudler` VALUES ('1', 'Etüd 01', '1', '', '0', null);
+INSERT INTO `etudler` VALUES ('2', 'Etüd Türkçe', '2', '', '0', null);
+INSERT INTO `etudler` VALUES ('3', '1 a mat etüdüs', '7', '', '0', null);
+INSERT INTO `etudler` VALUES ('4', '1a mats', '2', '', '2', null);
+INSERT INTO `etudler` VALUES ('5', '1b alt etüdü', '3', '', '0', null);
+INSERT INTO `etudler` VALUES ('6', 'hasan develi 1 a mat etüd', '5', '', '0', null);
+INSERT INTO `etudler` VALUES ('7', '1B Matematik', '8', '', '0', null);
+INSERT INTO `etudler` VALUES ('13', 'z son', '1', '', '2', null);
+INSERT INTO `etudler` VALUES ('15', 'trr 2', '3', '', '2', null);
+INSERT INTO `etudler` VALUES ('16', 'hd yusuf', '9', '', '6', null);
 
 -- ----------------------------
 -- Table structure for language
@@ -340,7 +383,7 @@ CREATE TABLE `ogrenciler` (
   `sinif_id` int DEFAULT '0',
   `slider_alt` int DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of ogrenciler
@@ -348,6 +391,7 @@ CREATE TABLE `ogrenciler` (
 INSERT INTO `ogrenciler` VALUES ('1', 'Hasan Koç', '1', '2');
 INSERT INTO `ogrenciler` VALUES ('2', 'Hasan Develis', '2', '3');
 INSERT INTO `ogrenciler` VALUES ('3', 'Yusuf Erdoğan', '3', '2');
+INSERT INTO `ogrenciler` VALUES ('4', 'Uğur Yılmaz', '2', '2');
 
 -- ----------------------------
 -- Table structure for page
@@ -376,7 +420,7 @@ CREATE TABLE `panel` (
   `slug` varchar(255) DEFAULT NULL,
   `has_table` int DEFAULT '0',
   `has_row_slug` int DEFAULT '0',
-  `count` int DEFAULT NULL,
+  `count` int DEFAULT '0',
   `language_active` int unsigned DEFAULT '0',
   `component_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `list_type` int DEFAULT '0',
@@ -387,21 +431,22 @@ CREATE TABLE `panel` (
   `order_drag` tinyint DEFAULT '0',
   `drag_column` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of panel
 -- ----------------------------
-INSERT INTO `panel` VALUES ('1', '0', '[\"0\"]', 'Anasayfa', 'anasayfa', '0', '0', null, '0', 'home', '2', 'fa fa-home', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('2', '0', '[\"0\"]', 'İçerik Yönetimi', 'icerik-yonetimi', '0', '0', null, '0', '', '2', 'fa fa-newspaper', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('3', '2', '[\"0\",\"2\"]', 'Sayfalar', 'sayfalar', '1', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('4', '0', '[\"0\"]', 'Slider', 'slider', '1', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('5', '2', '[\"0\",\"2\"]', 'Alt Slider', 'alt_slider', '1', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('8', '0', '[\"0\"]', 'Footer Logolar', 'footer-logolar', '0', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('9', '0', '[\"0\"]', 'Slider Alts', 'slider_alt', '1', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('11', '0', '[\"0\"]', 'Öğrenciler', 'ogrenciler', '1', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('12', '0', '[\"0\"]', 'Sınıflar', 'siniflar', '1', '0', null, '0', '', '2', '', '1', 'id', 'asc', '0', '');
-INSERT INTO `panel` VALUES ('13', '0', '[\"0\"]', 'Etüdler', 'etudler', '1', '0', null, '0', '', '2', '', '1', 'count', 'asc', '1', 'count');
+INSERT INTO `panel` VALUES ('1', '0', '[\"0\"]', 'Anasayfa', 'anasayfa', '0', '0', '1', '0', 'home', '2', 'fa fa-home', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('2', '0', '[\"0\"]', 'İçerik Yönetimi', 'icerik-yonetimi', '0', '0', '2', '0', '', '2', 'fa fa-newspaper', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('3', '2', '[\"0\",\"2\"]', 'Sayfalar', 'sayfalar', '1', '0', '6', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('4', '0', '[\"0\"]', 'Slider', 'slider', '1', '0', '3', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('5', '2', '[\"0\",\"2\"]', 'Alt Slider', 'alt_slider', '1', '0', '8', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('8', '0', '[\"0\"]', 'Footer Logolar', 'footer-logolar', '0', '0', '4', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('9', '0', '[\"0\"]', 'Slider Alts', 'slider_alt', '1', '0', '5', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('11', '0', '[\"0\"]', 'Öğrenciler', 'ogrenciler', '1', '0', '6', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('12', '0', '[\"0\"]', 'Sınıflar', 'siniflar', '1', '0', '7', '0', '', '2', '', '1', 'id', 'asc', '0', '');
+INSERT INTO `panel` VALUES ('13', '0', '[\"0\"]', 'Etüdler', 'etudler', '1', '0', '8', '0', '', '2', '', '1', 'count', 'asc', '1', 'count');
+INSERT INTO `panel` VALUES ('14', '0', '[\"0\"]', 'Etüd Özellikleri', 'etud_ozellikleri', '1', '0', '9', '0', '', '2', '', '0', 'count', 'asc', '1', 'count');
 
 -- ----------------------------
 -- Table structure for relation_type

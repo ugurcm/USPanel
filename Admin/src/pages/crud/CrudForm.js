@@ -24,7 +24,7 @@ import RowInputRadio from './compForm/RowInputRadio';
 import Column from './compForm/Column';
 
 import queryString from 'query-string';
-
+import update from 'immutability-helper';
 
 
 export default function CrudForm (props) {
@@ -43,7 +43,7 @@ export default function CrudForm (props) {
     params: params,
     stateComp: {}
   });
-  
+
 
   useEffect(()=>{
     pageLoad({ appContext, table, id, state, setState, params });
@@ -52,13 +52,8 @@ export default function CrudForm (props) {
   
   const onChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    //console.log(value);
     let myNewValues = {...state.values, [e.target.name]: value};
-    //console.log(state.values);
-    //console.log(myNewValues);
-    //setState((state) => ({...state, values: {...state.values, [e.target.name]: value} }));
     setState((state) => ({...state, values: myNewValues }));
-    //setState({...state, values: {[e.target.name]: value} });
   }
   const formCancel = (e) => {
     e.preventDefault();
@@ -76,9 +71,10 @@ export default function CrudForm (props) {
       </div>
       
       <div className="form-cont">
-        <form action="" method="POST"  autoComplete="off" 
-          onSubmit={(e)=>formSubmit({ appContext, e, state, props, id })}>
-            
+        <form action="" method="POST"  autoComplete="off" onSubmit={(e)=>formSubmit({ appContext, e, state, props, id })}>
+          {/* eğer alt özellik ise özellik idsini yazalım. */}
+          {/*(state.params.parentName?<input type="hidden" name={state.params.parentName} value={state.params.parentValue} />:null)*/}
+          
           {state.columns.map((val, key)=>
             <Column key={key} state={state} setState={setState} item={val} onChange={onChange} appContext={appContext} id={id} />)} 
           

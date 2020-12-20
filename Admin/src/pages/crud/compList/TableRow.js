@@ -7,7 +7,7 @@ import DragRow from './DragRow';
 export default function TableRow ({item, state, setState, deleteRow, appContext}) {
   //console.log(item);
   //console.log(crudColumns);
-  
+  //console.log(state);
 
   const eventFunction = ({e, itemId, eventFunction,state,setState,appContext}) => {
     e.preventDefault();
@@ -23,11 +23,18 @@ export default function TableRow ({item, state, setState, deleteRow, appContext}
         let returnEdilecek = item[column['slug']];
 
         if(column.buttons){
-          
+          //console.log(state);
           const btnList = column.buttons.map((btn, keyb)=>{
             let btnReturn = null;
             if(btn.type == 'LinkWidthId'){
-              btnReturn = <Link key={keyb} to={btn.link + '/' + item.id} className="btn-edit">
+
+              let btnLink = btn.link + '/' + item.id;
+              //eğer özellik alt kategorisi varsa onu linke ekle
+              if(state.queryStringList.parentTable){
+                btnLink += `?parentTable=${state.queryStringList.parentTable}&parentName=${state.queryStringList.parentName}&parentValue=${state.queryStringList.parentValue}`;
+              }
+
+              btnReturn = <Link key={keyb} to={btnLink} className="btn-edit">
                 <div className="icon">
                   <i className={btn.icon}></i>        
                 </div> 
@@ -46,6 +53,11 @@ export default function TableRow ({item, state, setState, deleteRow, appContext}
               //console.log(column);
               //console.log(btn);
               btnReturn = <Link key={keyb} to={btn.link + '/' +item.id} className="altkategori-link">{btn.name}</Link>
+            }
+            if(btn.type == 'AltKategoriOtherTable'){
+              //console.log(column);
+              //console.log(btn);
+              btnReturn = <Link key={keyb} to={`${btn.link}?parentTable=${state.panel.slug}&parentName=${column.target_table_secilen_kolon}&parentValue=${item.id}`} className="altkategori-link">{btn.name}</Link>
             }
 
             if(btn.type == 'DragRow'){

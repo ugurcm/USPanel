@@ -8,24 +8,23 @@ import AppContext from '../../context/AppContext';
 import Swal from 'sweetalert2';
 import doAjax from '../../libraries/doAjax';
 import TableControls from './compList/TableControls'
-import {pageInitWork, refreshTableWork, deleteRow, yukariGit} from './compList/CrudLib';
+import {pageInitWork, refreshTableWork, deleteRow, yukariGit, onSortEnd,ozellikYukari} from './compList/CrudLib';
 
-import queryString from 'query-string';
+import qs from 'query-string';
 import TableRow from './compList/TableRow';
 
 
-const DragHandle = SortableHandle(()=> <span>::</span>);
+
+
 
 const SortableItem = SortableElement(({key,item,state,setState,appContext,deleteRow})=>
-
   <TableRow key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow}/>
-
 )
 const SortableList = SortableContainer(({state,setState,appContext,deleteRow})=>{
   return (
     <tbody>
       {state.crudList.map((item,key)=>
-        <SortableItem key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow} index={key} />
+        <SortableItem key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow} index={key}   />
       )}
     </tbody>
   )
@@ -36,7 +35,9 @@ export default function CrudList (props) {
   //const {slug, pageId, history} = props;
   let { slug,id } = useParams();
   let { history } = props;
-  
+  //console.log(slug)
+  const queryStringList = qs.parse(props.location.search);
+  //console.log(queryStringList);
   const appContext = useContext(AppContext);
   const [state, setState] = useState({
     id: (id?id:undefined),
@@ -51,17 +52,26 @@ export default function CrudList (props) {
       kacar: 15,
       sayfaSayisi: 0,
       toplam: 0,
+      order_column: '',
       order_drag: 0
     },
     crudColumns: [],
-    crudList: []
+    crudList: [],
+    queryStringList: {}
   });
+  /*useEffect(()=>{
+    console.log("search değişti");
+  },[props.location.search])*/
+  useEffect(()=>{
+    //console.log("slug veya id değişti " + slug + " id= " +id);
+    //console.log("effect güncelledi");
+    //console.log(qs.parse(props.location.search));queryStringList:qs.parse(props.location.search)
+    setState((state)=>({...state, id:id,slug:slug }))
+  },[slug,id])
 
   useEffect(()=>{
-    setState((state)=>({...state, id:id,slug:slug}))
-  },[slug,id])
-  useEffect(()=>{
-    pageInitWork({appContext, state, setState });
+    //console.log("bir defa");
+    pageInitWork({appContext, state, setState, queryStringList });
   },[state.slug,state.id])
   useEffect(()=>{
     if(state.initWorkLoading == true){
@@ -91,6 +101,7 @@ export default function CrudList (props) {
             <a href="#" onClick={yenile} className="refreshBtn">Yenile</a>
             <Link to={state.formLink} className="addBtn">Ekle</Link>
             {(state.id>0?<a href="#" onClick={(e=>yukariGit({e,state,appContext, history}))} className="refreshBtn">Yukarı Git</a>:null)}
+            {(state.queryStringList.parentTable?<a href="#" onClick={(e)=>ozellikYukari({e,state,appContext, history})} className="refreshBtn">Geri Dön</a>:null)}
           </div>
           <div className="control-right">
             <TableControls state={state} setState={setState} />
@@ -115,7 +126,7 @@ export default function CrudList (props) {
                 <TableRow key={key} item={item} state={state} setState={setState} appContext={appContext} deleteRow={deleteRow}/>
               )}
             </tbody>
-            :<SortableList state={state} setState={setState} appContext={appContext} deleteRow={deleteRow} />}
+            :<SortableList state={state} setState={setState} appContext={appContext} deleteRow={deleteRow} onSortEnd={(e)=>onSortEnd({e,state,setState,appContext})} helperClass="tasinacakTr" useDragHandle />}
 
           </table>
 

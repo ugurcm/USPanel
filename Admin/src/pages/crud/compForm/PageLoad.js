@@ -8,7 +8,7 @@ export const pageLoad = ({ appContext, table, id, state, setState, params}) => {
   const data = doAjax(
     appContext.api_url + 'Admin/CrudForm/getFormData',
     'GET',
-    {table, id}
+    {table, id, params}
   );
   data.then((res)=>{
     //console.log(res);

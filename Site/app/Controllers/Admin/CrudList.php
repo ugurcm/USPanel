@@ -77,7 +77,8 @@ class CrudList extends BaseController
 
     
     $dbo = $db->table('column c');
-    $dbo->select('c.title, c.slug,c.show_in_crud, c.component_id, c.target_table, c.target_table_title');
+    $dbo->select('c.title, c.slug,c.show_in_crud, c.component_id, 
+      c.target_table, c.target_table_title, c.target_table_secilen_kolon');
     $dbo->where('c.panel_id', $panel['id']);
     $dbo->where('c.show_in_crud', 1);
     $column = $dbo->get()->getResultArray();
@@ -108,6 +109,15 @@ class CrudList extends BaseController
           );
           $item['buttons'] = array($buttonAltKategori);
         }
+        if($item['component_id'] == 7){ // eger ozellik liste tablosunu acacak ise buton ekle
+          $buttonAltKategori = array(
+            'name' => $item['title'],
+            'type' => 'AltKategoriOtherTable',
+            'link' => '/crudList/'.$item['target_table'].'',
+            'icon' => ''
+          );
+          $item['buttons'] = array($buttonAltKategori);
+        } 
         $data['crudColumns'] [] = $item;
       }
     }
@@ -161,7 +171,7 @@ class CrudList extends BaseController
     if (empty($gets['orderby'])) {
       $orderby = 't.count';
     } else {
-      $orderby = $gets['orderby'];
+      $orderby = 't.'.$gets['orderby'];
     }
     if (empty($gets['orderType'])) {
       $orderType = 'asc';
@@ -216,21 +226,40 @@ class CrudList extends BaseController
         $whereStr .= ' WHERE t.'.$altKategoriColumn['slug']." = '".$gets['id']."' ";
       }
     }
-
-
+    //print_r($gets);
+    // query string ile bir kategori göstermek istiyorsak
+    if(!empty($gets['queryStringList']['parentName'])){
+      $whereStr .= "WHERE t.".$gets['queryStringList']['parentName']." = '".$gets['queryStringList']['parentValue']."'";
+    }
+    //echo $whereStr;
     $dbSelectStr = '';
     if($data['crudColumns']){
       foreach ($data['crudColumns'] as $keyc => $valuec) {
         if(!empty($valuec['slug'])){
           $selectedTable = 't';
           
-          if($valuec['target_table']){
-            
-            $dbSelectStr .= $valuec['target_table'].'.'.$valuec['target_table_title']. ' as '.$valuec['slug'].' ';
-          }else{
-            if($valuec['db_select'] == 1){
-              $dbSelectStr .= $selectedTable.'.'.$valuec['slug'].'';
+          if($valuec['component_id'] == 1 || $valuec['component_id'] == 2 || $valuec['component_id'] == 3
+          || $valuec['component_id'] == 4 || $valuec['component_id'] == 7){
+
+
+            //selectbox tek seçim ve selectbox alt kategorili ise
+            if($valuec['component_id'] == 3 || $valuec['component_id'] == 4){
+              $dbSelectStr .= $valuec['target_table'].'.'.$valuec['target_table_title']. ' as '.$valuec['slug'].' ';
             }
+            // düz input veya alt kategori modülü ise
+            if($valuec['component_id'] == 1 || $valuec['component_id'] == 2 || $valuec['component_id'] == 7){
+              if($valuec['db_select'] == 1){
+                $dbSelectStr .= $selectedTable.'.'.$valuec['slug'].'';
+              }
+            }
+            /*if($valuec['target_table']){
+              
+              $dbSelectStr .= $valuec['target_table'].'.'.$valuec['target_table_title']. ' as '.$valuec['slug'].' ';
+            }else{
+              if($valuec['db_select'] == 1){
+                $dbSelectStr .= $selectedTable.'.'.$valuec['slug'].'';
+              }
+            }*/
           }
           
          
@@ -244,16 +273,8 @@ class CrudList extends BaseController
     $dbSelectStr = rtrim($dbSelectStr, ', ');
     
     //echo $dbSelectStr;
-    //return false;
-
-
-    /*echo "SELECT ".$dbSelectStr." FROM ".$gets['table']." t
-    ".$whereStr."
-    ".$joinStr." 
-    GROUP BY t.id
-    ORDER BY ".$orderby." ".$orderType." 
-    ";
-    return false;*/
+    
+    
 
     $kayitSayisi = $db->query("
       SELECT COUNT(t.id) toplam from ".$gets['table']." t
@@ -275,7 +296,6 @@ class CrudList extends BaseController
     ";
     //echo $query;
     //return false;
-    
     $data['crudList'] = $db->query($query)->getResultArray();
     
 
@@ -330,10 +350,25 @@ class CrudList extends BaseController
     $data['sonuc'] = 'err';
     $data['aciklama'] = 'Kayıt bulunamadı';
 
+    $panel = $db->table('panel p')->select('p.*')->where('p.slug',$gets['table'])->get()->getRowArray();
+    $columns = $db->table('column p')->select('p.*')->where('p.panel_id',$panel['id'])->get()->getResultArray();
+    //print_r($columns);
+    if($columns){
+      foreach ($columns as $keyc => $column) {
+        if($column['component_id'] == 5 || $column['component_id'] == 6){
+          $tabloAdi = $gets['table'].'_to_'.$column['target_table'];
+          $kolon1Adi = $gets['table'].'_id';
+          //$kolon2Adi = $column['target_table'].'_id';
+
+          $db->table($tabloAdi.' t')->where('t.'.$kolon1Adi, $gets['itemId'])->delete();
+
+        }
+      }
+    }
+    //print_r($tableRow);
     if($tableRow){
 
-      //$this->db->where('id', $gelen['itemId']);
-      //$this->db->delete($gelen['tableSlug']);
+
       $db->table($gets['table'].' t')->where('t.id', $gets['itemId'])->delete();
       $data['sonuc'] = 'ok';
       $data['aciklama'] = 'Kayıt Silinmiştir.';
@@ -366,6 +401,53 @@ class CrudList extends BaseController
 
     echo json_encode($data);
   }
+
+  public function saveOrder(){
+    $gets = $this->request->getPost(null, FILTER_SANITIZE_STRING);
+    if(!$gets) return false;
+    $db = \Config\Database::connect();
+    //print_r($gets);
+    //print_r($gets['ids']);
+
+    if($gets['ids']){
+      
+      foreach ($gets['ids'] as $key => $id) {
+        //echo $id.' ';
+        $i = $key + 1;
+        $sql = "UPDATE ".$gets['table']." t SET ".$gets['orderColumn']." = '".$i."' WHERE id='".$id."' ";
+        $db->query($sql);
+        //echo $sql;
+        //echo '<br/>';
+      }
+    }
+  }
+
+
+  public function ozellikYukariGit(){
+    $gets = $this->request->getGet(null, FILTER_SANITIZE_STRING);
+    if(!$gets) return false;
+    $db = \Config\Database::connect();
+
+    //print_r($gets);
+    if($gets['params']){
+      $params = $gets['params'];
+      $kontrol = $db->table($params['parentTable'].' e')->select('e.*')->where('e.id',$params['parentValue'])->get()->getRowArray();
+      //print_r($kontrol);
+      $panel = $db->table('panel p')->select('p.*')->where('p.slug',$params['parentTable'])->get()->getRowArray();
+      //print_r($panel);
+      $ustKategoriKolonu = $db->table('column p')->select('p.*')->where('p.panel_id',$panel['id'])->where('p.component_id',2)->get()->getRowArray();
+      //print_r($columns);
+      if($ustKategoriKolonu){
+        $data['ustKategoriId'] = $kontrol[$ustKategoriKolonu['slug']];
+      }
+      $data['method'] = $params['parentTable'];
+
+      echo json_encode($data);
+    }
+
+  }
+
+
 	//--------------------------------------------------------------------
 
 }
